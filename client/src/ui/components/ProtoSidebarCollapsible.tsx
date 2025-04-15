@@ -2,14 +2,11 @@
 /*
  * Documentation:
  * Proto Sidebar Collapsible — https://app.subframe.com/8616996521e5/library?component=Proto+Sidebar+Collapsible_93288e80-29e5-4457-a57c-46fac4296e0e
- * Icon Button — https://app.subframe.com/8616996521e5/library?component=Icon+Button_af9405b1-8c54-4e01-9786-5aad308224f6
+ * Proto Icon Nav Button — https://app.subframe.com/8616996521e5/library?component=Proto+Icon+Nav+Button_032ae765-3abf-471e-bc95-9cf4a6f16883
  */
 
 import React from "react";
 import * as SubframeUtils from "../utils";
-import { IconButton } from "./IconButton";
-import { FeatherMenu } from "@subframe/core";
-import { FeatherX } from "@subframe/core";
 import * as SubframeCore from "@subframe/core";
 import { FeatherCircleDashed } from "@subframe/core";
 
@@ -70,6 +67,7 @@ const NavItem = React.forwardRef<HTMLElement, NavItemProps>(function NavItem(
 interface ProtoSidebarCollapsibleRootProps
   extends React.HTMLAttributes<HTMLElement> {
   expanded?: boolean;
+  headerSlot?: React.ReactNode;
   className?: string;
 }
 
@@ -79,6 +77,7 @@ const ProtoSidebarCollapsibleRoot = React.forwardRef<
 >(function ProtoSidebarCollapsibleRoot(
   {
     expanded = false,
+    headerSlot,
     className,
     ...otherProps
   }: ProtoSidebarCollapsibleRootProps,
@@ -100,34 +99,16 @@ const ProtoSidebarCollapsibleRoot = React.forwardRef<
           { "w-60 grow shrink-0 basis-0": expanded }
         )}
       >
-        <div className="flex w-full flex-col items-center justify-center gap-2 px-5 py-6">
+        {headerSlot ? (
           <div
             className={SubframeUtils.twClassNames(
-              "flex items-center justify-center gap-2",
-              { "h-auto w-full flex-none items-center justify-end": expanded }
+              "flex w-full flex-col items-center justify-center gap-2 px-5 py-6",
+              { "items-center justify-center": expanded }
             )}
           >
-            <IconButton
-              className={SubframeUtils.twClassNames("h-auto w-auto flex-none", {
-                "hidden h-auto w-auto flex-none": expanded,
-              })}
-              disabled={false}
-              variant="neutral-tertiary"
-              size="large"
-              icon={<FeatherMenu />}
-            />
-            <IconButton
-              className={SubframeUtils.twClassNames(
-                "hidden h-auto w-auto flex-none",
-                { flex: expanded }
-              )}
-              disabled={false}
-              variant="neutral-tertiary"
-              size="large"
-              icon={<FeatherX />}
-            />
+            {headerSlot}
           </div>
-        </div>
+        ) : null}
         <div className="flex w-full grow shrink-0 basis-0 flex-col items-start gap-1 px-3 py-4 overflow-auto">
           <NavItem>Item</NavItem>
         </div>
