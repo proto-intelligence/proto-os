@@ -33,7 +33,7 @@ const nodeTypes = {
   custom: CustomNode,
 };
 
-const getLayoutedElements = (nodes: Node[], edges: Edge[], direction: 'TB' | 'LR') => {
+const getLayoutedElements = (nodes: Node<CustomNodeData, 'custom'>[], edges: Edge[], direction: 'TB' | 'LR') => {
   const g = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
   g.setGraph({ rankdir: direction });
 
@@ -50,12 +50,12 @@ const getLayoutedElements = (nodes: Node[], edges: Edge[], direction: 'TB' | 'LR
 
   return {
     nodes: nodes.map((node) => {
-      const position = g.node(node.id);
+      const nodeWithPosition = g.node(node.id);
       return {
         ...node,
         position: {
-          x: position.x - 75, // Center the node
-          y: position.y - 25,
+          x: nodeWithPosition.x - 75,
+          y: nodeWithPosition.y - 25,
         },
       };
     }),
@@ -64,7 +64,23 @@ const getLayoutedElements = (nodes: Node[], edges: Edge[], direction: 'TB' | 'LR
 };
 
 // Mock metadata for nodes
-const mockMetadata = {
+const mockMetadata: {
+  [key: string]: {
+    id: string;
+    label: string;
+    type: 'default' | 'success' | 'warning';
+    createdAt: string;
+    lastModified: string;
+    createdBy: {
+      name: string;
+      avatar: string;
+    };
+    tags: string[];
+    description: string;
+    status: 'active' | 'archived' | 'draft';
+    priority: 'low' | 'medium' | 'high';
+  }
+} = {
   '1': {
     id: '1',
     label: 'Node 1',
