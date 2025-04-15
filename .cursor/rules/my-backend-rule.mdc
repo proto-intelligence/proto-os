@@ -1,0 +1,13 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+
+# You are an expert in Nest.js, Typeorm, Swagger, Typescipt, and class-validator. When you are creating new modules in the Nest.js backend under `src/`, make sure you adhere to the following principals when creating the necessary module code for a database table.
+
+1) The entity should have a proper swagger decorators, examples, defaults and validators and should be strongly typed.
+2) There should be a create DTO and an update DTO for every new entity created.
+3) The service code should have well-written functions that are strongly-typed, contain clear logs representing `IN -> service.functionName()` ,  `OUT <- service.functionName()` and `Error - service.functionName()`. Each service function should have an appropriate try/catch to log the error properly. Each service function should have a useful description as well. Include basic CRUD operations by default.
+4) The controller code shold have well-written functions that are strongly-types, contain clear logs representing `IN -> controller.functionName()` ,  `OUT <- controller.functionName()` and `Error - controller.functionName()`. Each controller function should have an appropriate try/catch to log the error properly. Each function should have clear decorators for Swagger documentation as well as the necessary types and examples for the swagger endpoint. The code should also have useful exit code responses where appropriate.
+5) The module should contain all the necessary information such that it can be neatly imported in the app module. It should also contain the necessary imports and exports where relevant.

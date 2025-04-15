@@ -1,7 +1,8 @@
 // src/workflows/entities/workflow.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsEnum, IsArray, IsDate, IsOptional } from 'class-validator';
+import { Task } from '../../tasks/entities/task.entity';
 
 export enum WorkflowType {
   DAG = 'dag',
@@ -64,6 +65,10 @@ export class Workflow {
   @ApiProperty({ enum: WorkflowType, example: WorkflowType.DAG })
   @IsEnum(WorkflowType)
   workflow_type: WorkflowType;
+
+  @OneToMany(() => Task, task => task.workflow)
+  @ApiProperty({ type: () => [Task] })
+  tasks: Task[];
 
   @CreateDateColumn()
   @ApiProperty()

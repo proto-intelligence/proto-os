@@ -1,12 +1,23 @@
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/flow/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/flow/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/flow/avatar";
 import { Badge } from "@/components/flow/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/flow/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/flow/card";
 
 type NodeMetadata = {
   id: string;
   label: string;
-  type: 'default' | 'success' | 'warning';
+  type: "default" | "success" | "warning";
   createdAt: string;
   lastModified: string;
   createdBy: {
@@ -15,8 +26,8 @@ type NodeMetadata = {
   };
   tags: string[];
   description: string;
-  status: 'active' | 'archived' | 'draft';
-  priority: 'low' | 'medium' | 'high';
+  status: "active" | "archived" | "draft";
+  priority: "low" | "medium" | "high";
 };
 
 type SidePanelProps = {
@@ -39,11 +50,9 @@ export function SidePanel({ isOpen, onClose, node }: SidePanelProps) {
             </Avatar>
             {node.label}
           </SheetTitle>
-          <SheetDescription>
-            Node ID: {node.id}
-          </SheetDescription>
+          <SheetDescription>Node ID: {node.id}</SheetDescription>
         </SheetHeader>
-        
+
         <div className="mt-6 space-y-6">
           <Card>
             <CardHeader>
@@ -52,13 +61,19 @@ export function SidePanel({ isOpen, onClose, node }: SidePanelProps) {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Status</span>
-                <Badge variant={node.status === 'active' ? 'default' : 'secondary'}>
+                <Badge
+                  variant={node.status === "active" ? "default" : "secondary"}
+                >
                   {node.status}
                 </Badge>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Priority</span>
-                <Badge variant={node.priority === 'high' ? 'destructive' : 'secondary'}>
+                <Badge
+                  variant={
+                    node.priority === "high" ? "destructive" : "secondary"
+                  }
+                >
                   {node.priority}
                 </Badge>
               </div>
@@ -67,7 +82,9 @@ export function SidePanel({ isOpen, onClose, node }: SidePanelProps) {
                 <span className="text-sm">{node.createdAt}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Last Modified</span>
+                <span className="text-sm text-muted-foreground">
+                  Last Modified
+                </span>
                 <span className="text-sm">{node.lastModified}</span>
               </div>
             </CardContent>
@@ -78,7 +95,9 @@ export function SidePanel({ isOpen, onClose, node }: SidePanelProps) {
               <CardTitle>Description</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">{node.description}</p>
+              <p className="text-sm text-muted-foreground">
+                {node.description}
+              </p>
             </CardContent>
           </Card>
 
@@ -100,4 +119,4 @@ export function SidePanel({ isOpen, onClose, node }: SidePanelProps) {
       </SheetContent>
     </Sheet>
   );
-} 
+}
