@@ -113,7 +113,7 @@ const mockMetadata: {
   }
 };
 
-function Flow() {
+export function Flow() {
   const { deleteElements, fitView } = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);

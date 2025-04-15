@@ -6,6 +6,8 @@ import { FeatherMenu } from "@subframe/core";
 import { FeatherX } from "@subframe/core";
 import { ProtoSidebarCollapsible } from "@/ui/components/ProtoSidebarCollapsible";
 import { ProtoTopbar } from "@/ui/components/ProtoTopbar";
+import { ReactFlowProvider } from "@xyflow/react";
+import { Flow } from "./HomePageClient";
 
 function WorkflowsClient() {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -43,6 +45,11 @@ function WorkflowsClient() {
       />
       <div className="flex grow shrink-0 basis-0 flex-col items-start self-stretch">
         <ProtoTopbar className="h-10 w-full flex-none" />
+        <div className="flex h-[calc(100vh-2.5rem)] w-full flex-col items-start overflow-hidden">
+          <ReactFlowProvider>
+            <Flow />
+          </ReactFlowProvider>
+        </div>
       </div>
     </div>
   );

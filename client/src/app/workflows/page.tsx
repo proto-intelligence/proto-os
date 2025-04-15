@@ -1,12 +1,10 @@
-"use client";
-
-import React, { useState } from "react";
-import WorkflowPageClient from "@/components/WorkflowsClient";
+import React from "react";
+import WorkflowsClient from "@/components/WorkflowsClient";
 
 function WorkflowsPage() {
 
   return (
-    <WorkflowPageClient />
+    <WorkflowsClient />
   );
 }
 

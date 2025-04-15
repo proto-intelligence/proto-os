@@ -1,0 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+You are an expert in Next.js, React, tailwind. When I tell you to build out features in my frontend, I need you to construct it with existing components available to you in `src/ui/components/*`. The reason
+for this is that these components are built on a no-code platform called "Subframe" and imported into my codebase. Therefore, they can be used as building blocks to construct pages in my frontend.
+If there is a particular component that seems to be missing that you need, you can create it and store it in `src/components/*` under a folder dedicated for the page. 
