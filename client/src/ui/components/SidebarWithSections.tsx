@@ -1,16 +1,18 @@
 "use client";
 /*
  * Documentation:
- * Sidebar with sections — https://app.subframe.com/0bee54e10183/library?component=Sidebar+with+sections_f4047c8b-cfb4-4761-b9cf-fbcae8a9b9b5
- * Avatar — https://app.subframe.com/0bee54e10183/library?component=Avatar_bec25ae6-5010-4485-b46b-cf79e3943ab2
- * Icon Button — https://app.subframe.com/0bee54e10183/library?component=Icon+Button_af9405b1-8c54-4e01-9786-5aad308224f6
+ * Sidebar with sections — https://app.subframe.com/8616996521e5/library?component=Sidebar+with+sections_f4047c8b-cfb4-4761-b9cf-fbcae8a9b9b5
+ * Avatar — https://app.subframe.com/8616996521e5/library?component=Avatar_bec25ae6-5010-4485-b46b-cf79e3943ab2
+ * Icon Button — https://app.subframe.com/8616996521e5/library?component=Icon+Button_af9405b1-8c54-4e01-9786-5aad308224f6
  */
 
 import React from "react";
+import * as SubframeUtils from "../utils";
 import * as SubframeCore from "@subframe/core";
+import { FeatherCircleDashed } from "@subframe/core";
 
 interface NavItemProps extends React.HTMLAttributes<HTMLDivElement> {
-  icon?: SubframeCore.IconName;
+  icon?: React.ReactNode;
   children?: React.ReactNode;
   selected?: boolean;
   rightSlot?: React.ReactNode;
@@ -19,7 +21,7 @@ interface NavItemProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const NavItem = React.forwardRef<HTMLElement, NavItemProps>(function NavItem(
   {
-    icon = "FeatherCircleDashed",
+    icon = <FeatherCircleDashed />,
     children,
     selected = false,
     rightSlot,
@@ -30,7 +32,7 @@ const NavItem = React.forwardRef<HTMLElement, NavItemProps>(function NavItem(
 ) {
   return (
     <div
-      className={SubframeCore.twClassNames(
+      className={SubframeUtils.twClassNames(
         "group/2713e17b flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 hover:bg-neutral-50 active:bg-neutral-100",
         { "bg-brand-50 hover:bg-brand-50 active:bg-brand-100": selected },
         className
@@ -38,16 +40,19 @@ const NavItem = React.forwardRef<HTMLElement, NavItemProps>(function NavItem(
       ref={ref as any}
       {...otherProps}
     >
-      <SubframeCore.Icon
-        className={SubframeCore.twClassNames(
-          "text-heading-3 font-heading-3 text-neutral-600",
-          { "text-brand-700": selected }
-        )}
-        name={icon}
-      />
+      {icon ? (
+        <SubframeCore.IconWrapper
+          className={SubframeUtils.twClassNames(
+            "text-heading-3 font-heading-3 text-neutral-600",
+            { "text-brand-700": selected }
+          )}
+        >
+          {icon}
+        </SubframeCore.IconWrapper>
+      ) : null}
       {children ? (
         <span
-          className={SubframeCore.twClassNames(
+          className={SubframeUtils.twClassNames(
             "line-clamp-1 grow shrink-0 basis-0 text-body-bold font-body-bold text-neutral-600",
             { "text-brand-700": selected }
           )}
@@ -73,7 +78,7 @@ const NavSection = React.forwardRef<HTMLElement, NavSectionProps>(
   ) {
     return (
       <div
-        className={SubframeCore.twClassNames(
+        className={SubframeUtils.twClassNames(
           "flex w-full flex-col items-start gap-1 pt-6",
           className
         )}
@@ -120,7 +125,7 @@ const SidebarWithSectionsRoot = React.forwardRef<
 ) {
   return (
     <nav
-      className={SubframeCore.twClassNames(
+      className={SubframeUtils.twClassNames(
         "flex h-full w-60 flex-col items-start border-r border-solid border-neutral-border bg-default-background",
         className
       )}

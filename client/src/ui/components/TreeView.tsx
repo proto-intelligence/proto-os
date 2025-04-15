@@ -1,17 +1,20 @@
 "use client";
 /*
  * Documentation:
- * Tree View — https://app.subframe.com/0bee54e10183/library?component=Tree+View_4ed46422-ecc3-41e8-8787-e55ee10cdc75
+ * Tree View — https://app.subframe.com/8616996521e5/library?component=Tree+View_4ed46422-ecc3-41e8-8787-e55ee10cdc75
  */
 
 import React from "react";
+import * as SubframeUtils from "../utils";
 import * as SubframeCore from "@subframe/core";
+import { FeatherFolder } from "@subframe/core";
 import { Accordion } from "./Accordion";
+import { FeatherFile } from "@subframe/core";
 
 interface FolderProps extends React.ComponentProps<typeof Accordion> {
   children?: React.ReactNode;
   label?: React.ReactNode;
-  icon?: SubframeCore.IconName;
+  icon?: React.ReactNode;
   className?: string;
 }
 
@@ -19,7 +22,7 @@ const Folder = React.forwardRef<HTMLElement, FolderProps>(function Folder(
   {
     children,
     label,
-    icon = "FeatherFolder",
+    icon = <FeatherFolder />,
     className,
     ...otherProps
   }: FolderProps,
@@ -27,16 +30,17 @@ const Folder = React.forwardRef<HTMLElement, FolderProps>(function Folder(
 ) {
   return (
     <Accordion
-      className={SubframeCore.twClassNames(
+      className={SubframeUtils.twClassNames(
         "group/c841484c cursor-pointer",
         className
       )}
       trigger={
         <div className="flex w-full items-center gap-2 rounded-md px-3 py-2 group-hover/c841484c:bg-neutral-50">
-          <SubframeCore.Icon
-            className="text-body font-body text-default-font"
-            name={icon}
-          />
+          {icon ? (
+            <SubframeCore.IconWrapper className="text-body font-body text-default-font">
+              {icon}
+            </SubframeCore.IconWrapper>
+          ) : null}
           {label ? (
             <span className="line-clamp-1 grow shrink-0 basis-0 text-body font-body text-default-font">
               {label}
@@ -61,7 +65,7 @@ const Folder = React.forwardRef<HTMLElement, FolderProps>(function Folder(
 interface ItemProps extends React.HTMLAttributes<HTMLDivElement> {
   selected?: boolean;
   label?: React.ReactNode;
-  icon?: SubframeCore.IconName;
+  icon?: React.ReactNode;
   className?: string;
 }
 
@@ -69,7 +73,7 @@ const Item = React.forwardRef<HTMLElement, ItemProps>(function Item(
   {
     selected = false,
     label,
-    icon = "FeatherFile",
+    icon = <FeatherFile />,
     className,
     ...otherProps
   }: ItemProps,
@@ -77,7 +81,7 @@ const Item = React.forwardRef<HTMLElement, ItemProps>(function Item(
 ) {
   return (
     <div
-      className={SubframeCore.twClassNames(
+      className={SubframeUtils.twClassNames(
         "group/42786044 flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 hover:bg-neutral-50",
         { "bg-brand-100 hover:bg-brand-100": selected },
         className
@@ -85,16 +89,19 @@ const Item = React.forwardRef<HTMLElement, ItemProps>(function Item(
       ref={ref as any}
       {...otherProps}
     >
-      <SubframeCore.Icon
-        className={SubframeCore.twClassNames(
-          "text-body font-body text-default-font",
-          { "text-brand-700": selected }
-        )}
-        name={icon}
-      />
+      {icon ? (
+        <SubframeCore.IconWrapper
+          className={SubframeUtils.twClassNames(
+            "text-body font-body text-default-font",
+            { "text-brand-700": selected }
+          )}
+        >
+          {icon}
+        </SubframeCore.IconWrapper>
+      ) : null}
       {label ? (
         <span
-          className={SubframeCore.twClassNames(
+          className={SubframeUtils.twClassNames(
             "line-clamp-1 grow shrink-0 basis-0 text-body font-body text-default-font",
             { "text-brand-700": selected }
           )}
@@ -118,7 +125,7 @@ const TreeViewRoot = React.forwardRef<HTMLElement, TreeViewRootProps>(
   ) {
     return children ? (
       <div
-        className={SubframeCore.twClassNames(
+        className={SubframeUtils.twClassNames(
           "flex w-full flex-col items-start",
           className
         )}

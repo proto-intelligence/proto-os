@@ -1,15 +1,16 @@
 "use client";
 /*
  * Documentation:
- * Table — https://app.subframe.com/0bee54e10183/library?component=Table_142dfde7-d0cc-48a1-a04c-a08ab2252633
- * Badge — https://app.subframe.com/0bee54e10183/library?component=Badge_97bdb082-1124-4dd7-a335-b14b822d0157
- * Dropdown Menu — https://app.subframe.com/0bee54e10183/library?component=Dropdown+Menu_99951515-459b-4286-919e-a89e7549b43b
- * Icon Button — https://app.subframe.com/0bee54e10183/library?component=Icon+Button_af9405b1-8c54-4e01-9786-5aad308224f6
+ * Table — https://app.subframe.com/8616996521e5/library?component=Table_142dfde7-d0cc-48a1-a04c-a08ab2252633
+ * Badge — https://app.subframe.com/8616996521e5/library?component=Badge_97bdb082-1124-4dd7-a335-b14b822d0157
+ * Dropdown Menu — https://app.subframe.com/8616996521e5/library?component=Dropdown+Menu_99951515-459b-4286-919e-a89e7549b43b
+ * Icon Button — https://app.subframe.com/8616996521e5/library?component=Icon+Button_af9405b1-8c54-4e01-9786-5aad308224f6
  */
 
 import React from "react";
-import * as SubframeCore from "@subframe/core";
+import * as SubframeUtils from "../utils";
 import { DropdownMenu } from "./DropdownMenu";
+import * as SubframeCore from "@subframe/core";
 
 interface RowProps extends React.HTMLAttributes<HTMLTableRowElement> {
   children?: React.ReactNode;
@@ -23,7 +24,7 @@ const Row = React.forwardRef<HTMLElement, RowProps>(function Row(
 ) {
   return (
     <tr
-      className={SubframeCore.twClassNames(
+      className={SubframeUtils.twClassNames(
         "group/5d119f8d border-t border-solid border-neutral-border",
         { "hover:bg-neutral-50": clickable },
         className
@@ -48,7 +49,7 @@ const Cell = React.forwardRef<HTMLElement, CellProps>(function Cell(
   return (
     <td {...otherProps}>
       <div
-        className={SubframeCore.twClassNames(
+        className={SubframeUtils.twClassNames(
           "flex h-12 w-full items-center gap-1 px-3",
           className
         )}
@@ -81,7 +82,7 @@ const HeaderRow = React.forwardRef<HTMLElement, HeaderRowProps>(
 interface HeaderCellProps
   extends React.ThHTMLAttributes<HTMLTableHeaderCellElement> {
   children?: React.ReactNode;
-  icon?: SubframeCore.IconName;
+  icon?: React.ReactNode;
   className?: string;
 }
 
@@ -93,7 +94,7 @@ const HeaderCell = React.forwardRef<HTMLElement, HeaderCellProps>(
     return (
       <th {...otherProps}>
         <div
-          className={SubframeCore.twClassNames(
+          className={SubframeUtils.twClassNames(
             "flex h-8 w-full items-center gap-1 px-3",
             className
           )}
@@ -104,10 +105,11 @@ const HeaderCell = React.forwardRef<HTMLElement, HeaderCellProps>(
               {children}
             </span>
           ) : null}
-          <SubframeCore.Icon
-            className="text-caption font-caption text-subtext-color"
-            name={icon}
-          />
+          {icon ? (
+            <SubframeCore.IconWrapper className="text-caption font-caption text-subtext-color">
+              {icon}
+            </SubframeCore.IconWrapper>
+          ) : null}
         </div>
       </th>
     );
@@ -127,7 +129,7 @@ const TableRoot = React.forwardRef<HTMLElement, TableRootProps>(
   ) {
     return (
       <table
-        className={SubframeCore.twClassNames("w-full", className)}
+        className={SubframeUtils.twClassNames("w-full", className)}
         ref={ref as any}
         {...otherProps}
       >

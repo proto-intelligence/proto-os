@@ -1,16 +1,17 @@
 "use client";
 /*
  * Documentation:
- * Tabs — https://app.subframe.com/0bee54e10183/library?component=Tabs_e1ad5091-8ad8-4319-b1f7-3e47f0256c20
+ * Tabs — https://app.subframe.com/8616996521e5/library?component=Tabs_e1ad5091-8ad8-4319-b1f7-3e47f0256c20
  */
 
 import React from "react";
+import * as SubframeUtils from "../utils";
 import * as SubframeCore from "@subframe/core";
 
 interface ItemProps extends React.HTMLAttributes<HTMLDivElement> {
   active?: boolean;
   disabled?: boolean;
-  icon?: SubframeCore.IconName;
+  icon?: React.ReactNode;
   children?: React.ReactNode;
   className?: string;
 }
@@ -28,7 +29,7 @@ const Item = React.forwardRef<HTMLElement, ItemProps>(function Item(
 ) {
   return (
     <div
-      className={SubframeCore.twClassNames(
+      className={SubframeUtils.twClassNames(
         "group/d5612535 flex h-10 cursor-pointer items-center justify-center gap-2 border-b border-solid border-neutral-border px-2.5 py-0.5",
         {
           "border-b-2 border-solid border-brand-600 px-2.5 pt-0.5 pb-px hover:border-b-2 hover:border-solid hover:border-brand-600":
@@ -39,19 +40,23 @@ const Item = React.forwardRef<HTMLElement, ItemProps>(function Item(
       ref={ref as any}
       {...otherProps}
     >
-      <SubframeCore.Icon
-        className={SubframeCore.twClassNames(
-          "text-body font-body text-subtext-color group-hover/d5612535:text-default-font",
-          {
-            "text-neutral-400 group-hover/d5612535:text-neutral-400": disabled,
-            "text-brand-700 group-hover/d5612535:text-brand-700": active,
-          }
-        )}
-        name={icon}
-      />
+      {icon ? (
+        <SubframeCore.IconWrapper
+          className={SubframeUtils.twClassNames(
+            "text-body font-body text-subtext-color group-hover/d5612535:text-default-font",
+            {
+              "text-neutral-400 group-hover/d5612535:text-neutral-400":
+                disabled,
+              "text-brand-700 group-hover/d5612535:text-brand-700": active,
+            }
+          )}
+        >
+          {icon}
+        </SubframeCore.IconWrapper>
+      ) : null}
       {children ? (
         <span
-          className={SubframeCore.twClassNames(
+          className={SubframeUtils.twClassNames(
             "text-body-bold font-body-bold text-subtext-color group-hover/d5612535:text-default-font",
             {
               "text-neutral-400 group-hover/d5612535:text-neutral-400":
@@ -78,7 +83,7 @@ const TabsRoot = React.forwardRef<HTMLElement, TabsRootProps>(function TabsRoot(
 ) {
   return (
     <div
-      className={SubframeCore.twClassNames("flex w-full items-end", className)}
+      className={SubframeUtils.twClassNames("flex w-full items-end", className)}
       ref={ref as any}
       {...otherProps}
     >

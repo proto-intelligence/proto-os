@@ -1,11 +1,12 @@
 "use client";
 /*
  * Documentation:
- * Breadcrumbs — https://app.subframe.com/0bee54e10183/library?component=Breadcrumbs_8898334b-a66f-4ee8-8bd1-afcfa8e37cc0
+ * Breadcrumbs — https://app.subframe.com/8616996521e5/library?component=Breadcrumbs_8898334b-a66f-4ee8-8bd1-afcfa8e37cc0
  */
 
 import React from "react";
-import * as SubframeCore from "@subframe/core";
+import * as SubframeUtils from "../utils";
+import { FeatherChevronRight } from "@subframe/core";
 
 interface ItemProps extends React.HTMLAttributes<HTMLSpanElement> {
   children?: React.ReactNode;
@@ -19,7 +20,7 @@ const Item = React.forwardRef<HTMLElement, ItemProps>(function Item(
 ) {
   return children ? (
     <span
-      className={SubframeCore.twClassNames(
+      className={SubframeUtils.twClassNames(
         "group/bbdc1640 line-clamp-1 cursor-pointer break-words text-body font-body text-subtext-color hover:text-default-font",
         { "text-default-font": active },
         className
@@ -33,10 +34,7 @@ const Item = React.forwardRef<HTMLElement, ItemProps>(function Item(
 });
 
 interface DividerProps
-  extends SubframeCore.TypescriptHelpers.Optional<
-    React.ComponentProps<typeof SubframeCore.Icon>,
-    "name"
-  > {
+  extends React.ComponentProps<typeof FeatherChevronRight> {
   className?: string;
 }
 
@@ -45,12 +43,11 @@ const Divider = React.forwardRef<HTMLElement, DividerProps>(function Divider(
   ref
 ) {
   return (
-    <SubframeCore.Icon
-      className={SubframeCore.twClassNames(
+    <FeatherChevronRight
+      className={SubframeUtils.twClassNames(
         "text-body font-body text-subtext-color",
         className
       )}
-      name="FeatherChevronRight"
       ref={ref as any}
       {...otherProps}
     />
@@ -69,7 +66,7 @@ const BreadcrumbsRoot = React.forwardRef<HTMLElement, BreadcrumbsRootProps>(
   ) {
     return children ? (
       <div
-        className={SubframeCore.twClassNames(
+        className={SubframeUtils.twClassNames(
           "flex items-center gap-2",
           className
         )}

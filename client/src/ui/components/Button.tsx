@@ -1,7 +1,7 @@
 "use client";
 /*
  * Documentation:
- * Button — https://app.subframe.com/0bee54e10183/library?component=Button_3b777358-b86b-40af-9327-891efc6826fe
+ * Button — https://app.subframe.com/8616996521e5/library?component=Button_3b777358-b86b-40af-9327-891efc6826fe
  */
 
 import React from "react";
@@ -23,8 +23,8 @@ interface ButtonRootProps
     | "inverse";
   size?: "large" | "medium" | "small";
   children?: React.ReactNode;
-  icon?: SubframeCore.IconName;
-  iconRight?: SubframeCore.IconName;
+  icon?: React.ReactNode;
+  iconRight?: React.ReactNode;
   loading?: boolean;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   className?: string;
@@ -77,27 +77,30 @@ const ButtonRoot = React.forwardRef<HTMLElement, ButtonRootProps>(
         type={type}
         {...otherProps}
       >
-        <SubframeCore.Icon
-          className={SubframeUtils.twClassNames(
-            "text-body font-body text-white group-disabled/3b777358:text-neutral-400",
-            {
-              hidden: loading,
-              "text-body font-body": size === "small",
-              "text-heading-3 font-heading-3": size === "large",
-              "text-white": variant === "inverse",
-              "text-error-700":
-                variant === "destructive-tertiary" ||
-                variant === "destructive-secondary",
-              "text-neutral-700":
-                variant === "neutral-tertiary" ||
-                variant === "neutral-secondary" ||
-                variant === "neutral-primary",
-              "text-brand-700":
-                variant === "brand-tertiary" || variant === "brand-secondary",
-            }
-          )}
-          name={icon}
-        />
+        {icon ? (
+          <SubframeCore.IconWrapper
+            className={SubframeUtils.twClassNames(
+              "text-body font-body text-white group-disabled/3b777358:text-neutral-400",
+              {
+                hidden: loading,
+                "text-body font-body": size === "small",
+                "text-heading-3 font-heading-3": size === "large",
+                "text-white": variant === "inverse",
+                "text-error-700":
+                  variant === "destructive-tertiary" ||
+                  variant === "destructive-secondary",
+                "text-neutral-700":
+                  variant === "neutral-tertiary" ||
+                  variant === "neutral-secondary" ||
+                  variant === "neutral-primary",
+                "text-brand-700":
+                  variant === "brand-tertiary" || variant === "brand-secondary",
+              }
+            )}
+          >
+            {icon}
+          </SubframeCore.IconWrapper>
+        ) : null}
         <div
           className={SubframeUtils.twClassNames(
             "hidden h-4 w-4 flex-none items-center justify-center gap-2",
@@ -148,26 +151,29 @@ const ButtonRoot = React.forwardRef<HTMLElement, ButtonRootProps>(
             {children}
           </span>
         ) : null}
-        <SubframeCore.Icon
-          className={SubframeUtils.twClassNames(
-            "text-body font-body text-white group-disabled/3b777358:text-neutral-400",
-            {
-              "text-body font-body": size === "small",
-              "text-heading-3 font-heading-3": size === "large",
-              "text-white": variant === "inverse",
-              "text-error-700":
-                variant === "destructive-tertiary" ||
-                variant === "destructive-secondary",
-              "text-neutral-700":
-                variant === "neutral-tertiary" ||
-                variant === "neutral-secondary" ||
-                variant === "neutral-primary",
-              "text-brand-700":
-                variant === "brand-tertiary" || variant === "brand-secondary",
-            }
-          )}
-          name={iconRight}
-        />
+        {iconRight ? (
+          <SubframeCore.IconWrapper
+            className={SubframeUtils.twClassNames(
+              "text-body font-body text-white group-disabled/3b777358:text-neutral-400",
+              {
+                "text-body font-body": size === "small",
+                "text-heading-3 font-heading-3": size === "large",
+                "text-white": variant === "inverse",
+                "text-error-700":
+                  variant === "destructive-tertiary" ||
+                  variant === "destructive-secondary",
+                "text-neutral-700":
+                  variant === "neutral-tertiary" ||
+                  variant === "neutral-secondary" ||
+                  variant === "neutral-primary",
+                "text-brand-700":
+                  variant === "brand-tertiary" || variant === "brand-secondary",
+              }
+            )}
+          >
+            {iconRight}
+          </SubframeCore.IconWrapper>
+        ) : null}
       </button>
     );
   }

@@ -1,11 +1,14 @@
 "use client";
 /*
  * Documentation:
- * Select — https://app.subframe.com/0bee54e10183/library?component=Select_bb88f90b-8c43-4b73-9c2f-3558ce7838f3
+ * Select — https://app.subframe.com/8616996521e5/library?component=Select_bb88f90b-8c43-4b73-9c2f-3558ce7838f3
  */
 
 import React from "react";
+import * as SubframeUtils from "../utils";
 import * as SubframeCore from "@subframe/core";
+import { FeatherCheck } from "@subframe/core";
+import { FeatherChevronDown } from "@subframe/core";
 
 interface ItemProps
   extends Omit<React.ComponentProps<typeof SubframeCore.Select.Item>, "value"> {
@@ -25,7 +28,7 @@ const Item = React.forwardRef<HTMLElement, ItemProps>(function Item(
       {...otherProps}
     >
       <div
-        className={SubframeCore.twClassNames(
+        className={SubframeUtils.twClassNames(
           "group/969e345b flex h-8 w-full cursor-pointer items-center gap-1 rounded-md px-3 hover:bg-neutral-100 active:bg-neutral-50 data-[highlighted]:bg-brand-50",
           className
         )}
@@ -34,10 +37,7 @@ const Item = React.forwardRef<HTMLElement, ItemProps>(function Item(
         <Select.ItemText className="h-auto grow shrink-0 basis-0">
           {children || value}
         </Select.ItemText>
-        <SubframeCore.Icon
-          className="hidden text-body font-body text-default-font group-hover/969e345b:hidden group-data-[state=checked]/969e345b:inline-flex group-data-[state=checked]/969e345b:text-brand-600"
-          name="FeatherCheck"
-        />
+        <FeatherCheck className="hidden text-body font-body text-default-font group-hover/969e345b:hidden group-data-[state=checked]/969e345b:inline-flex group-data-[state=checked]/969e345b:text-brand-600" />
       </div>
     </SubframeCore.Select.Item>
   );
@@ -56,7 +56,7 @@ const TriggerValue = React.forwardRef<HTMLElement, TriggerValueProps>(
   ) {
     return (
       <SubframeCore.Select.Value
-        className={SubframeCore.twClassNames(
+        className={SubframeUtils.twClassNames(
           "w-full whitespace-nowrap text-body font-body text-default-font",
           className
         )}
@@ -83,7 +83,7 @@ const Content = React.forwardRef<HTMLElement, ContentProps>(function Content(
   return children ? (
     <SubframeCore.Select.Content asChild={true} {...otherProps}>
       <div
-        className={SubframeCore.twClassNames(
+        className={SubframeUtils.twClassNames(
           "flex w-full flex-col items-start overflow-hidden rounded-md border border-solid border-neutral-border bg-white px-1 py-1 shadow-lg",
           className
         )}
@@ -101,7 +101,7 @@ interface TriggerProps
     "placeholder"
   > {
   placeholder?: React.ReactNode;
-  icon?: SubframeCore.IconName;
+  icon?: React.ReactNode;
   className?: string;
 }
 
@@ -112,21 +112,19 @@ const Trigger = React.forwardRef<HTMLElement, TriggerProps>(function Trigger(
   return (
     <SubframeCore.Select.Trigger asChild={true} {...otherProps}>
       <div
-        className={SubframeCore.twClassNames(
+        className={SubframeUtils.twClassNames(
           "flex h-full w-full items-center gap-2 px-3",
           className
         )}
         ref={ref as any}
       >
-        <SubframeCore.Icon
-          className="text-body font-body text-neutral-400"
-          name={icon}
-        />
+        {icon ? (
+          <SubframeCore.IconWrapper className="text-body font-body text-neutral-400">
+            {icon}
+          </SubframeCore.IconWrapper>
+        ) : null}
         <Select.TriggerValue placeholder={placeholder as string} />
-        <SubframeCore.Icon
-          className="text-body font-body text-subtext-color"
-          name="FeatherChevronDown"
-        />
+        <FeatherChevronDown className="text-body font-body text-subtext-color" />
       </div>
     </SubframeCore.Select.Trigger>
   );
@@ -145,7 +143,7 @@ const ItemText = React.forwardRef<HTMLElement, ItemTextProps>(function ItemText(
   return children ? (
     <SubframeCore.Select.ItemText {...otherProps}>
       <span
-        className={SubframeCore.twClassNames(
+        className={SubframeUtils.twClassNames(
           "text-body font-body text-default-font",
           className
         )}
@@ -165,7 +163,7 @@ interface SelectRootProps
   label?: React.ReactNode;
   placeholder?: React.ReactNode;
   helpText?: React.ReactNode;
-  icon?: SubframeCore.IconName;
+  icon?: React.ReactNode;
   children?: React.ReactNode;
   value?: string;
   onValueChange?: (value: string) => void;
@@ -213,7 +211,7 @@ const SelectRoot = React.forwardRef<HTMLElement, SelectRootProps>(
         required={required}
       >
         <div
-          className={SubframeCore.twClassNames(
+          className={SubframeUtils.twClassNames(
             "group/bb88f90b flex cursor-pointer flex-col items-start gap-1",
             className
           )}
@@ -226,7 +224,7 @@ const SelectRoot = React.forwardRef<HTMLElement, SelectRootProps>(
             </span>
           ) : null}
           <div
-            className={SubframeCore.twClassNames(
+            className={SubframeUtils.twClassNames(
               "flex h-8 w-full flex-none flex-col items-start rounded-md border border-solid border-neutral-border bg-default-background group-focus-within/bb88f90b:border group-focus-within/bb88f90b:border-solid group-focus-within/bb88f90b:border-brand-primary",
               {
                 "border border-solid border-neutral-100 bg-neutral-100 group-hover/bb88f90b:border group-hover/bb88f90b:border-solid group-hover/bb88f90b:border-neutral-border group-hover/bb88f90b:bg-neutral-100":
@@ -240,7 +238,7 @@ const SelectRoot = React.forwardRef<HTMLElement, SelectRootProps>(
           </div>
           {helpText ? (
             <span
-              className={SubframeCore.twClassNames(
+              className={SubframeUtils.twClassNames(
                 "text-caption font-caption text-subtext-color",
                 { "text-error-700": error }
               )}

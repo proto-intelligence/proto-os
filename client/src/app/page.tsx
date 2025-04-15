@@ -1,5 +1,10 @@
-import PromptDirectoryClient from "@/components/PromptDirectoryClient";
+import React from "react";
+import HomePageClient from "@/components/HomePageClient";
 
-export default function HomePage() {
-  return <PromptDirectoryClient />;
+function HomePage() {
+  return (
+    <HomePageClient />
+  );
 }
+
+export default HomePage;

@@ -1,12 +1,12 @@
 "use client";
 /*
  * Documentation:
- * Checkbox Group — https://app.subframe.com/0bee54e10183/library?component=Checkbox+Group_f9f1b596-c6b3-4d60-aa9a-f34b353f8aa5
- * Checkbox — https://app.subframe.com/0bee54e10183/library?component=Checkbox_3816e3b5-c48c-499b-b45e-0777c6972523
+ * Checkbox Group — https://app.subframe.com/8616996521e5/library?component=Checkbox+Group_f9f1b596-c6b3-4d60-aa9a-f34b353f8aa5
+ * Checkbox — https://app.subframe.com/8616996521e5/library?component=Checkbox_3816e3b5-c48c-499b-b45e-0777c6972523
  */
 
 import React from "react";
-import * as SubframeCore from "@subframe/core";
+import * as SubframeUtils from "../utils";
 
 interface CheckboxGroupRootProps extends React.HTMLAttributes<HTMLDivElement> {
   label?: React.ReactNode;
@@ -32,7 +32,7 @@ const CheckboxGroupRoot = React.forwardRef<HTMLElement, CheckboxGroupRootProps>(
   ) {
     return (
       <div
-        className={SubframeCore.twClassNames(
+        className={SubframeUtils.twClassNames(
           "group/f9f1b596 flex flex-col items-start gap-2",
           { "flex-col flex-nowrap gap-2": horizontal },
           className
@@ -42,7 +42,7 @@ const CheckboxGroupRoot = React.forwardRef<HTMLElement, CheckboxGroupRootProps>(
       >
         {label ? (
           <span
-            className={SubframeCore.twClassNames(
+            className={SubframeUtils.twClassNames(
               "text-body-bold font-body-bold text-default-font",
               { "text-default-font": error }
             )}
@@ -52,7 +52,7 @@ const CheckboxGroupRoot = React.forwardRef<HTMLElement, CheckboxGroupRootProps>(
         ) : null}
         {children ? (
           <div
-            className={SubframeCore.twClassNames(
+            className={SubframeUtils.twClassNames(
               "flex flex-col items-start gap-2",
               { "flex-row flex-nowrap gap-6": horizontal }
             )}
@@ -62,7 +62,7 @@ const CheckboxGroupRoot = React.forwardRef<HTMLElement, CheckboxGroupRootProps>(
         ) : null}
         {helpText ? (
           <span
-            className={SubframeCore.twClassNames(
+            className={SubframeUtils.twClassNames(
               "text-caption font-caption text-subtext-color",
               { "text-error-700": error }
             )}

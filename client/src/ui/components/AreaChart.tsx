@@ -1,10 +1,11 @@
 "use client";
 /*
  * Documentation:
- * Area Chart — https://app.subframe.com/0bee54e10183/library?component=Area+Chart_8aa1e7b3-5db6-4a62-aa49-137ced21a231
+ * Area Chart — https://app.subframe.com/8616996521e5/library?component=Area+Chart_8aa1e7b3-5db6-4a62-aa49-137ced21a231
  */
 
 import React from "react";
+import * as SubframeUtils from "../utils";
 import * as SubframeCore from "@subframe/core";
 
 interface AreaChartRootProps
@@ -20,16 +21,16 @@ const AreaChartRoot = React.forwardRef<HTMLElement, AreaChartRootProps>(
   ) {
     return (
       <SubframeCore.AreaChart
-        className={SubframeCore.twClassNames("h-80 w-full", className)}
+        className={SubframeUtils.twClassNames("h-80 w-full", className)}
         ref={ref as any}
         stacked={stacked}
         colors={[
-          "#6366f1",
-          "#c7d2fe",
-          "#4f46e5",
-          "#a5b4fc",
-          "#4338ca",
-          "#818cf8",
+          "#10b981",
+          "#a7f3d0",
+          "#059669",
+          "#6ee7b7",
+          "#047857",
+          "#34d399",
         ]}
         {...otherProps}
       />

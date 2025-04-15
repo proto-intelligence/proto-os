@@ -5,7 +5,7 @@ import { OpenAPIConfig } from '@/components/OpenAPIConfig';
 
 export const metadata: Metadata = {
   title: "Proto",
-  description: "Prompt Playbook",
+  description: "Workflow Creator",
 };
 
 export default function RootLayout({

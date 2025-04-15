@@ -1,10 +1,11 @@
 "use client";
 /*
  * Documentation:
- * Loader — https://app.subframe.com/0bee54e10183/library?component=Loader_f2e570c8-e463-45c2-aae9-a960146bc5d5
+ * Loader — https://app.subframe.com/8616996521e5/library?component=Loader_f2e570c8-e463-45c2-aae9-a960146bc5d5
  */
 
 import React from "react";
+import * as SubframeUtils from "../utils";
 import * as SubframeCore from "@subframe/core";
 
 interface LoaderRootProps
@@ -20,7 +21,7 @@ const LoaderRoot = React.forwardRef<HTMLElement, LoaderRootProps>(
   ) {
     return (
       <SubframeCore.Loader
-        className={SubframeCore.twClassNames(
+        className={SubframeUtils.twClassNames(
           "group/f2e570c8 text-body font-body text-brand-600",
           {
             "text-heading-2 font-heading-2": size === "large",

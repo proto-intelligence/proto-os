@@ -1,17 +1,19 @@
 "use client";
 /*
  * Documentation:
- * Icon with background — https://app.subframe.com/0bee54e10183/library?component=Icon+with+background_c5d68c0e-4c0c-4cff-8d8c-6ff334859b3a
+ * Icon with background — https://app.subframe.com/8616996521e5/library?component=Icon+with+background_c5d68c0e-4c0c-4cff-8d8c-6ff334859b3a
  */
 
 import React from "react";
+import * as SubframeUtils from "../utils";
 import * as SubframeCore from "@subframe/core";
+import { FeatherCheck } from "@subframe/core";
 
 interface IconWithBackgroundRootProps
   extends React.HTMLAttributes<HTMLDivElement> {
   variant?: "brand" | "neutral" | "error" | "success" | "warning";
   size?: "x-large" | "large" | "medium" | "small" | "x-small";
-  icon?: SubframeCore.IconName;
+  icon?: React.ReactNode;
   square?: boolean;
   className?: string;
 }
@@ -23,7 +25,7 @@ const IconWithBackgroundRoot = React.forwardRef<
   {
     variant = "brand",
     size = "x-small",
-    icon = "FeatherCheck",
+    icon = <FeatherCheck />,
     square = false,
     className,
     ...otherProps
@@ -32,7 +34,7 @@ const IconWithBackgroundRoot = React.forwardRef<
 ) {
   return (
     <div
-      className={SubframeCore.twClassNames(
+      className={SubframeUtils.twClassNames(
         "group/c5d68c0e flex h-5 w-5 items-center justify-center gap-2 rounded-full bg-brand-100",
         {
           "rounded-md": square,
@@ -50,22 +52,25 @@ const IconWithBackgroundRoot = React.forwardRef<
       ref={ref as any}
       {...otherProps}
     >
-      <SubframeCore.Icon
-        className={SubframeCore.twClassNames(
-          "font-['Inter'] text-[10px] font-[400] leading-[12px] text-brand-800",
-          {
-            "text-caption font-caption": size === "small",
-            "text-body font-body": size === "medium",
-            "text-heading-2 font-heading-2": size === "large",
-            "text-heading-1 font-heading-1": size === "x-large",
-            "text-warning-800": variant === "warning",
-            "text-success-800": variant === "success",
-            "text-error-800": variant === "error",
-            "text-neutral-700": variant === "neutral",
-          }
-        )}
-        name={icon}
-      />
+      {icon ? (
+        <SubframeCore.IconWrapper
+          className={SubframeUtils.twClassNames(
+            "font-['Inter'] text-[10px] font-[400] leading-[12px] text-brand-800",
+            {
+              "text-caption font-caption": size === "small",
+              "text-body font-body": size === "medium",
+              "text-heading-2 font-heading-2": size === "large",
+              "text-heading-1 font-heading-1": size === "x-large",
+              "text-warning-800": variant === "warning",
+              "text-success-800": variant === "success",
+              "text-error-800": variant === "error",
+              "text-neutral-700": variant === "neutral",
+            }
+          )}
+        >
+          {icon}
+        </SubframeCore.IconWrapper>
+      ) : null}
     </div>
   );
 });

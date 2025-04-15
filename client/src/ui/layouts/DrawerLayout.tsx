@@ -1,12 +1,12 @@
 "use client";
 /*
  * Documentation:
- * Drawer Layout — https://app.subframe.com/0bee54e10183/library?component=Drawer+Layout_2f6803ed-5ed0-4934-b093-a1a46df2d1d1
- * Drawer — https://app.subframe.com/0bee54e10183/library?component=Drawer_1e71b2cb-8d72-4e67-b368-8805179e9444
+ * Drawer Layout — https://app.subframe.com/8616996521e5/library?component=Drawer+Layout_2f6803ed-5ed0-4934-b093-a1a46df2d1d1
+ * Drawer — https://app.subframe.com/8616996521e5/library?component=Drawer_1e71b2cb-8d72-4e67-b368-8805179e9444
  */
 
 import React from "react";
-import * as SubframeCore from "@subframe/core";
+import * as SubframeUtils from "../utils";
 import { Drawer } from "../components/Drawer";
 
 interface DrawerLayoutRootProps extends React.ComponentProps<typeof Drawer> {

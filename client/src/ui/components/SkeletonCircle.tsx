@@ -1,10 +1,11 @@
 "use client";
 /*
  * Documentation:
- * Skeleton Circle — https://app.subframe.com/0bee54e10183/library?component=Skeleton+Circle_8b6e7a84-358f-4dc5-9de8-792a18fa9955
+ * Skeleton Circle — https://app.subframe.com/8616996521e5/library?component=Skeleton+Circle_8b6e7a84-358f-4dc5-9de8-792a18fa9955
  */
 
 import React from "react";
+import * as SubframeUtils from "../utils";
 import * as SubframeCore from "@subframe/core";
 
 interface SkeletonCircleRootProps
@@ -22,7 +23,7 @@ const SkeletonCircleRoot = React.forwardRef<
 ) {
   return (
     <SubframeCore.Skeleton
-      className={SubframeCore.twClassNames(
+      className={SubframeUtils.twClassNames(
         "group/8b6e7a84 flex h-9 w-9 flex-col items-start gap-2 rounded-full bg-neutral-200",
         { "h-5 w-5": size === "x-small", "h-7 w-7": size === "small" },
         className

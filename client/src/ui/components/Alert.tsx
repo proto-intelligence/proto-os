@@ -1,17 +1,19 @@
 "use client";
 /*
  * Documentation:
- * Alert — https://app.subframe.com/0bee54e10183/library?component=Alert_3a65613d-d546-467c-80f4-aaba6a7edcd5
- * Icon Button — https://app.subframe.com/0bee54e10183/library?component=Icon+Button_af9405b1-8c54-4e01-9786-5aad308224f6
+ * Alert — https://app.subframe.com/8616996521e5/library?component=Alert_3a65613d-d546-467c-80f4-aaba6a7edcd5
+ * Icon Button — https://app.subframe.com/8616996521e5/library?component=Icon+Button_af9405b1-8c54-4e01-9786-5aad308224f6
  */
 
 import React from "react";
+import * as SubframeUtils from "../utils";
 import * as SubframeCore from "@subframe/core";
+import { FeatherInfo } from "@subframe/core";
 
 interface AlertRootProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   variant?: "brand" | "neutral" | "error" | "success" | "warning";
-  icon?: SubframeCore.IconName;
+  icon?: React.ReactNode;
   title?: React.ReactNode;
   description?: React.ReactNode;
   actions?: React.ReactNode;
@@ -22,7 +24,7 @@ const AlertRoot = React.forwardRef<HTMLElement, AlertRootProps>(
   function AlertRoot(
     {
       variant = "neutral",
-      icon = "FeatherInfo",
+      icon = <FeatherInfo />,
       title,
       description,
       actions,
@@ -33,7 +35,7 @@ const AlertRoot = React.forwardRef<HTMLElement, AlertRootProps>(
   ) {
     return (
       <div
-        className={SubframeCore.twClassNames(
+        className={SubframeUtils.twClassNames(
           "group/3a65613d flex w-full flex-col items-start gap-2 rounded-md border border-solid border-neutral-200 bg-neutral-50 pl-4 pr-3 py-3",
           {
             "border border-solid border-warning-100 bg-warning-50":
@@ -51,22 +53,25 @@ const AlertRoot = React.forwardRef<HTMLElement, AlertRootProps>(
         {...otherProps}
       >
         <div className="flex w-full items-center gap-4">
-          <SubframeCore.Icon
-            className={SubframeCore.twClassNames(
-              "text-heading-3 font-heading-3 text-neutral-800",
-              {
-                "text-warning-800": variant === "warning",
-                "text-success-800": variant === "success",
-                "text-error-800": variant === "error",
-                "text-brand-800": variant === "brand",
-              }
-            )}
-            name={icon}
-          />
+          {icon ? (
+            <SubframeCore.IconWrapper
+              className={SubframeUtils.twClassNames(
+                "text-heading-3 font-heading-3 text-neutral-800",
+                {
+                  "text-warning-800": variant === "warning",
+                  "text-success-800": variant === "success",
+                  "text-error-800": variant === "error",
+                  "text-brand-800": variant === "brand",
+                }
+              )}
+            >
+              {icon}
+            </SubframeCore.IconWrapper>
+          ) : null}
           <div className="flex grow shrink-0 basis-0 flex-col items-start">
             {title ? (
               <span
-                className={SubframeCore.twClassNames(
+                className={SubframeUtils.twClassNames(
                   "w-full whitespace-pre-wrap text-body-bold font-body-bold text-default-font",
                   {
                     "text-warning-900": variant === "warning",
@@ -81,7 +86,7 @@ const AlertRoot = React.forwardRef<HTMLElement, AlertRootProps>(
             ) : null}
             {description ? (
               <span
-                className={SubframeCore.twClassNames(
+                className={SubframeUtils.twClassNames(
                   "w-full whitespace-pre-wrap text-caption font-caption text-subtext-color",
                   {
                     "text-warning-800": variant === "warning",

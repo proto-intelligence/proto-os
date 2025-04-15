@@ -1,10 +1,11 @@
 "use client";
 /*
  * Documentation:
- * Skeleton Text — https://app.subframe.com/0bee54e10183/library?component=Skeleton+Text_a9aae3f0-955e-4607-a272-374f1dc18f4b
+ * Skeleton Text — https://app.subframe.com/8616996521e5/library?component=Skeleton+Text_a9aae3f0-955e-4607-a272-374f1dc18f4b
  */
 
 import React from "react";
+import * as SubframeUtils from "../utils";
 import * as SubframeCore from "@subframe/core";
 
 interface SkeletonTextRootProps
@@ -20,7 +21,7 @@ const SkeletonTextRoot = React.forwardRef<HTMLElement, SkeletonTextRootProps>(
   ) {
     return (
       <SubframeCore.Skeleton
-        className={SubframeCore.twClassNames(
+        className={SubframeUtils.twClassNames(
           "group/a9aae3f0 flex h-5 w-full flex-col items-start gap-2 rounded-md bg-neutral-200",
           {
             "h-10 w-full": size === "header",

@@ -1,11 +1,13 @@
 "use client";
 /*
  * Documentation:
- * Accordion — https://app.subframe.com/0bee54e10183/library?component=Accordion_d2e81e20-863a-4027-826a-991d8910efd9
+ * Accordion — https://app.subframe.com/8616996521e5/library?component=Accordion_d2e81e20-863a-4027-826a-991d8910efd9
  */
 
 import React from "react";
+import * as SubframeUtils from "../utils";
 import * as SubframeCore from "@subframe/core";
+import { FeatherChevronDown } from "@subframe/core";
 
 interface ChevronProps
   extends React.ComponentProps<typeof SubframeCore.Collapsible.Chevron> {
@@ -18,12 +20,11 @@ const Chevron = React.forwardRef<HTMLElement, ChevronProps>(function Chevron(
 ) {
   return (
     <SubframeCore.Collapsible.Chevron {...otherProps}>
-      <SubframeCore.Icon
-        className={SubframeCore.twClassNames(
+      <FeatherChevronDown
+        className={SubframeUtils.twClassNames(
           "text-body font-body text-default-font",
           className
         )}
-        name="FeatherChevronDown"
         ref={ref as any}
       />
     </SubframeCore.Collapsible.Chevron>
@@ -43,7 +44,7 @@ const Content = React.forwardRef<HTMLElement, ContentProps>(function Content(
   return children ? (
     <SubframeCore.Collapsible.Content asChild={true} {...otherProps}>
       <div
-        className={SubframeCore.twClassNames(
+        className={SubframeUtils.twClassNames(
           "flex w-full flex-col items-start gap-2",
           className
         )}
@@ -68,7 +69,7 @@ const Trigger = React.forwardRef<HTMLElement, TriggerProps>(function Trigger(
   return children ? (
     <SubframeCore.Collapsible.Trigger asChild={true} {...otherProps}>
       <div
-        className={SubframeCore.twClassNames(
+        className={SubframeUtils.twClassNames(
           "flex w-full cursor-pointer flex-col items-start gap-2",
           className
         )}
@@ -95,7 +96,7 @@ const AccordionRoot = React.forwardRef<HTMLElement, AccordionRootProps>(
     return (
       <SubframeCore.Collapsible.Root asChild={true} {...otherProps}>
         <div
-          className={SubframeCore.twClassNames(
+          className={SubframeUtils.twClassNames(
             "group/d2e81e20 flex w-full flex-col items-start rounded-md",
             className
           )}
