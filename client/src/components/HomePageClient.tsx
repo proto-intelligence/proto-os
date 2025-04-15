@@ -6,6 +6,8 @@ import { ReactFlow, Background, Controls, MiniMap, Panel, useNodesState, useEdge
 import '@xyflow/react/dist/style.css';
 import CustomNode from './CustomNode';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/flow/select";
+import dagre from '@dagrejs/dagre';
+import { SidePanel } from './flow/side-panel';
 
 type CustomNodeData = {
   label: string;
@@ -31,29 +33,119 @@ const nodeTypes = {
   custom: CustomNode,
 };
 
+const getLayoutedElements = (nodes: Node[], edges: Edge[], direction: 'TB' | 'LR') => {
+  const g = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
+  g.setGraph({ rankdir: direction });
+
+  edges.forEach((edge) => g.setEdge(edge.source, edge.target));
+  nodes.forEach((node) =>
+    g.setNode(node.id, {
+      ...node,
+      width: 150,
+      height: 50,
+    })
+  );
+
+  dagre.layout(g);
+
+  return {
+    nodes: nodes.map((node) => {
+      const position = g.node(node.id);
+      return {
+        ...node,
+        position: {
+          x: position.x - 75, // Center the node
+          y: position.y - 25,
+        },
+      };
+    }),
+    edges,
+  };
+};
+
+// Mock metadata for nodes
+const mockMetadata = {
+  '1': {
+    id: '1',
+    label: 'Node 1',
+    type: 'default',
+    createdAt: '2024-03-15 10:00:00',
+    lastModified: '2024-03-15 11:30:00',
+    createdBy: {
+      name: 'John Doe',
+      avatar: 'https://github.com/shadcn.png'
+    },
+    tags: ['backend', 'api'],
+    description: 'This is a default node used for general purposes.',
+    status: 'active',
+    priority: 'medium'
+  },
+  '2': {
+    id: '2',
+    label: 'Node 2',
+    type: 'success',
+    createdAt: '2024-03-15 09:00:00',
+    lastModified: '2024-03-15 10:15:00',
+    createdBy: {
+      name: 'Jane Smith',
+      avatar: 'https://github.com/shadcn.png'
+    },
+    tags: ['frontend', 'ui'],
+    description: 'This is a success node indicating completed tasks.',
+    status: 'active',
+    priority: 'high'
+  }
+};
+
 function Flow() {
-  const { addNodes, deleteElements } = useReactFlow();
+  const { deleteElements, fitView } = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const [selectedType, setSelectedType] = useState<CustomNodeData['type']>('default');
+  const [selectedNode, setSelectedNode] = useState<string | null>(null);
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
 
-  const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
+  const onNodeClick = useCallback(() => {
     // Remove double-click deletion
   }, []);
 
+  const onNodeDoubleClick = useCallback((event: React.MouseEvent, node: Node) => {
+    setSelectedNode(node.id);
+    setIsPanelOpen(true);
+  }, []);
+
   const addNewNode = useCallback(() => {
+    const newNodeId = `${Date.now()}`;
     const newNode: Node<CustomNodeData, 'custom'> = {
-      id: `${Date.now()}`, // Use timestamp for unique IDs
+      id: newNodeId,
       type: 'custom',
       position: { x: Math.random() * 500, y: Math.random() * 500 },
       data: { label: `Node ${nodes.length + 1}`, type: selectedType },
     };
-    setNodes((nds) => [...nds, newNode]); // Use setNodes to preserve existing nodes
+    
+    // Add mock metadata for the new node
+    mockMetadata[newNodeId] = {
+      id: newNodeId,
+      label: `Node ${nodes.length + 1}`,
+      type: selectedType,
+      createdAt: new Date().toISOString(),
+      lastModified: new Date().toISOString(),
+      createdBy: {
+        name: 'System',
+        avatar: 'https://github.com/shadcn.png'
+      },
+      tags: ['new'],
+      description: `This is a new ${selectedType} node.`,
+      status: 'active',
+      priority: 'low'
+    };
+    
+    setNodes((nds) => [...nds, newNode]);
   }, [nodes.length, setNodes, selectedType]);
 
   const deleteSelectedNodes = useCallback(() => {
@@ -62,6 +154,16 @@ function Flow() {
       deleteElements({ nodes: selectedNodes });
     }
   }, [nodes, deleteElements]);
+
+  const onLayout = useCallback(
+    (direction: 'TB' | 'LR') => {
+      const layouted = getLayoutedElements(nodes, edges, direction);
+      setNodes([...layouted.nodes]);
+      setEdges([...layouted.edges]);
+      setTimeout(() => fitView({ duration: 800 }), 100);
+    },
+    [nodes, edges, setNodes, setEdges, fitView]
+  );
 
   return (
     <div style={{ width: '100%', height: '100%' }}>
@@ -72,6 +174,7 @@ function Flow() {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         onNodeClick={onNodeClick}
+        onNodeDoubleClick={onNodeDoubleClick}
         nodeTypes={nodeTypes}
       >
         <Panel position="top-center" className="flex gap-2">
@@ -97,11 +200,28 @@ function Flow() {
           >
             Delete Selected
           </button>
+          <button 
+            onClick={() => onLayout('TB')}
+            className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition-colors"
+          >
+            Vertical Layout
+          </button>
+          <button 
+            onClick={() => onLayout('LR')}
+            className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition-colors"
+          >
+            Horizontal Layout
+          </button>
         </Panel>
         <Background bgColor="#111827" />
         <Controls />
         <MiniMap nodeStrokeWidth={3} bgColor="#111827" nodeColor="#ffffff"/>
       </ReactFlow>
+      <SidePanel 
+        isOpen={isPanelOpen} 
+        onClose={() => setIsPanelOpen(false)} 
+        node={selectedNode ? mockMetadata[selectedNode] : null} 
+      />
     </div>
   );
 }
