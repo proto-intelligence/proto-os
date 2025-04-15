@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PromptsModule } from './prompts/prompts.module';
 import * as config from 'config';
+import { WorkflowsModule } from './workflows/workflows.module';
 
 @Module({
   imports: [
@@ -19,6 +20,8 @@ import * as config from 'config';
       }),
     }),
     PromptsModule,
+    WorkflowsModule,
+
   ],
   controllers: [AppController],
   providers: [AppService],
