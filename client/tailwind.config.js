@@ -1,5 +1,5 @@
 import * as baseConfig from "./src/ui/tailwind.config";
-import tailwindcssAnimate from "tailwindcss-animate";
+import tailwindAnimate from "tailwindcss-animate";
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -56,6 +56,6 @@ module.exports = {
   		}
   	}
   },
-  plugins: [tailwindcssAnimate],
+  plugins: [tailwindAnimate],
   presets: [baseConfig],
 };
