@@ -1,11 +1,13 @@
+"use client";
+
 import React from "react";
-import WorkflowsClient from "@/components/WorkflowsClient";
+import { AppLayout } from "@/components/AppLayout";
+import { WorkflowEditor } from "@/components/workflows/WorkflowEditor";
 
-function WorkflowsPage() {
-
+export default function WorkflowsPage() {
   return (
-    <WorkflowsClient />
+    <AppLayout>
+      <WorkflowEditor />
+    </AppLayout>
   );
-}
-
-export default WorkflowsPage;
+} 

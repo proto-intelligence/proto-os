@@ -68,6 +68,7 @@ interface ProtoSidebarCollapsibleRootProps
   extends React.HTMLAttributes<HTMLElement> {
   expanded?: boolean;
   headerSlot?: React.ReactNode;
+  routesSlot?: React.ReactNode;
   className?: string;
 }
 
@@ -78,6 +79,7 @@ const ProtoSidebarCollapsibleRoot = React.forwardRef<
   {
     expanded = false,
     headerSlot,
+    routesSlot,
     className,
     ...otherProps
   }: ProtoSidebarCollapsibleRootProps,
@@ -109,9 +111,11 @@ const ProtoSidebarCollapsibleRoot = React.forwardRef<
             {headerSlot}
           </div>
         ) : null}
-        <div className="flex w-full grow shrink-0 basis-0 flex-col items-start gap-1 px-3 py-4 overflow-auto">
-          <NavItem>Item</NavItem>
-        </div>
+        {routesSlot ? (
+          <div className="flex w-full grow shrink-0 basis-0 flex-col items-start gap-1 px-3 py-4 overflow-auto">
+            {routesSlot}
+          </div>
+        ) : null}
         <div className="flex w-full items-center justify-center gap-4 overflow-hidden border-t border-solid border-neutral-border">
           <div
             className={SubframeUtils.twClassNames(
