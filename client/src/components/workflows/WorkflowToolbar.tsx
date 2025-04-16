@@ -1,22 +1,30 @@
-import { Button } from '@/ui';
-import { IconButton } from '@/ui';
-import { FeatherPlusCircle, FeatherTrash, FeatherAlignVerticalJustifyStart, FeatherAlignHorizontalJustifyStart, FeatherSave } from '@subframe/core';
-import { ProtoFloatingToolbar } from '@/ui/components/ProtoFloatingToolbar';
+import { Button, IconButton } from "@/ui";
+import {
+  FeatherPlusCircle,
+  FeatherTrash,
+  FeatherAlignVerticalJustifyStart,
+  FeatherAlignHorizontalJustifyStart,
+  FeatherSave,
+} from "@subframe/core";
+import { ProtoFloatingToolbar } from "@/ui/components/ProtoFloatingToolbar";
 import { useWorkflowStore } from "./store";
-import { useReactFlow } from '@xyflow/react';
+import { useReactFlow } from "@xyflow/react";
 
 interface WorkflowToolbarProps {
   onAddNode: () => void;
   onDeleteNodes: () => void;
 }
 
-export function WorkflowToolbar({ onAddNode, onDeleteNodes }: WorkflowToolbarProps) {
+export function WorkflowToolbar({
+  onAddNode,
+  onDeleteNodes,
+}: WorkflowToolbarProps) {
   const layoutNodes = useWorkflowStore((state) => state.layoutNodes);
-  const selectedNodes = useWorkflowStore((state) => state.selectedNodes);
+  const { nodes, edges } = useWorkflowStore();
   const { fitView } = useReactFlow();
 
   const handleVerticalLayout = () => {
-    layoutNodes('TB'); // Top to Bottom layout
+    layoutNodes("TB"); // Top to Bottom layout
     // Wait for the next frame to ensure nodes are updated
     requestAnimationFrame(() => {
       fitView({ padding: 0.2, duration: 800 });
@@ -24,11 +32,29 @@ export function WorkflowToolbar({ onAddNode, onDeleteNodes }: WorkflowToolbarPro
   };
 
   const handleHorizontalLayout = () => {
-    layoutNodes('LR'); // Left to Right layout
+    layoutNodes("LR"); // Left to Right layout
     // Wait for the next frame to ensure nodes are updated
     requestAnimationFrame(() => {
       fitView({ padding: 0.2, duration: 800 });
     });
+  };
+
+  const handleSave = async () => {
+    try {
+      const workflowData = {
+        nodes,
+        edges,
+        timestamp: new Date().toISOString(),
+      };
+
+      await navigator.clipboard.writeText(
+        JSON.stringify(workflowData, null, 2)
+      );
+      // You might want to add a toast notification here to indicate success
+    } catch (error) {
+      console.error("Failed to copy workflow data:", error);
+      // You might want to add a toast notification here to indicate failure
+    }
   };
 
   return (
@@ -55,11 +81,12 @@ export function WorkflowToolbar({ onAddNode, onDeleteNodes }: WorkflowToolbarPro
             icon={<FeatherAlignHorizontalJustifyStart />}
             onClick={handleHorizontalLayout}
           />
+
           <Button
             variant="brand-secondary"
             size="small"
             icon={<FeatherSave />}
-            onClick={() => {}}
+            onClick={handleSave}
           >
             Save
           </Button>
@@ -67,4 +94,4 @@ export function WorkflowToolbar({ onAddNode, onDeleteNodes }: WorkflowToolbarPro
       }
     />
   );
-} 
+}

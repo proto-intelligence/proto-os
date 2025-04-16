@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { Node, Edge, NodeChange, EdgeChange, applyNodeChanges, applyEdgeChanges, addEdge, Connection, Position, MarkerType } from '@xyflow/react';
 import { nanoid } from 'nanoid';
 import { getLayoutedElements } from './utils/layout';
+import { TaskType, TaskUrgency } from '@/types/task';
 
 interface WorkflowState {
   nodes: Node[];
@@ -25,14 +26,20 @@ export const useWorkflowStore = create<WorkflowState>((set) => ({
   addNode: (type: string, position: { x: number; y: number }) => {
     const newNode: Node = {
       id: nanoid(),
-      type: 'default',
+      type: 'customNode',
       position,
       data: {
         label: type,
-        name: '',
-        title: '',
-        description: '',
-        status: 'New'
+        name: 'New Task',
+        description: 'This is a default task description',
+        type: TaskType.ADMINISTRATIVE,
+        urgency: TaskUrgency.MEDIUM,
+        usually_takes: '1 week',
+        steps: {
+          'Step 1': 'Initial planning',
+          'Step 2': 'Implementation',
+          'Step 3': 'Review'
+        }
       },
       sourcePosition: Position.Bottom,
       targetPosition: Position.Top,
