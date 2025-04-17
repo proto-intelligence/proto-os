@@ -6,6 +6,11 @@ import { PromptsModule } from './prompts/prompts.module';
 import * as config from 'config';
 import { WorkflowsModule } from './workflows/workflows.module';
 import { TasksModule } from './tasks/tasks.module';
+import { OrganizationsModule } from './organizations/organizations.module';
+import { UsersModule } from './users/users.module';
+import { OrganizationMembershipsModule } from './organization-memberships/organization-memberships.module';
+import { LoginCredentialsModule } from './login-credentials/login-credentials.module';
+import { LoginPermissionsModule } from './login-permissions/login-permissions.module';
 
 @Module({
   imports: [
@@ -23,6 +28,11 @@ import { TasksModule } from './tasks/tasks.module';
     PromptsModule,
     WorkflowsModule,
     TasksModule,
+    OrganizationsModule,
+    UsersModule,
+    OrganizationMembershipsModule,
+    LoginCredentialsModule,
+    LoginPermissionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
