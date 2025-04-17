@@ -7,6 +7,8 @@ import { ProtoSidebarCollapsible } from "@/ui/components/ProtoSidebarCollapsible
 import { ProtoTopbar } from "@/ui/components/ProtoTopbar";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
+import { SignInButton, SignUpButton, UserButton } from "@/components/auth";
 
 interface Route {
   path: string;
@@ -39,6 +41,7 @@ interface AppLayoutProps {
 export function AppLayout({ children }: AppLayoutProps) {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const pathname = usePathname();
+  const { isSignedIn } = useAuth();
 
   const handleSidebarToggle = () => {
     setIsSidebarExpanded(!isSidebarExpanded);
@@ -86,7 +89,20 @@ export function AppLayout({ children }: AppLayoutProps) {
         }
       />
       <div className="flex flex-col flex-1 min-h-0">
-        <ProtoTopbar />
+        <ProtoTopbar
+          right={
+            <div className="flex items-center gap-2 ml-auto">
+              {isSignedIn ? (
+                <UserButton afterSignOutUrl="/" />
+              ) : (
+                <>
+                  <SignInButton />
+                  <SignUpButton />
+                </>
+              )}
+            </div>
+          }
+        />
         <main className="flex-1 min-h-0">
           {children}
         </main>

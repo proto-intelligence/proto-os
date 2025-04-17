@@ -60,31 +60,43 @@ const NavItem = React.forwardRef<HTMLElement, NavItemProps>(function NavItem(
 });
 
 interface ProtoTopbarRootProps extends React.HTMLAttributes<HTMLElement> {
-  rightSlot?: React.ReactNode;
-  leftSlot?: React.ReactNode;
+  left?: React.ReactNode;
+  center?: React.ReactNode;
+  right?: React.ReactNode;
   className?: string;
 }
 
 const ProtoTopbarRoot = React.forwardRef<HTMLElement, ProtoTopbarRootProps>(
   function ProtoTopbarRoot(
-    { rightSlot, leftSlot, className, ...otherProps }: ProtoTopbarRootProps,
+    { left, center, right, className, ...otherProps }: ProtoTopbarRootProps,
     ref
   ) {
     return (
       <nav
         className={SubframeUtils.twClassNames(
-          "flex h-16 w-full items-center justify-between border-b border-solid border-neutral-border bg-default-background px-6",
+          "flex h-11 w-full items-center justify-between border-b border-solid border-neutral-border bg-default-background px-1 py-1",
           className
         )}
         ref={ref as any}
         {...otherProps}
       >
-        {leftSlot ? (
-          <div className="flex items-center gap-6 self-stretch">{leftSlot}</div>
-        ) : null}
-        {rightSlot ? (
-          <div className="flex items-center justify-end gap-4">{rightSlot}</div>
-        ) : null}
+        <div className="flex grow shrink-0 basis-0 items-center justify-between self-stretch px-4 py-4">
+          {left ? (
+            <div className="flex grow shrink-0 basis-0 items-center justify-between self-stretch">
+              {left}
+            </div>
+          ) : null}
+          {center ? (
+            <div className="flex grow shrink-0 basis-0 items-center justify-between self-stretch">
+              {center}
+            </div>
+          ) : null}
+          {right ? (
+            <div className="flex grow shrink-0 basis-0 items-center justify-between self-stretch">
+              {right}
+            </div>
+          ) : null}
+        </div>
       </nav>
     );
   }
