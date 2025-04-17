@@ -75,7 +75,7 @@ export class UsersService {
     this.logger.log(`IN -> usersService.findByClerkId(${clerkId})`);
     try {
       const user = await this.userRepository.findOne({
-        where: { clerk_user_id: clerkId },
+        where: { clerk_id: clerkId },
         relations: ['memberships']
       });
       if (!user) {

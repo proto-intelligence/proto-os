@@ -13,13 +13,27 @@ export class User {
   @ApiProperty({ example: 'user_2NKQsK2Z5YZ5YZ5YZ5YZ5YZ5YZ' })
   @IsString()
   @IsNotEmpty()
-  clerk_user_id: string;
+  clerk_id: string;
 
-  @Column()
+  @Column({ unique: true })
   @ApiProperty({ example: 'user@example.com' })
   @IsString()
   @IsNotEmpty()
   email: string;
+
+  @Column({ nullable: true })
+  @ApiProperty({ example: 'John' })
+  @IsString()
+  first_name: string;
+
+  @Column({ nullable: true })
+  @ApiProperty({ example: 'Doe' })
+  @IsString()
+  last_name: string;
+
+  @Column({ default: true })
+  @ApiProperty({ example: true })
+  is_active: boolean;
 
   @OneToMany(() => OrganizationMembership, membership => membership.user)
   memberships: OrganizationMembership[];

@@ -11,6 +11,7 @@ import { UsersModule } from './users/users.module';
 import { OrganizationMembershipsModule } from './organization-memberships/organization-memberships.module';
 import { LoginCredentialsModule } from './login-credentials/login-credentials.module';
 import { LoginPermissionsModule } from './login-permissions/login-permissions.module';
+import { ClerkModule } from './clerk/clerk.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { LoginPermissionsModule } from './login-permissions/login-permissions.mo
     OrganizationMembershipsModule,
     LoginCredentialsModule,
     LoginPermissionsModule,
+    ClerkModule,
   ],
   controllers: [AppController],
   providers: [AppService],

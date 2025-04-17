@@ -33,6 +33,7 @@
     "postgres": "^3.4.5",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
+    "svix": "^1.64.1",
     "typeorm": "^0.3.22"
   },
   "devDependencies": {
