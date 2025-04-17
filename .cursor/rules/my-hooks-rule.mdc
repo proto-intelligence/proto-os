@@ -1,0 +1,41 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+Look inside the folder `src/lib/api/[SOME FOLDER NAME]`, where each folder inside of it was generated using `openapi-typescript-codegen`.
+
+1. For each `*Service.ts` file, extract all exported service functions. Each function represents an API call, like `promptsControllerFindAll`.
+
+2. For each function, generate a corresponding React Query hook in the `src/hooks/[SOME FOLDER NAME]` folder. The filename should be `use<FunctionName>.ts`, where `<FunctionName>` is the PascalCase version of the API method (e.g., `usePromptsControllerFindAll.ts`).
+
+3. In each hook file:
+  - Import `useQuery` or `useMutation` from `@tanstack/react-query`.
+  - Use `useQuery` for GET requests, and `useMutation` for POST, PUT, PATCH, DELETE.
+  - Name the hook `use<FunctionName>`.
+  - Import the service from `@/lib/api/[SOME FOLDER NAME]` and call the method inside the hook.
+  - Expose `data`, `error`, `isLoading`, and `refetch` (for queries) or `mutate`, `isPending`, `isSuccess`, and `error` (for mutations).
+  - Automatically infer types for inputs and outputs based on the OpenAPI-generated types.
+
+4. Each hook should follow React Query best practices:
+  - Keys should be unique and derived from the method name and parameters.
+  - If applicable, support passing parameters to the query/mutation function.
+  - Return a structured object with all query/mutation state.
+
+Example output for a GET method `promptsControllerFindAll`:
+```ts
+import { useQuery } from '@tanstack/react-query';
+import { PromptsService } from '@/lib/api/[SOME FOLDER NAME]';
+
+export function usePromptsControllerFindAll() {
+  return useQuery({
+    queryKey: ['promptsControllerFindAll'],
+    queryFn: () => PromptsService.promptsControllerFindAll(),
+  });
+}
+
+5. Only generate a hook if it does not already exist or if it has changed.
+
+6. All generated hooks must live in src/hooks/[SOME FOLDER NAME].
+
+Ensure the hooks are optimized and readable.

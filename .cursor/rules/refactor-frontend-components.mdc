@@ -1,0 +1,39 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+Take the current `page.tsx` file and break it up into clean, modular components.
+
+1. Identify logical UI sections in the page — e.g., header, search bar, cards, modals, forms, tables, etc.
+
+2. For each section, extract a new React component into a separate file under the `components/` directory adjacent to the page.
+   - Name the component based on its role (e.g., `HeaderSection.tsx`, `PromptList.tsx`, `PromptCard.tsx`, `SearchBar.tsx`, etc.)
+   - Keep styles, state, and props localized to each component as much as possible.
+
+3. In the main `page.tsx` file:
+   - Replace the original inline code with the newly imported components.
+   - Keep only top-level layout, page metadata, and shared context setup in this file.
+
+4. If the page uses hooks or business logic:
+   - Move complex data fetching or mutation logic into a `hooks/` folder.
+   - If hooks are very specific to this page, create a file like `usePromptPageData.ts` in a `hooks/` directory next to the page.
+
+5. If a component uses shared design patterns (cards, buttons, modals), ensure they use your existing design system if available (e.g., shadcn/ui or Tailwind utility classes).
+
+6. Ensure:
+   - Each component is named properly.
+   - Props are typed with TypeScript.
+   - Files are clean, readable, and reusable.
+   - No logic or layout is duplicated between components.
+
+7. Organize the output files like this:
+
+/app/prompts/page.tsx ← page shell /app/prompts/components/SearchBar.tsx ← extracted UI components /app/prompts/components/PromptCard.tsx /app/prompts/components/HeaderSection.tsx /app/prompts/hooks/usePromptPageData.ts ← custom data-fetching hook
+
+
+8. Do not use `export default` unless it's a top-level page. Always use named exports for components.
+
+9. Refactor with a focus on readability, reusability, and separation of concerns.
+
+10. Remove unused variables.

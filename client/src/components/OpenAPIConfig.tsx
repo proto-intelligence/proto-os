@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { OpenAPI } from '@/lib/api/client';
+import { OpenAPI } from '@/lib/api/backend';
 
 export const OpenAPIConfig = () => {
   useEffect(() => {
