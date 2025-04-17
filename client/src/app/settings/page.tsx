@@ -1,103 +1,160 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { AppLayout } from "@/components/AppLayout";
-import { HeaderSection } from "./components/HeaderSection";
-import { TabsNavigation } from "./components/TabsNavigation";
-import { ProfileTab } from "./components/ProfileTab";
-import { OrganizationsTab } from "./components/OrganizationsTab";
-import { LoginsTab } from "./components/LoginsTab";
-import { LoadingState } from "./components/LoadingState";
 import { useSettingsData } from "./hooks/useSettingsData";
-import { Alert } from "@/ui/components/Alert";
+import { Loader } from "@/ui/components/Loader";
+import { Tabs } from "@/ui/components/Tabs";
+import { Breadcrumbs } from "@/ui/components/Breadcrumbs";
+import { Button } from "@/ui/components/Button";
 
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState("profile");
-  const [isMounted, setIsMounted] = useState(false);
-  
-  const {
-    clerkUser,
-    formData,
-    memberships,
-    credentials,
-    permissions,
-    isLoading,
-    errors,
-    handleInputChange,
-    handleSave
-  } = useSettingsData();
+  const { formData, memberships, isLoading, membershipsError } = useSettingsData();
+  const [activeTab, setActiveTab] = React.useState("profile");
 
-  // Set isMounted to true once component mounts (client-side only)
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  // Check if there are any errors
-  const hasErrors = Object.keys(errors).length > 0;
-
-  // If not mounted yet, show nothing to prevent hydration mismatch
-  if (!isMounted) {
-    return null;
+  if (isLoading) {
+    return (
+      <AppLayout>
+        <div className="container mx-auto py-8 flex justify-center items-center h-64">
+          <Loader size="large" />
+        </div>
+      </AppLayout>
+    );
   }
 
   return (
     <AppLayout>
-      <div className="flex flex-col w-full max-w-4xl mx-auto p-6 gap-6">
-        <HeaderSection 
-          activeTab={activeTab} 
-          onSave={handleSave} 
-        />
-
-        {hasErrors && (
-          <Alert 
-            variant="error"
-            title="Error loading data"
-            description={
-              <div>
-                {Object.values(errors).map((error, index) => (
-                  <div key={index}>{error}</div>
-                ))}
-              </div>
-            }
-          />
-        )}
-
-        <div className="flex flex-col w-full">
-          <TabsNavigation 
-            activeTab={activeTab} 
-            onTabChange={setActiveTab} 
-          />
-
-          {isLoading ? (
-            <LoadingState />
-          ) : (
-            <>
-              {activeTab === "profile" && (
-                <ProfileTab 
-                  user={clerkUser}
-                  formData={formData}
-                  onInputChange={handleInputChange}
-                />
-              )}
-
-              {activeTab === "organizations" && (
-                <OrganizationsTab 
-                  memberships={memberships}
-                  isLoading={isLoading}
-                />
-              )}
-
-              {activeTab === "logins" && (
-                <LoginsTab 
-                  credentials={credentials}
-                  permissions={permissions}
-                  isLoading={isLoading}
-                />
-              )}
-            </>
-          )}
+      <div className="container mx-auto py-8">
+        <Breadcrumbs className="mb-4">
+          <Breadcrumbs.Item>Home</Breadcrumbs.Item>
+          <Breadcrumbs.Divider />
+          <Breadcrumbs.Item active>Settings</Breadcrumbs.Item>
+        </Breadcrumbs>
+        
+        <h1 className="text-2xl font-bold mb-6">Settings</h1>
+        
+        <div className="mb-6">
+          <Tabs className="flex space-x-4 border-b">
+            <Tabs.Item 
+              active={activeTab === "profile"} 
+              onClick={() => setActiveTab("profile")}
+            >
+              Profile
+            </Tabs.Item>
+            <Tabs.Item 
+              active={activeTab === "organizations"} 
+              onClick={() => setActiveTab("organizations")}
+            >
+              Organizations
+            </Tabs.Item>
+            <Tabs.Item 
+              active={activeTab === "logins"} 
+              onClick={() => setActiveTab("logins")}
+            >
+              Logins
+            </Tabs.Item>
+          </Tabs>
         </div>
+        
+        {activeTab === "profile" && (
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold mb-4">Profile Information</h2>
+            <div className="space-y-4">
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">First Name</label>
+                <div className="p-2 border rounded bg-gray-50">{formData.firstName}</div>
+              </div>
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                <div className="p-2 border rounded bg-gray-50">{formData.lastName}</div>
+              </div>
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">Email</label>
+                <div className="p-2 border rounded bg-gray-50">{formData.email}</div>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {activeTab === "organizations" && (
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold">Organizations</h2>
+              <Button>Join Organization</Button>
+            </div>
+            
+            {membershipsError ? (
+              <div className="p-4 bg-red-50 text-red-700 rounded-md">
+                Error loading organizations: {membershipsError.message}
+              </div>
+            ) : memberships && memberships.length > 0 ? (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Organization
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Role
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Joined
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {memberships.map((membership) => (
+                      <tr key={membership.id}>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">
+                            {membership.organization_id}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            membership.role === 'admin' 
+                              ? 'bg-purple-100 text-purple-800' 
+                              : 'bg-green-100 text-green-800'
+                          }`}>
+                            {membership.role}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {new Date(membership.created_at).toLocaleDateString()}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <button className="text-indigo-600 hover:text-indigo-900 mr-4">
+                            View
+                          </button>
+                          <button className="text-red-600 hover:text-red-900">
+                            Leave
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-gray-500 mb-4">You are not a member of any organizations yet.</p>
+                <Button>Join Your First Organization</Button>
+              </div>
+            )}
+          </div>
+        )}
+        
+        {activeTab === "logins" && (
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold mb-4">Login Credentials</h2>
+            <p>Login credential settings will be added here.</p>
+          </div>
+        )}
       </div>
     </AppLayout>
   );
-} 
+}
