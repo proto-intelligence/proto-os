@@ -20,6 +20,7 @@ export * from './useOrganizationMembershipsControllerFindAll';
 export * from './useOrganizationMembershipsControllerFindOne';
 export * from './useOrganizationMembershipsControllerUpdate';
 export * from './useOrganizationMembershipsControllerRemove';
+export * from './useOrganizationMembershipsControllerFindByUserId';
 
 // Login Credentials hooks
 export * from './useLoginCredentialsControllerCreate';
@@ -33,4 +34,5 @@ export * from './useLoginPermissionsControllerCreate';
 export * from './useLoginPermissionsControllerFindAll';
 export * from './useLoginPermissionsControllerFindOne';
 export * from './useLoginPermissionsControllerUpdate';
-export * from './useLoginPermissionsControllerRemove'; 
+export * from './useLoginPermissionsControllerRemove';
+export * from './useLoginPermissionsControllerFindByUserId'; 

@@ -103,4 +103,24 @@ export class LoginPermissionsService {
             },
         });
     }
+    /**
+     * Get user's login credentials access
+     * @param userId User ID
+     * @returns LoginPermission List of login permissions with credential details.
+     * @throws ApiError
+     */
+    public static loginPermissionsControllerFindByUserId(
+        userId: string,
+    ): CancelablePromise<Array<LoginPermission>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/login-permissions/user/{userId}',
+            path: {
+                'userId': userId,
+            },
+            errors: {
+                404: `User not found.`,
+            },
+        });
+    }
 }

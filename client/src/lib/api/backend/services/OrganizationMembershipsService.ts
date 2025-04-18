@@ -103,4 +103,24 @@ export class OrganizationMembershipsService {
             },
         });
     }
+    /**
+     * Get user's organization memberships with metadata
+     * @param userId User ID
+     * @returns OrganizationMembership List of organization memberships with organization metadata.
+     * @throws ApiError
+     */
+    public static organizationMembershipsControllerFindByUserId(
+        userId: string,
+    ): CancelablePromise<Array<OrganizationMembership>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/organization-memberships/user/{userId}',
+            path: {
+                'userId': userId,
+            },
+            errors: {
+                404: `User not found.`,
+            },
+        });
+    }
 }
