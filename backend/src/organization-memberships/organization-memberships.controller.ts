@@ -1,8 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Logger } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { OrganizationMembershipsService } from './organization-memberships.service';
-import { CreateOrganizationMembershipDto } from './dto/create-organization-membership.dto';
-import { UpdateOrganizationMembershipDto } from './dto/update-organization-membership.dto';
+import { CreateOrganizationMembershipDto, UpdateOrganizationMembershipDto } from './dto';
 import { OrganizationMembership } from './entities/organization-membership.entity';
 
 @ApiTags('organization-memberships')
@@ -92,6 +91,27 @@ export class OrganizationMembershipsController {
       this.logger.log(`OUT <- organizationMembershipsController.remove()`);
     } catch (error) {
       this.logger.error(`Error - organizationMembershipsController.remove(): ${error.message}`);
+      throw error;
+    }
+  }
+
+  @Get('user/:userId')
+  @ApiOperation({ summary: 'Get user\'s organization memberships with metadata' })
+  @ApiParam({ name: 'userId', description: 'User ID' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'List of organization memberships with organization metadata.',
+    type: [OrganizationMembership]
+  })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  async findByUserId(@Param('userId') userId: string): Promise<OrganizationMembership[]> {
+    this.logger.log(`IN -> organizationMembershipsController.findByUserId(${userId})`);
+    try {
+      const result = await this.organizationMembershipsService.findByUserIdWithMetadata(userId);
+      this.logger.log(`OUT <- organizationMembershipsController.findByUserId()`);
+      return result;
+    } catch (error) {
+      this.logger.error(`Error - organizationMembershipsController.findByUserId(): ${error.message}`);
       throw error;
     }
   }

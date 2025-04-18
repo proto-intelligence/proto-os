@@ -1,0 +1,6 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+Look through all files ending in .entity.ts in my project. For each file, identify the entity name (the class name), the table name if specified in the @Entity decorator, and all properties marked with @Column, @PrimaryGeneratedColumn, or any relation decorators like @OneToMany, @ManyToOne, etc. For each entity, summarize the name, the columns (with property name and type), and any relationships (with direction and target entity). Output a readable summary that looks like a database schema overview, structured as a markdown list. Include class names, table names, column names and types, and relation types.

@@ -99,4 +99,28 @@ export class LoginPermissionsService {
       throw error;
     }
   }
+
+  async findByUserIdWithCredentials(userId: string): Promise<LoginPermission[]> {
+    this.logger.log(`IN -> loginPermissionsService.findByUserIdWithCredentials(${userId})`);
+    try {
+      const permissions = await this.loginPermissionRepository
+        .createQueryBuilder('permission')
+        .leftJoinAndSelect('permission.membership', 'membership')
+        .leftJoinAndSelect('permission.credential', 'credential')
+        .leftJoinAndSelect('credential.organization', 'organization')
+        .where('membership.user_id = :userId', { userId })
+        .getMany();
+
+      if (!permissions.length) {
+        this.logger.warn(`No permissions found for user ${userId}`);
+        return [];
+      }
+
+      this.logger.log(`OUT <- loginPermissionsService.findByUserIdWithCredentials()`);
+      return permissions;
+    } catch (error) {
+      this.logger.error(`Error - loginPermissionsService.findByUserIdWithCredentials(): ${error.message}`);
+      throw error;
+    }
+  }
 } 

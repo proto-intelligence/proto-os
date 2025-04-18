@@ -1,0 +1,17 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+Take the following list of API endpoints described in natural language. For each one
+
+1) identify the HTTP method (like GET, POST, PUT, DELETE), the route (like /users/:id), and the purpose (like 'get user by ID'). 
+2) search to see if the endpoint already exists in my `backend/src` folder in any existing modules in my NestJS codebase. Note: All modules will already exist. If the endpoint already exists, skip it. If it does not exist, create the full implementation according to the below format:
+
+```# You are an expert in Nest.js, Typeorm, Swagger, Typescipt, and class-validator. When you are creating new controllers in the Nest.js backend under `src/`, make sure you adhere to the following principals when creating the necessary code for new API endpoints.
+
+2) There should be DTOs (like CreateXDto or UpdateXDto) if needed
+3) The service code should have well-written functions that are strongly-typed, contain clear logs representing `IN -> service.functionName()` ,  `OUT <- service.functionName()` and `Error - service.functionName()`. Each service function should have an appropriate try/catch to log the error properly. Each service function should have a useful description as well. Include basic CRUD operations by default.
+1) The controller should have a proper swagger decorators, examples, defaults and validators and should be strongly typed.
+4) The controller code shold have well-written functions that are strongly-types, contain clear logs representing `IN -> controller.functionName()` ,  `OUT <- controller.functionName()` and `Error - controller.functionName()`. Each controller function should have an appropriate try/catch to log the error properly. Each function should have clear decorators for Swagger documentation as well as the necessary types and examples for the swagger endpoint. The code should also have useful exit code responses where appropriate.
+5) The module should contain all the necessary imports and exports and providers to be able to implement the controller and service correctly```

@@ -99,4 +99,26 @@ export class OrganizationMembershipsService {
       throw error;
     }
   }
+
+  async findByUserIdWithMetadata(userId: string): Promise<OrganizationMembership[]> {
+    this.logger.log(`IN -> organizationMembershipsService.findByUserIdWithMetadata(${userId})`);
+    try {
+      const memberships = await this.organizationMembershipRepository
+        .createQueryBuilder('membership')
+        .leftJoinAndSelect('membership.organization', 'organization')
+        .where('membership.user_id = :userId', { userId })
+        .getMany();
+
+      if (!memberships.length) {
+        this.logger.warn(`No memberships found for user ${userId}`);
+        return [];
+      }
+
+      this.logger.log(`OUT <- organizationMembershipsService.findByUserIdWithMetadata()`);
+      return memberships;
+    } catch (error) {
+      this.logger.error(`Error - organizationMembershipsService.findByUserIdWithMetadata(): ${error.message}`);
+      throw error;
+    }
+  }
 } 

@@ -94,4 +94,25 @@ export class LoginPermissionsController {
       throw error;
     }
   }
+
+  @Get('user/:userId')
+  @ApiOperation({ summary: 'Get user\'s login credentials access' })
+  @ApiParam({ name: 'userId', description: 'User ID' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'List of login permissions with credential details.',
+    type: [LoginPermission]
+  })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  async findByUserId(@Param('userId') userId: string): Promise<LoginPermission[]> {
+    this.logger.log(`IN -> loginPermissionsController.findByUserId(${userId})`);
+    try {
+      const result = await this.loginPermissionsService.findByUserIdWithCredentials(userId);
+      this.logger.log(`OUT <- loginPermissionsController.findByUserId()`);
+      return result;
+    } catch (error) {
+      this.logger.error(`Error - loginPermissionsController.findByUserId(): ${error.message}`);
+      throw error;
+    }
+  }
 } 
