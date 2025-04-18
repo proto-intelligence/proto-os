@@ -4,6 +4,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { OrganizationWithCredentialsDto } from './dto/organization-with-credentials.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -109,6 +110,29 @@ export class UsersController {
       this.logger.log(`OUT <- usersController.remove()`);
     } catch (error) {
       this.logger.error(`Error - usersController.remove(): ${error.message}`);
+      throw error;
+    }
+  }
+
+  @Get(':userId/organizations-with-credentials')
+  @ApiOperation({ summary: 'Get organizations with credentials for a user' })
+  @ApiParam({ name: 'userId', description: 'User ID' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Organizations with credentials found.', 
+    type: [OrganizationWithCredentialsDto] 
+  })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  async getOrganizationsWithCredentials(
+    @Param('userId') userId: string,
+  ): Promise<OrganizationWithCredentialsDto[]> {
+    this.logger.log(`IN -> usersController.getOrganizationsWithCredentials(${userId})`);
+    try {
+      const result = await this.usersService.getOrganizationsWithCredentials(userId);
+      this.logger.log(`OUT <- usersController.getOrganizationsWithCredentials()`);
+      return result;
+    } catch (error) {
+      this.logger.error(`Error - usersController.getOrganizationsWithCredentials(): ${error.message}`);
       throw error;
     }
   }

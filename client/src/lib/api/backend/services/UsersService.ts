@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { CreateUserDto } from '../models/CreateUserDto';
+import type { OrganizationWithCredentialsDto } from '../models/OrganizationWithCredentialsDto';
 import type { UpdateUserDto } from '../models/UpdateUserDto';
 import type { User } from '../models/User';
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -117,6 +118,26 @@ export class UsersService {
             url: '/users/clerk/{clerkId}',
             path: {
                 'clerkId': clerkId,
+            },
+            errors: {
+                404: `User not found.`,
+            },
+        });
+    }
+    /**
+     * Get organizations with credentials for a user
+     * @param userId User ID
+     * @returns OrganizationWithCredentialsDto Organizations with credentials found.
+     * @throws ApiError
+     */
+    public static usersControllerGetOrganizationsWithCredentials(
+        userId: string,
+    ): CancelablePromise<Array<OrganizationWithCredentialsDto>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/users/{userId}/organizations-with-credentials',
+            path: {
+                'userId': userId,
             },
             errors: {
                 404: `User not found.`,

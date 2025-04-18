@@ -13,6 +13,7 @@ export * from './useUsersControllerFindOne';
 export * from './useUsersControllerUpdate';
 export * from './useUsersControllerRemove';
 export * from './useUsersControllerFindByClerkId';
+export * from './useUsersControllerGetOrganizationsWithCredentials';
 
 // Organization Membership hooks
 export * from './useOrganizationMembershipsControllerCreate';

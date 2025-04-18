@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type CreateUserDto = {
-    clerk_user_id: string;
+    clerk_id: string;
     email: string;
 };
 

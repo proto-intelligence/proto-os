@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { OrganizationWithCredentialsDto } from './dto/organization-with-credentials.dto';
 
 @Injectable()
 export class UsersService {
@@ -117,6 +118,64 @@ export class UsersService {
       this.logger.log(`OUT <- usersService.remove()`);
     } catch (error) {
       this.logger.error(`Error - usersService.remove(): ${error.message}`);
+      throw error;
+    }
+  }
+
+  /**
+   * Get organizations with credentials for a user
+   */
+  async getOrganizationsWithCredentials(userId: string): Promise<OrganizationWithCredentialsDto[]> {
+    this.logger.log(`IN -> usersService.getOrganizationsWithCredentials(${userId})`);
+    try {
+      // First, get the user with their memberships
+      const user = await this.userRepository.findOne({
+        where: { id: userId },
+        relations: ['memberships', 'memberships.organization']
+      });
+
+      if (!user) {
+        throw new NotFoundException(`User with ID ${userId} not found`);
+      }
+
+      // For each membership, get the organization's credentials with permissions
+      const result: OrganizationWithCredentialsDto[] = [];
+
+      for (const membership of user.memberships) {
+        // Get credentials for this organization with their permissions
+        const credentials = await this.userRepository.manager
+          .createQueryBuilder('login_credentials', 'credential')
+          .leftJoinAndSelect('credential.permissions', 'permission')
+          .where('credential.organization_id = :organizationId', { 
+            organizationId: membership.organization_id 
+          })
+          .getMany();
+
+        // Map to DTO format
+        const organizationWithCredentials: OrganizationWithCredentialsDto = {
+          id: membership.organization.id,
+          name: membership.organization.name,
+          role: membership.role,
+          credentials: credentials.map(credential => ({
+            id: credential.id,
+            service_name: credential.service_name,
+            username: credential.username,
+            encrypted_password: credential.encrypted_password,
+            permissions: credential.permissions.map(permission => ({
+              id: permission.id,
+              permission: permission.permission,
+              granted_by_membership_id: permission.granted_by_membership_id
+            }))
+          }))
+        };
+
+        result.push(organizationWithCredentials);
+      }
+
+      this.logger.log(`OUT <- usersService.getOrganizationsWithCredentials()`);
+      return result;
+    } catch (error) {
+      this.logger.error(`Error - usersService.getOrganizationsWithCredentials(): ${error.message}`);
       throw error;
     }
   }

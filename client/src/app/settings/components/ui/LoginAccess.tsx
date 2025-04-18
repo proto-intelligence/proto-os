@@ -11,81 +11,154 @@ import { IconButton } from "@/ui/components/IconButton";
 import { FeatherDatabase, FeatherClipboard, FeatherEdit2, FeatherPlus, FeatherShield } from "@subframe/core";
 import { Dialog } from "@/ui/components/Dialog";
 import { TextField } from "@/ui/components/TextField";
+import { useUser } from "@clerk/nextjs";
+import { useUsersControllerGetOrganizationsWithCredentials, useUsersControllerFindByClerkId } from "@/hooks/backend";
+import { useLoginCredentialsControllerCreate } from "@/hooks/backend";
+import { toast } from "sonner";
 
 interface LoginAccessProps {
   onNavigateBack: () => void;
 }
 
 export function LoginAccess({ onNavigateBack }: LoginAccessProps) {
+  // Get current user from Clerk
+  const { user } = useUser();
+  const clerkId = user?.id || "";
+  
+  // First, get the user from our database using the Clerk ID
+  const { data: userData, isLoading: isLoadingUser } = useUsersControllerFindByClerkId(clerkId, {
+    enabled: !!clerkId
+  });
+  
+  // Then, fetch organizations with credentials using the user ID from our database
+  const { data: organizations, isLoading: isLoadingOrgs, error, refetch } = useUsersControllerGetOrganizationsWithCredentials(userData?.id || "", {
+    enabled: !!userData?.id
+  });
+  
+  // Mutation for creating new credentials
+  const createCredentialMutation = useLoginCredentialsControllerCreate();
+  
   // State for managing the add credential dialog
   const [isAddCredentialDialogOpen, setIsAddCredentialDialogOpen] = useState(false);
+  const [selectedOrganizationId, setSelectedOrganizationId] = useState<string | null>(null);
   const [newCredential, setNewCredential] = useState({
     service_name: "",
     username: "",
     encrypted_password: "",
   });
   
-  // Mock data for demonstration
-  const organizations = [
-    {
-      id: "org-1",
-      name: "Healthcare Organization",
-      role: "admin",
-      credentials: [
-        {
-          id: "cred-1",
-          service: "Electronic Health Records",
-          username: "admin@healthcare.org",
-          password: "********",
-          accessList: "admin",
-          lastUpdated: "2023-05-15",
-          canEdit: true
-        },
-        {
-          id: "cred-2",
-          service: "Patient Portal",
-          username: "portal@healthcare.org",
-          password: "********",
-          accessList: "all",
-          lastUpdated: "2023-06-20",
-          canEdit: true
-        }
-      ]
-    },
-    {
-      id: "org-2",
-      name: "Research Institute",
-      role: "member",
-      credentials: [
-        {
-          id: "cred-3",
-          service: "Research Database",
-          username: "researcher@institute.org",
-          password: "********",
-          accessList: "all",
-          lastUpdated: "2023-07-10",
-          canEdit: false
-        }
-      ]
-    }
-  ];
-  
-  // Placeholder functions
-  const handleAddCredential = () => {
+  // Handle opening the add credential dialog for a specific organization
+  const handleAddCredential = (organizationId: string) => {
+    setSelectedOrganizationId(organizationId);
     setIsAddCredentialDialogOpen(true);
   };
   
-  const handleCreateCredential = () => {
-    setIsAddCredentialDialogOpen(false);
+  // Handle creating a new credential
+  const handleCreateCredential = async () => {
+    if (!selectedOrganizationId) return;
+    
+    try {
+      await createCredentialMutation.mutateAsync({
+        organization_id: selectedOrganizationId,
+        service_name: newCredential.service_name,
+        username: newCredential.username,
+        encrypted_password: newCredential.encrypted_password,
+      });
+      
+      // Reset form and close dialog
+      setNewCredential({
+        service_name: "",
+        username: "",
+        encrypted_password: "",
+      });
+      setIsAddCredentialDialogOpen(false);
+      
+      // Refetch data to show the new credential
+      refetch();
+      
+      toast.success("Credential added successfully");
+    } catch (error) {
+      console.error("Error creating credential:", error);
+      toast.error("Failed to add credential");
+    }
   };
   
+  // Placeholder functions for edit and update access
   const handleEditCredential = (orgId: string, credentialId: string) => {
     console.log("Edit credential", orgId, credentialId);
+    // This would be implemented in a future update
   };
   
   const handleUpdateAccess = (orgId: string, credentialId: string, access: string) => {
     console.log("Update access", orgId, credentialId, access);
+    // This would be implemented in a future update
   };
+
+  // Loading state
+  if (isLoadingUser || isLoadingOrgs) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <div className="text-center">
+          <div className="text-heading-2 font-heading-2 text-default-font">Loading...</div>
+          <div className="text-body font-body text-subtext-color">Please wait while we fetch your login credentials</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <div className="text-center">
+          <div className="text-heading-2 font-heading-2 text-default-font">Error</div>
+          <div className="text-body font-body text-subtext-color">Failed to load login credentials</div>
+          <Button 
+            className="mt-4"
+            onClick={() => refetch()}
+          >
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // User not found state
+  if (!userData) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <div className="text-center">
+          <div className="text-heading-2 font-heading-2 text-default-font">User Not Found</div>
+          <div className="text-body font-body text-subtext-color">We couldn&apos;t find your user account</div>
+          <Button 
+            className="mt-4"
+            onClick={onNavigateBack}
+          >
+            Go Back
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Empty state
+  if (!organizations || organizations.length === 0) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <div className="text-center">
+          <div className="text-heading-2 font-heading-2 text-default-font">No Organizations Found</div>
+          <div className="text-body font-body text-subtext-color">You don&apos;t have access to any organizations yet</div>
+          <Button 
+            className="mt-4"
+            onClick={onNavigateBack}
+          >
+            Go Back
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-full w-full flex-col items-start">
@@ -113,93 +186,100 @@ export function LoginAccess({ onNavigateBack }: LoginAccessProps) {
                 {org.role === "admin" && (
                   <Button
                     icon={<FeatherPlus />}
-                    onClick={() => handleAddCredential()}
+                    onClick={() => handleAddCredential(org.id)}
                   >
                     Add credential
                   </Button>
                 )}
               </div>
-              <Table
-                header={
-                  <Table.HeaderRow>
-                    <Table.HeaderCell>Service</Table.HeaderCell>
-                    <Table.HeaderCell>Username</Table.HeaderCell>
-                    <Table.HeaderCell>Password</Table.HeaderCell>
-                    <Table.HeaderCell>Access List</Table.HeaderCell>
-                    <Table.HeaderCell>Last Updated</Table.HeaderCell>
-                    <Table.HeaderCell>Actions</Table.HeaderCell>
-                  </Table.HeaderRow>
-                }
-              >
-                {org.credentials.map((credential) => (
-                  <Table.Row key={credential.id}>
-                    <Table.Cell>
-                      <div className="flex items-center gap-4">
-                        <IconWithBackground
-                          size="small"
-                          icon={
-                            credential.service.includes("Health") ? (
-                              <FeatherDatabase />
-                            ) : (
-                              <FeatherClipboard />
-                            )
+              
+              {org.credentials.length === 0 ? (
+                <div className="flex w-full items-center justify-center py-8">
+                  <div className="text-center">
+                    <div className="text-heading-4 font-heading-4 text-default-font">No Credentials</div>
+                    <div className="text-body font-body text-subtext-color">
+                      {org.role === "admin" 
+                        ? "Add credentials to share with organization members" 
+                        : "No credentials have been shared with you yet"}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <Table
+                  header={
+                    <Table.HeaderRow>
+                      <Table.HeaderCell>Service</Table.HeaderCell>
+                      <Table.HeaderCell>Username</Table.HeaderCell>
+                      <Table.HeaderCell>Password</Table.HeaderCell>
+                      <Table.HeaderCell>Access List</Table.HeaderCell>
+                      <Table.HeaderCell>Actions</Table.HeaderCell>
+                    </Table.HeaderRow>
+                  }
+                >
+                  {org.credentials.map((credential) => (
+                    <Table.Row key={credential.id}>
+                      <Table.Cell>
+                        <div className="flex items-center gap-4">
+                          <IconWithBackground
+                            size="small"
+                            icon={
+                              credential.service_name.includes("Health") ? (
+                                <FeatherDatabase />
+                              ) : (
+                                <FeatherClipboard />
+                              )
+                            }
+                            square={true}
+                          />
+                          <span className="text-body-bold font-body-bold text-default-font">
+                            {credential.service_name}
+                          </span>
+                        </div>
+                      </Table.Cell>
+                      <Table.Cell>
+                        <CopyToClipboardField text={credential.username} />
+                      </Table.Cell>
+                      <Table.Cell>
+                        <CopyToClipboardField text="*******" />
+                      </Table.Cell>
+                      <Table.Cell>
+                        <Select
+                          variant="filled"
+                          label=""
+                          placeholder={
+                            org.role === "admin"
+                              ? "Select access"
+                              : "All Members"
                           }
-                          square={true}
-                        />
-                        <span className="text-body-bold font-body-bold text-default-font">
-                          {credential.service}
-                        </span>
-                      </div>
-                    </Table.Cell>
-                    <Table.Cell>
-                      <CopyToClipboardField text={credential.username} />
-                    </Table.Cell>
-                    <Table.Cell>
-                      <CopyToClipboardField text="*******" />
-                    </Table.Cell>
-                    <Table.Cell>
-                      <Select
-                        variant="filled"
-                        label=""
-                        placeholder={
-                          org.role === "admin"
-                            ? "Select access"
-                            : "All Members"
-                        }
-                        helpText=""
-                        value={credential.accessList}
-                        onValueChange={(value) =>
-                          handleUpdateAccess(org.id, credential.id, value)
-                        }
-                        disabled={org.role !== "admin"}
-                      >
-                        <Select.Item value="all">All Members</Select.Item>
-                        <Select.Item value="admin">Admin Only</Select.Item>
-                        <Select.Item value="specific">Specific Users</Select.Item>
-                      </Select>
-                    </Table.Cell>
-                    <Table.Cell>
-                      <span className="text-body font-body text-subtext-color">
-                        {credential.lastUpdated}
-                      </span>
-                    </Table.Cell>
-                    <Table.Cell>
-                      {credential.canEdit ? (
-                        <IconButton
-                          icon={<FeatherEdit2 />}
-                          onClick={() =>
-                            handleEditCredential(org.id, credential.id)
+                          helpText=""
+                          value={credential.permissions[0]?.permission || "view"}
+                          onValueChange={(value) =>
+                            handleUpdateAccess(org.id, credential.id, value)
                           }
-                        />
-                      ) : (
-                        <span className="text-body font-body text-subtext-color">
-                          View Only
-                        </span>
-                      )}
-                    </Table.Cell>
-                  </Table.Row>
-                ))}
-              </Table>
+                          disabled={org.role !== "admin"}
+                        >
+                          <Select.Item value="view">View Only</Select.Item>
+                          <Select.Item value="manage">Manage</Select.Item>
+                        </Select>
+                      </Table.Cell>
+                      <Table.Cell>
+                        {org.role === "admin" ? (
+                          <IconButton
+                            icon={<FeatherEdit2 />}
+                            onClick={() =>
+                              handleEditCredential(org.id, credential.id)
+                            }
+                          />
+                        ) : (
+                          <span className="text-body font-body text-subtext-color">
+                            View Only
+                          </span>
+                        )}
+                      </Table.Cell>
+                    </Table.Row>
+                  ))}
+                </Table>
+              )}
             </div>
           ))}
           
@@ -250,9 +330,9 @@ export function LoginAccess({ onNavigateBack }: LoginAccessProps) {
             </Button>
             <Button
               onClick={handleCreateCredential}
-              disabled={!newCredential.service_name || !newCredential.username || !newCredential.encrypted_password}
+              disabled={!newCredential.service_name || !newCredential.username || !newCredential.encrypted_password || createCredentialMutation.isPending}
             >
-              Add Credential
+              {createCredentialMutation.isPending ? "Adding..." : "Add Credential"}
             </Button>
           </div>
         </div>
