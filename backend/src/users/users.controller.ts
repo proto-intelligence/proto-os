@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Logger } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Logger,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -15,7 +24,11 @@ export class UsersController {
 
   @Post()
   @ApiOperation({ summary: 'Create user' })
-  @ApiResponse({ status: 201, description: 'User successfully created.', type: User })
+  @ApiResponse({
+    status: 201,
+    description: 'User successfully created.',
+    type: User,
+  })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     this.logger.log(`IN -> usersController.create()`);
@@ -73,7 +86,9 @@ export class UsersController {
       this.logger.log(`OUT <- usersController.findByClerkId()`);
       return result;
     } catch (error) {
-      this.logger.error(`Error - usersController.findByClerkId(): ${error.message}`);
+      this.logger.error(
+        `Error - usersController.findByClerkId(): ${error.message}`,
+      );
       throw error;
     }
   }
@@ -81,7 +96,11 @@ export class UsersController {
   @Patch(':id')
   @ApiOperation({ summary: 'Update user' })
   @ApiParam({ name: 'id', description: 'User ID' })
-  @ApiResponse({ status: 200, description: 'User successfully updated.', type: User })
+  @ApiResponse({
+    status: 200,
+    description: 'User successfully updated.',
+    type: User,
+  })
   @ApiResponse({ status: 404, description: 'User not found.' })
   async update(
     @Param('id') id: string,
@@ -117,23 +136,30 @@ export class UsersController {
   @Get(':userId/organizations-with-credentials')
   @ApiOperation({ summary: 'Get organizations with credentials for a user' })
   @ApiParam({ name: 'userId', description: 'User ID' })
-  @ApiResponse({ 
-    status: 200, 
-    description: 'Organizations with credentials found.', 
-    type: [OrganizationWithCredentialsDto] 
+  @ApiResponse({
+    status: 200,
+    description: 'Organizations with credentials found.',
+    type: [OrganizationWithCredentialsDto],
   })
   @ApiResponse({ status: 404, description: 'User not found.' })
   async getOrganizationsWithCredentials(
     @Param('userId') userId: string,
   ): Promise<OrganizationWithCredentialsDto[]> {
-    this.logger.log(`IN -> usersController.getOrganizationsWithCredentials(${userId})`);
+    this.logger.log(
+      `IN -> usersController.getOrganizationsWithCredentials(${userId})`,
+    );
     try {
-      const result = await this.usersService.getOrganizationsWithCredentials(userId);
-      this.logger.log(`OUT <- usersController.getOrganizationsWithCredentials()`);
+      const result =
+        await this.usersService.getOrganizationsWithCredentials(userId);
+      this.logger.log(
+        `OUT <- usersController.getOrganizationsWithCredentials()`,
+      );
       return result;
     } catch (error) {
-      this.logger.error(`Error - usersController.getOrganizationsWithCredentials(): ${error.message}`);
+      this.logger.error(
+        `Error - usersController.getOrganizationsWithCredentials(): ${error.message}`,
+      );
       throw error;
     }
   }
-} 
+}

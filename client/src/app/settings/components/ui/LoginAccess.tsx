@@ -17,10 +17,37 @@ import { useLoginCredentialsControllerCreate } from "@/hooks/backend";
 import { toast } from "sonner";
 
 interface LoginAccessProps {
-  onNavigateBack: () => void;
+  organizations: {
+    id: string;
+    name: string;
+    role: string;
+    joinDate: string;
+    canManage: boolean;
+    credentials: {
+      id: string;
+      service?: string;
+      service_name?: string;
+      username: string;
+      password: string;
+      accessList: string;
+      lastUpdated: string;
+      canEdit: boolean;
+      permissions?: Array<{ permission: string }>;
+    }[];
+  }[];
+  onAddCredential: (orgId: string) => void;
+  onEditCredential: (orgId: string, credentialId: string) => void;
+  onUpdateAccess: (orgId: string, credentialId: string, access: string) => void;
+  onNavigateBack?: () => void;
 }
 
-export function LoginAccess({ onNavigateBack }: LoginAccessProps) {
+export function LoginAccess({ 
+  organizations, 
+  onAddCredential, 
+  onEditCredential, 
+  onUpdateAccess,
+  onNavigateBack 
+}: LoginAccessProps) {
   // Get current user from Clerk
   const { user } = useUser();
   const clerkId = user?.id || "";
@@ -31,9 +58,12 @@ export function LoginAccess({ onNavigateBack }: LoginAccessProps) {
   });
   
   // Then, fetch organizations with credentials using the user ID from our database
-  const { data: organizations, isLoading: isLoadingOrgs, error, refetch } = useUsersControllerGetOrganizationsWithCredentials(userData?.id || "", {
+  const { data: fetchedOrganizations, isLoading: isLoadingOrgs, error, refetch } = useUsersControllerGetOrganizationsWithCredentials(userData?.id || "", {
     enabled: !!userData?.id
   });
+  
+  // Use the organizations passed as props if available, otherwise use the fetched ones
+  const displayOrganizations = organizations || fetchedOrganizations || [];
   
   // Mutation for creating new credentials
   const createCredentialMutation = useLoginCredentialsControllerCreate();
@@ -48,7 +78,7 @@ export function LoginAccess({ onNavigateBack }: LoginAccessProps) {
   });
   
   // Handle opening the add credential dialog for a specific organization
-  const handleAddCredential = (organizationId: string) => {
+  const handleAddCredentialClick = (organizationId: string) => {
     setSelectedOrganizationId(organizationId);
     setIsAddCredentialDialogOpen(true);
   };
@@ -83,15 +113,21 @@ export function LoginAccess({ onNavigateBack }: LoginAccessProps) {
     }
   };
   
-  // Placeholder functions for edit and update access
-  const handleEditCredential = (orgId: string, credentialId: string) => {
-    console.log("Edit credential", orgId, credentialId);
-    // This would be implemented in a future update
+  // Use the provided handlers or fallback to local ones
+  const handleEditCredentialClick = (orgId: string, credentialId: string) => {
+    if (onEditCredential) {
+      onEditCredential(orgId, credentialId);
+    } else {
+      console.log("Edit credential", orgId, credentialId);
+    }
   };
   
-  const handleUpdateAccess = (orgId: string, credentialId: string, access: string) => {
-    console.log("Update access", orgId, credentialId, access);
-    // This would be implemented in a future update
+  const handleUpdateAccessClick = (orgId: string, credentialId: string, access: string) => {
+    if (onUpdateAccess) {
+      onUpdateAccess(orgId, credentialId, access);
+    } else {
+      console.log("Update access", orgId, credentialId, access);
+    }
   };
 
   // Loading state
@@ -143,7 +179,7 @@ export function LoginAccess({ onNavigateBack }: LoginAccessProps) {
   }
 
   // Empty state
-  if (!organizations || organizations.length === 0) {
+  if (!displayOrganizations || displayOrganizations.length === 0) {
     return (
       <div className="flex h-full w-full items-center justify-center">
         <div className="text-center">
@@ -164,7 +200,7 @@ export function LoginAccess({ onNavigateBack }: LoginAccessProps) {
     <div className="flex h-full w-full flex-col items-start">
       <div className="flex w-full grow shrink-0 basis-0 items-start bg-default-background">
         <div className="flex grow shrink-0 basis-0 flex-col items-start gap-8 px-12 py-8">
-          {organizations.map((org) => (
+          {displayOrganizations.map((org) => (
             <div
               key={org.id}
               className="flex w-full flex-col items-start gap-6 rounded-md border border-solid border-neutral-border bg-default-background px-6 pt-4 pb-6 shadow-sm"
@@ -186,7 +222,7 @@ export function LoginAccess({ onNavigateBack }: LoginAccessProps) {
                 {org.role === "admin" && (
                   <Button
                     icon={<FeatherPlus />}
-                    onClick={() => handleAddCredential(org.id)}
+                    onClick={() => onAddCredential ? onAddCredential(org.id) : handleAddCredentialClick(org.id)}
                   >
                     Add credential
                   </Button>
@@ -223,7 +259,7 @@ export function LoginAccess({ onNavigateBack }: LoginAccessProps) {
                           <IconWithBackground
                             size="small"
                             icon={
-                              credential.service_name.includes("Health") ? (
+                              (credential.service_name || credential.service)?.includes("Health") ? (
                                 <FeatherDatabase />
                               ) : (
                                 <FeatherClipboard />
@@ -232,7 +268,7 @@ export function LoginAccess({ onNavigateBack }: LoginAccessProps) {
                             square={true}
                           />
                           <span className="text-body-bold font-body-bold text-default-font">
-                            {credential.service_name}
+                            {credential.service_name || credential.service}
                           </span>
                         </div>
                       </Table.Cell>
@@ -248,18 +284,18 @@ export function LoginAccess({ onNavigateBack }: LoginAccessProps) {
                           label=""
                           placeholder={
                             org.role === "admin"
-                              ? "Select access"
-                              : "All Members"
+                              ? "Select access level"
+                              : "Access level"
                           }
-                          helpText=""
-                          value={credential.permissions[0]?.permission || "view"}
+                          value={credential.permissions?.[0]?.permission || credential.accessList || "view"}
                           onValueChange={(value) =>
-                            handleUpdateAccess(org.id, credential.id, value)
+                            handleUpdateAccessClick(org.id, credential.id, value)
                           }
                           disabled={org.role !== "admin"}
                         >
                           <Select.Item value="view">View Only</Select.Item>
-                          <Select.Item value="manage">Manage</Select.Item>
+                          <Select.Item value="edit">Edit</Select.Item>
+                          <Select.Item value="admin">Admin</Select.Item>
                         </Select>
                       </Table.Cell>
                       <Table.Cell>
@@ -267,7 +303,7 @@ export function LoginAccess({ onNavigateBack }: LoginAccessProps) {
                           <IconButton
                             icon={<FeatherEdit2 />}
                             onClick={() =>
-                              handleEditCredential(org.id, credential.id)
+                              handleEditCredentialClick(org.id, credential.id)
                             }
                           />
                         ) : (

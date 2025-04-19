@@ -9,7 +9,10 @@ export class CredentialPermissionDto {
   @ApiProperty({ enum: LoginPermissionType, example: LoginPermissionType.VIEW })
   permission: LoginPermissionType;
 
-  @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000', required: false })
+  @ApiProperty({
+    example: '123e4567-e89b-12d3-a456-426614174000',
+    required: false,
+  })
   granted_by_membership_id: string | null;
 }
 
@@ -42,4 +45,4 @@ export class OrganizationWithCredentialsDto {
 
   @ApiProperty({ type: [CredentialDto] })
   credentials: CredentialDto[];
-} 
+}
