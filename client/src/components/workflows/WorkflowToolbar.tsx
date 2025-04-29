@@ -9,19 +9,29 @@ import {
 import { ProtoFloatingToolbar } from "@/ui/components/ProtoFloatingToolbar";
 import { useWorkflowStore } from "./store";
 import { useReactFlow } from "@xyflow/react";
+import { Select } from "@/ui/components/Select";
+import { useState } from "react";
+
+// Mock task types for the dropdown
+const taskTypes = [
+  { value: "administrative", label: "Administrative Task" },
+  { value: "clinical", label: "Clinical Task" },
+  { value: "research", label: "Research Task" },
+  { value: "emergency", label: "Emergency Task" },
+  { value: "routine", label: "Routine Task" },
+];
 
 interface WorkflowToolbarProps {
-  onAddNode: () => void;
   onDeleteNodes: () => void;
 }
 
 export function WorkflowToolbar({
-  onAddNode,
   onDeleteNodes,
 }: WorkflowToolbarProps) {
   const layoutNodes = useWorkflowStore((state) => state.layoutNodes);
   const { nodes, edges } = useWorkflowStore();
-  const { fitView } = useReactFlow();
+  const { fitView, getViewport } = useReactFlow();
+  const [selectedTaskType, setSelectedTaskType] = useState<string>("administrative");
 
   const handleVerticalLayout = () => {
     layoutNodes("TB"); // Top to Bottom layout
@@ -57,6 +67,26 @@ export function WorkflowToolbar({
     }
   };
 
+  const handleAddNode = () => {
+    // Get the current viewport center
+    const { x, y } = getViewport();
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    
+    // Convert screen coordinates to flow coordinates
+    const position = {
+      x: (centerX - x) / 1,
+      y: (centerY - y) / 1,
+    };
+    
+    // Get the selected task type label
+    const selectedTask = taskTypes.find(task => task.value === selectedTaskType);
+    const taskLabel = selectedTask ? selectedTask.label : "Task";
+    
+    // Call the store's addNode function with the selected task type
+    useWorkflowStore.getState().addNode(taskLabel, position);
+  };
+
   return (
     <ProtoFloatingToolbar
       iconButtonSlots={
@@ -64,7 +94,7 @@ export function WorkflowToolbar({
           <IconButton
             size="small"
             icon={<FeatherPlusCircle />}
-            onClick={onAddNode}
+            onClick={handleAddNode}
           />
           <IconButton
             size="small"
@@ -91,6 +121,21 @@ export function WorkflowToolbar({
             Save
           </Button>
         </>
+      }
+      taskSearchBar={
+        <Select
+          label=""
+          placeholder="Select task type"
+          helpText=""
+          value={selectedTaskType}
+          onValueChange={(value: string) => setSelectedTaskType(value)}
+        >
+          {taskTypes.map((task) => (
+            <Select.Item key={task.value} value={task.value}>
+              {task.label}
+            </Select.Item>
+          ))}
+        </Select>
       }
     />
   );

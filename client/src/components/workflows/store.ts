@@ -36,7 +36,7 @@ export const useWorkflowStore = create<WorkflowState>((set) => ({
         urgency: TaskUrgency.MEDIUM,
         usually_takes: '1 week',
         steps: {
-          'Step 1': 'Initial planning',
+          'Step 1': 'Change the task name',
           'Step 2': 'Implementation',
           'Step 3': 'Review'
         }

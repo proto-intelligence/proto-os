@@ -7,7 +7,6 @@ import {
   Controls, 
   MiniMap,
   Panel,
-  useReactFlow,
   ReactFlowProvider,
   NodeTypes,
   ConnectionMode,
@@ -17,6 +16,8 @@ import {
 } from '@xyflow/react';
 import { useWorkflowStore } from './store';
 import { CustomNode } from './CustomNode';
+import { BrowserNode } from './BrowserNode';
+import { ExternalVendorNode } from './ExternalVendorNode';
 import { WorkflowToolbar } from './WorkflowToolbar';
 import { NodeMetadataPanel } from './NodeMetadataPanel';
 import { TaskType, TaskUrgency } from '@/types/task';
@@ -34,21 +35,13 @@ interface NodeData extends Record<string, unknown> {
 
 const nodeTypes: NodeTypes = {
   customNode: CustomNode,
+  browserNode: BrowserNode,
+  externalVendorNode: ExternalVendorNode
 };
 
 function WorkflowEditorContent() {
-  const { nodes, edges, addNode, onNodesChange, onEdgesChange, onConnect, deleteSelectedNodes } = useWorkflowStore();
-  const { screenToFlowPosition } = useReactFlow();
+  const { nodes, edges, onNodesChange, onEdgesChange, onConnect, deleteSelectedNodes } = useWorkflowStore();
   const [selectedNode, setSelectedNode] = useState<Node<NodeData> | null>(null);
-
-  const handleAddNode = useCallback(() => {
-    // Get the center of the viewport
-    const position = screenToFlowPosition({
-      x: window.innerWidth / 2,
-      y: window.innerHeight / 2
-    });
-    addNode("Task", position);
-  }, [screenToFlowPosition, addNode]);
 
   const handleDeleteNodes = useCallback(() => {
     deleteSelectedNodes();
@@ -84,7 +77,6 @@ function WorkflowEditorContent() {
         <MiniMap />
         <Panel position="top-center">
           <WorkflowToolbar
-            onAddNode={handleAddNode}
             onDeleteNodes={handleDeleteNodes}
           />
         </Panel>
