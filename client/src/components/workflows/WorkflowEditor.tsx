@@ -17,8 +17,6 @@ import {
 } from '@xyflow/react';
 import { useWorkflowStore } from './store';
 import { CustomNode } from './CustomNode';
-import { BrowserNode } from './BrowserNode';
-import { ExternalVendorNode } from './ExternalVendorNode';
 import { WorkflowToolbar } from './WorkflowToolbar';
 import { NodeMetadataPanel } from './NodeMetadataPanel';
 import { TaskType, TaskUrgency } from '@/types/task';
@@ -37,9 +35,7 @@ interface NodeData extends Record<string, unknown> {
 
 // Define node types with a more specific type
 const nodeTypes: NodeTypes = {
-  customNode: CustomNode,
-  browserNode: BrowserNode as unknown as NodeTypes['browserNode'],
-  externalVendorNode: ExternalVendorNode as unknown as NodeTypes['externalVendorNode']
+  customNode: CustomNode
 };
 
 interface WorkflowEditorProps {
