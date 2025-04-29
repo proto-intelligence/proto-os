@@ -91,4 +91,79 @@ export class WorkflowsService {
             },
         });
     }
+    /**
+     * Search workflows with pagination and filters
+     * @param search Search term for name and description
+     * @param tags Filter by tags
+     * @param workflowType Filter by workflow type
+     * @param createdBy Filter by creator
+     * @param createdFrom Filter by creation date range start
+     * @param createdTo Filter by creation date range end
+     * @param page
+     * @param limit
+     * @param sortBy Field to sort by
+     * @param sortOrder
+     * @returns any Return paginated list of workflows
+     * @throws ApiError
+     */
+    public static workflowsControllerSearch(
+        search?: string,
+        tags?: Array<string>,
+        workflowType?: 'dag' | 'acyclic' | 'cron',
+        createdBy?: string,
+        createdFrom?: string,
+        createdTo?: string,
+        page: number = 1,
+        limit: number = 10,
+        sortBy: string = 'created_at',
+        sortOrder: 'ASC' | 'DESC' = 'DESC',
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/workflows/search',
+            query: {
+                'search': search,
+                'tags': tags,
+                'workflowType': workflowType,
+                'createdBy': createdBy,
+                'createdFrom': createdFrom,
+                'createdTo': createdTo,
+                'page': page,
+                'limit': limit,
+                'sortBy': sortBy,
+                'sortOrder': sortOrder,
+            },
+        });
+    }
+    /**
+     * Get distinct values for filters
+     * @returns any Return distinct values for tags, workflow types, and creators
+     * @throws ApiError
+     */
+    public static workflowsControllerGetFilters(): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/workflows/filters',
+        });
+    }
+    /**
+     * Get workflow suggestions for autocomplete
+     * @param q Partial name to search for
+     * @param limit
+     * @returns any Return list of workflow suggestions
+     * @throws ApiError
+     */
+    public static workflowsControllerAutocomplete(
+        q: string,
+        limit: number = 5,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/workflows/autocomplete',
+            query: {
+                'q': q,
+                'limit': limit,
+            },
+        });
+    }
 }

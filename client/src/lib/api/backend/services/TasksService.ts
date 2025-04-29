@@ -108,4 +108,79 @@ export class TasksService {
             },
         });
     }
+    /**
+     * Search tasks with pagination and filters
+     * @param search Search term for name and description
+     * @param type Filter by task type
+     * @param urgency Filter by task urgency
+     * @param workflowId Filter by workflow ID
+     * @param createdFrom Filter by creation date range start
+     * @param createdTo Filter by creation date range end
+     * @param page
+     * @param limit
+     * @param sortBy Field to sort by
+     * @param sortOrder
+     * @returns any Return paginated list of tasks
+     * @throws ApiError
+     */
+    public static tasksControllerSearch(
+        search?: string,
+        type?: 'administrative' | 'clinical' | 'technical',
+        urgency?: 'low' | 'medium' | 'high' | 'critical',
+        workflowId?: string,
+        createdFrom?: string,
+        createdTo?: string,
+        page: number = 1,
+        limit: number = 10,
+        sortBy: string = 'created_at',
+        sortOrder: 'ASC' | 'DESC' = 'DESC',
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/tasks/search',
+            query: {
+                'search': search,
+                'type': type,
+                'urgency': urgency,
+                'workflowId': workflowId,
+                'createdFrom': createdFrom,
+                'createdTo': createdTo,
+                'page': page,
+                'limit': limit,
+                'sortBy': sortBy,
+                'sortOrder': sortOrder,
+            },
+        });
+    }
+    /**
+     * Get distinct values for filters
+     * @returns any Return distinct values for task types, urgencies, and workflows
+     * @throws ApiError
+     */
+    public static tasksControllerGetFilters(): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/tasks/filters',
+        });
+    }
+    /**
+     * Get task suggestions for autocomplete
+     * @param q Partial name to search for
+     * @param limit
+     * @returns any Return list of task suggestions
+     * @throws ApiError
+     */
+    public static tasksControllerAutocomplete(
+        q: string,
+        limit: number = 5,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/tasks/autocomplete',
+            query: {
+                'q': q,
+                'limit': limit,
+            },
+        });
+    }
 }

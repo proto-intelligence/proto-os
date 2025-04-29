@@ -3,6 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { Task } from './Task';
+import type { WorkflowEdge } from './WorkflowEdge';
+import type { WorkflowNode } from './WorkflowNode';
 export type Workflow = {
     id: string;
     name: string;
@@ -15,6 +17,8 @@ export type Workflow = {
     task_map: Array<string>;
     workflow_type: Workflow.workflow_type;
     tasks: Array<Task>;
+    nodes: Array<WorkflowNode>;
+    edges: Array<WorkflowEdge>;
     created_at: string;
     updated_at: string;
 };
@@ -22,6 +26,7 @@ export namespace Workflow {
     export enum workflow_type {
         DAG = 'dag',
         ACYCLIC = 'acyclic',
+        CRON = 'cron',
     }
 }
 

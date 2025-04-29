@@ -118,7 +118,7 @@ export function LoginAccess({
     if (onEditCredential) {
       onEditCredential(orgId, credentialId);
     } else {
-      console.log("Edit credential", orgId, credentialId);
+    console.log("Edit credential", orgId, credentialId);
     }
   };
   
@@ -126,7 +126,7 @@ export function LoginAccess({
     if (onUpdateAccess) {
       onUpdateAccess(orgId, credentialId, access);
     } else {
-      console.log("Update access", orgId, credentialId, access);
+    console.log("Update access", orgId, credentialId, access);
     }
   };
 

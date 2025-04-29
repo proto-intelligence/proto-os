@@ -17,6 +17,7 @@ export namespace CreateWorkflowDto {
     export enum workflow_type {
         DAG = 'dag',
         ACYCLIC = 'acyclic',
+        CRON = 'cron',
     }
 }
 
