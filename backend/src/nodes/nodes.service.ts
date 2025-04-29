@@ -87,6 +87,10 @@ export class NodesService {
       const nodes = await this.nodeRepository.find({
         where: { workflow_id: workflowId },
         relations: ['task'],
+        order: {
+          position_x: 'ASC',
+          position_y: 'ASC'
+        }
       });
       
       this.logger.log(`OUT <- nodesService.findByWorkflowId(): Found ${nodes.length} nodes for workflow ${workflowId}`);

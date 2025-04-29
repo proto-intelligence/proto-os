@@ -2,7 +2,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Task } from './Task';
 import type { WorkflowEdge } from './WorkflowEdge';
 import type { WorkflowNode } from './WorkflowNode';
 export type Workflow = {
@@ -16,7 +15,6 @@ export type Workflow = {
     usually_takes: string;
     task_map: Array<string>;
     workflow_type: Workflow.workflow_type;
-    tasks: Array<Task>;
     nodes: Array<WorkflowNode>;
     edges: Array<WorkflowEdge>;
     created_at: string;

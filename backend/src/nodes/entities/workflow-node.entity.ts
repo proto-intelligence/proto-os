@@ -49,8 +49,8 @@ export class WorkflowNode {
   @ApiProperty({ example: 200 })
   position_y: number;
 
-  @ManyToOne(() => Workflow, workflow => workflow.nodes)
-  @JoinColumn()
+  @ManyToOne(() => Workflow, workflow => workflow.nodes, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'workflow_id' })
   workflow: Workflow;
 
   @Column('uuid')

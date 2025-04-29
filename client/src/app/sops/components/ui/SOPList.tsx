@@ -5,12 +5,14 @@ import { useWorkflowsControllerSearch } from "@/hooks/backend/useWorkflowsContro
 import { useState } from "react";
 import { Workflow } from "@/lib/api/backend/models/Workflow";
 import { FeatherSearch } from "@subframe/core";
+import { useRouter } from "next/navigation";
 
 interface WorkflowListProps {
   onCreateNew: () => void;
 }
 
 export function SOPList({ onCreateNew }: WorkflowListProps) {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   
   const { data, isLoading } = useWorkflowsControllerSearch({
@@ -20,6 +22,10 @@ export function SOPList({ onCreateNew }: WorkflowListProps) {
   });
 
   const workflows = data?.items || [];
+
+  const handleRowClick = (workflowId: string) => {
+    router.push(`/workflows/${workflowId}`);
+  };
 
   return (
     <div className="space-y-6">
@@ -65,7 +71,11 @@ export function SOPList({ onCreateNew }: WorkflowListProps) {
               <Table.HeaderCell>Updated At</Table.HeaderCell>
             </Table.HeaderRow>
             {workflows.map((workflow: Workflow) => (
-              <Table.Row key={workflow.id}>
+              <Table.Row 
+                key={workflow.id}
+                onClick={() => handleRowClick(workflow.id)}
+                className="cursor-pointer hover:bg-neutral-50"
+              >
                 <Table.Cell>
                   <div className="font-medium">{workflow.name}</div>
                 </Table.Cell>

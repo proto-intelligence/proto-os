@@ -2,7 +2,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsEnum, IsArray, IsDate, IsOptional } from 'class-validator';
-import { Task } from '../../tasks/entities/task.entity';
 import { WorkflowNode } from '../../nodes/entities/workflow-node.entity';
 import { WorkflowEdge } from '../../edges/entities/workflow-edge.entity';
 
@@ -70,15 +69,11 @@ export class Workflow {
   @IsEnum(WorkflowType)
   workflow_type: WorkflowType;
 
-  @OneToMany(() => Task, task => task.workflow)
-  @ApiProperty({ type: () => [Task] })
-  tasks: Task[];
-
-  @OneToMany(() => WorkflowNode, node => node.workflow)
+  @OneToMany(() => WorkflowNode, node => node.workflow, { cascade: true })
   @ApiProperty({ type: () => [WorkflowNode] })
   nodes: WorkflowNode[];
 
-  @OneToMany(() => WorkflowEdge, edge => edge.workflow)
+  @OneToMany(() => WorkflowEdge, edge => edge.workflow, { cascade: true })
   @ApiProperty({ type: () => [WorkflowEdge] })
   edges: WorkflowEdge[];
 

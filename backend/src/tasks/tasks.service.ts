@@ -38,9 +38,7 @@ export class TasksService {
   async findAll(): Promise<Task[]> {
     this.logger.log(`IN -> tasksService.findAll()`);
     try {
-      const tasks = await this.taskRepository.find({
-        relations: ['workflow']
-      });
+      const tasks = await this.taskRepository.find();
       this.logger.log(`OUT <- tasksService.findAll()`);
       return tasks;
     } catch (error) {
@@ -56,8 +54,7 @@ export class TasksService {
     this.logger.log(`IN -> tasksService.findByWorkflowId(${workflowId})`);
     try {
       const tasks = await this.taskRepository.find({
-        where: { workflow_id: workflowId },
-        relations: ['workflow']
+        where: { workflow_id: workflowId }
       });
       this.logger.log(`OUT <- tasksService.findByWorkflowId()`);
       return tasks;
@@ -74,8 +71,7 @@ export class TasksService {
     this.logger.log(`IN -> tasksService.findOne(${id})`);
     try {
       const task = await this.taskRepository.findOne({
-        where: { id },
-        relations: ['workflow']
+        where: { id }
       });
       if (!task) {
         throw new NotFoundException(`Task with ID ${id} not found`);

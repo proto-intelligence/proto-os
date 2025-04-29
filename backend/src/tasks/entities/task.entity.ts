@@ -1,7 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsEnum, IsObject, IsOptional } from 'class-validator';
-import { Workflow } from '../../workflows/entities/workflow.entity';
 
 export enum TaskType {
   ADMINISTRATIVE = 'administrative',
@@ -67,13 +66,10 @@ export class Task {
   @IsObject()
   steps: Record<string, string>;
 
-  @Column()
-  @ApiProperty()
+  @Column({ nullable: true })
+  @ApiProperty({ required: false })
+  @IsOptional()
   workflow_id: string;
-
-  @ManyToOne(() => Workflow, workflow => workflow.tasks, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'workflow_id' })
-  workflow: Workflow;
 
   @CreateDateColumn()
   @ApiProperty()

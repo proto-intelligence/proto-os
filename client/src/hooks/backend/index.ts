@@ -36,4 +36,20 @@ export * from './useLoginPermissionsControllerFindAll';
 export * from './useLoginPermissionsControllerFindOne';
 export * from './useLoginPermissionsControllerUpdate';
 export * from './useLoginPermissionsControllerRemove';
-export * from './useLoginPermissionsControllerFindByUserId'; 
+export * from './useLoginPermissionsControllerFindByUserId';
+
+// Node hooks
+export * from './useNodesControllerCreate';
+export * from './useNodesControllerFindAll';
+export * from './useNodesControllerFindOne';
+export * from './useNodesControllerUpdate';
+export * from './useNodesControllerRemove';
+export * from './useNodesControllerFindByWorkflowId';
+
+// Edge hooks
+export * from './useEdgesControllerCreate';
+export * from './useEdgesControllerFindAll';
+export * from './useEdgesControllerFindOne';
+export * from './useEdgesControllerUpdate';
+export * from './useEdgesControllerRemove';
+export * from './useEdgesControllerFindByWorkflow'; 

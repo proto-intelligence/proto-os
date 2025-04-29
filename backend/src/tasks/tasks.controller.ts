@@ -44,6 +44,51 @@ export class TasksController {
     }
   }
 
+  @Get('search')
+  @ApiOperation({ summary: 'Search tasks with pagination and filters' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Return paginated list of tasks' })
+  async search(@Query() searchDto: SearchTasksDto) {
+    this.logger.log(`IN -> tasksController.search()`);
+    try {
+      const result = await this.tasksService.search(searchDto);
+      this.logger.log(`OUT <- tasksController.search(): Found ${result.items.length} tasks`);
+      return result;
+    } catch (error) {
+      this.logger.error(`Error - tasksController.search(): ${error.message}`, error.stack);
+      throw error;
+    }
+  }
+
+  @Get('filters')
+  @ApiOperation({ summary: 'Get distinct values for filters' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Return distinct values for task types, urgencies, and workflows' })
+  async getFilters() {
+    this.logger.log(`IN -> tasksController.getFilters()`);
+    try {
+      const result = await this.tasksService.getFilters();
+      this.logger.log(`OUT <- tasksController.getFilters(): Retrieved filter values`);
+      return result;
+    } catch (error) {
+      this.logger.error(`Error - tasksController.getFilters(): ${error.message}`, error.stack);
+      throw error;
+    }
+  }
+
+  @Get('autocomplete')
+  @ApiOperation({ summary: 'Get task suggestions for autocomplete' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Return list of task suggestions' })
+  async autocomplete(@Query() autocompleteDto: AutocompleteTasksDto) {
+    this.logger.log(`IN -> tasksController.autocomplete()`);
+    try {
+      const result = await this.tasksService.autocomplete(autocompleteDto);
+      this.logger.log(`OUT <- tasksController.autocomplete(): Found ${result.length} suggestions`);
+      return result;
+    } catch (error) {
+      this.logger.error(`Error - tasksController.autocomplete(): ${error.message}`, error.stack);
+      throw error;
+    }
+  }
+
   @Get('workflow/:workflowId')
   @ApiOperation({ summary: 'Get all tasks for a workflow' })
   @ApiParam({ name: 'workflowId', type: 'string' })
@@ -106,51 +151,6 @@ export class TasksController {
       this.logger.log(`OUT <- tasksController.remove()`);
     } catch (error) {
       this.logger.error(`Error - tasksController.remove(): ${error.message}`);
-      throw error;
-    }
-  }
-
-  @Get('search')
-  @ApiOperation({ summary: 'Search tasks with pagination and filters' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'Return paginated list of tasks' })
-  async search(@Query() searchDto: SearchTasksDto) {
-    this.logger.log(`IN -> tasksController.search()`);
-    try {
-      const result = await this.tasksService.search(searchDto);
-      this.logger.log(`OUT <- tasksController.search(): Found ${result.items.length} tasks`);
-      return result;
-    } catch (error) {
-      this.logger.error(`Error - tasksController.search(): ${error.message}`, error.stack);
-      throw error;
-    }
-  }
-
-  @Get('filters')
-  @ApiOperation({ summary: 'Get distinct values for filters' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'Return distinct values for task types, urgencies, and workflows' })
-  async getFilters() {
-    this.logger.log(`IN -> tasksController.getFilters()`);
-    try {
-      const result = await this.tasksService.getFilters();
-      this.logger.log(`OUT <- tasksController.getFilters(): Retrieved filter values`);
-      return result;
-    } catch (error) {
-      this.logger.error(`Error - tasksController.getFilters(): ${error.message}`, error.stack);
-      throw error;
-    }
-  }
-
-  @Get('autocomplete')
-  @ApiOperation({ summary: 'Get task suggestions for autocomplete' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'Return list of task suggestions' })
-  async autocomplete(@Query() autocompleteDto: AutocompleteTasksDto) {
-    this.logger.log(`IN -> tasksController.autocomplete()`);
-    try {
-      const result = await this.tasksService.autocomplete(autocompleteDto);
-      this.logger.log(`OUT <- tasksController.autocomplete(): Found ${result.length} suggestions`);
-      return result;
-    } catch (error) {
-      this.logger.error(`Error - tasksController.autocomplete(): ${error.message}`, error.stack);
       throw error;
     }
   }

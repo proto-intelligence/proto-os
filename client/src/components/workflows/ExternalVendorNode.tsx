@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { Handle, Position, NodeProps, Node } from '@xyflow/react';
+import { Handle, Position, NodeProps } from '@xyflow/react';
 import { ProtoExternalVendorTask } from '@/ui/components/ProtoExternalVendorTask';
 import { TaskType } from '@/types/task';
 

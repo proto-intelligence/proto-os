@@ -39,7 +39,9 @@ export class WorkflowsService {
   async findAll(): Promise<Workflow[]> {
     this.logger.log(`IN -> workflowsService.findAll()`);
     try {
-      const workflows = await this.workflowRepository.find();
+      const workflows = await this.workflowRepository.find({
+        relations: ['nodes', 'edges'],
+      });
       this.logger.log(`OUT <- workflowsService.findAll()`);
       return workflows;
     } catch (error) {
@@ -54,7 +56,10 @@ export class WorkflowsService {
   async findOne(id: string): Promise<Workflow> {
     this.logger.log(`IN -> workflowsService.findOne(${id})`);
     try {
-      const workflow = await this.workflowRepository.findOne({ where: { id } });
+      const workflow = await this.workflowRepository.findOne({ 
+        where: { id },
+        relations: ['nodes', 'edges'],
+      });
       if (!workflow) {
         throw new NotFoundException(`Workflow with ID ${id} not found`);
       }

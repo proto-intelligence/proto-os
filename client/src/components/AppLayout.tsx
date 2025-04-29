@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { ProtoIconNavButton } from "@/ui/components/ProtoIconNavButton";
-import { FeatherMenu, FeatherX, FeatherWorkflow, FeatherHome, FeatherBook, FeatherSettings } from "@subframe/core";
+import { FeatherMenu, FeatherX, FeatherWorkflow, FeatherHome, FeatherBook, FeatherSettings, FeatherType } from "@subframe/core";
 import { ProtoSidebarCollapsible } from "@/ui/components/ProtoSidebarCollapsible";
 import { ProtoTopbar } from "@/ui/components/ProtoTopbar";
 import Link from "next/link";
@@ -31,6 +31,11 @@ const routes: Route[] = [
     path: "/sops",
     label: "SOPs",
     icon: <FeatherBook />,
+  },
+  {
+    path: "/tasks",
+    label: "Tasks",
+    icon: <FeatherType />,
   },
   {
     path: "/settings",

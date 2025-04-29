@@ -37,61 +37,6 @@ export class WorkflowsService {
         });
     }
     /**
-     * Get a workflow by id
-     * @param id
-     * @returns Workflow
-     * @throws ApiError
-     */
-    public static workflowsControllerFindOne(
-        id: string,
-    ): CancelablePromise<Workflow> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/workflows/{id}',
-            path: {
-                'id': id,
-            },
-        });
-    }
-    /**
-     * Update a workflow
-     * @param id
-     * @param requestBody
-     * @returns Workflow
-     * @throws ApiError
-     */
-    public static workflowsControllerUpdate(
-        id: string,
-        requestBody: UpdateWorkflowDto,
-    ): CancelablePromise<Workflow> {
-        return __request(OpenAPI, {
-            method: 'PATCH',
-            url: '/workflows/{id}',
-            path: {
-                'id': id,
-            },
-            body: requestBody,
-            mediaType: 'application/json',
-        });
-    }
-    /**
-     * Delete a workflow
-     * @param id
-     * @returns void
-     * @throws ApiError
-     */
-    public static workflowsControllerRemove(
-        id: string,
-    ): CancelablePromise<void> {
-        return __request(OpenAPI, {
-            method: 'DELETE',
-            url: '/workflows/{id}',
-            path: {
-                'id': id,
-            },
-        });
-    }
-    /**
      * Search workflows with pagination and filters
      * @param search Search term for name and description
      * @param tags Filter by tags
@@ -163,6 +108,61 @@ export class WorkflowsService {
             query: {
                 'q': q,
                 'limit': limit,
+            },
+        });
+    }
+    /**
+     * Get a workflow by id
+     * @param id
+     * @returns Workflow
+     * @throws ApiError
+     */
+    public static workflowsControllerFindOne(
+        id: string,
+    ): CancelablePromise<Workflow> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/workflows/{id}',
+            path: {
+                'id': id,
+            },
+        });
+    }
+    /**
+     * Update a workflow
+     * @param id
+     * @param requestBody
+     * @returns Workflow
+     * @throws ApiError
+     */
+    public static workflowsControllerUpdate(
+        id: string,
+        requestBody: UpdateWorkflowDto,
+    ): CancelablePromise<Workflow> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
+            url: '/workflows/{id}',
+            path: {
+                'id': id,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
+        });
+    }
+    /**
+     * Delete a workflow
+     * @param id
+     * @returns void
+     * @throws ApiError
+     */
+    public static workflowsControllerRemove(
+        id: string,
+    ): CancelablePromise<void> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/workflows/{id}',
+            path: {
+                'id': id,
             },
         });
     }
