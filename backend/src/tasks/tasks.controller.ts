@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Logger, HttpStatus } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Logger, HttpStatus } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { SearchTasksDto } from './dto/search-tasks.dto';
+import { AutocompleteTasksDto } from './dto/autocomplete-tasks.dto';
 import { Task } from './entities/task.entity';
 
 @ApiTags('tasks')
@@ -104,6 +106,51 @@ export class TasksController {
       this.logger.log(`OUT <- tasksController.remove()`);
     } catch (error) {
       this.logger.error(`Error - tasksController.remove(): ${error.message}`);
+      throw error;
+    }
+  }
+
+  @Get('search')
+  @ApiOperation({ summary: 'Search tasks with pagination and filters' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Return paginated list of tasks' })
+  async search(@Query() searchDto: SearchTasksDto) {
+    this.logger.log(`IN -> tasksController.search()`);
+    try {
+      const result = await this.tasksService.search(searchDto);
+      this.logger.log(`OUT <- tasksController.search(): Found ${result.items.length} tasks`);
+      return result;
+    } catch (error) {
+      this.logger.error(`Error - tasksController.search(): ${error.message}`, error.stack);
+      throw error;
+    }
+  }
+
+  @Get('filters')
+  @ApiOperation({ summary: 'Get distinct values for filters' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Return distinct values for task types, urgencies, and workflows' })
+  async getFilters() {
+    this.logger.log(`IN -> tasksController.getFilters()`);
+    try {
+      const result = await this.tasksService.getFilters();
+      this.logger.log(`OUT <- tasksController.getFilters(): Retrieved filter values`);
+      return result;
+    } catch (error) {
+      this.logger.error(`Error - tasksController.getFilters(): ${error.message}`, error.stack);
+      throw error;
+    }
+  }
+
+  @Get('autocomplete')
+  @ApiOperation({ summary: 'Get task suggestions for autocomplete' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Return list of task suggestions' })
+  async autocomplete(@Query() autocompleteDto: AutocompleteTasksDto) {
+    this.logger.log(`IN -> tasksController.autocomplete()`);
+    try {
+      const result = await this.tasksService.autocomplete(autocompleteDto);
+      this.logger.log(`OUT <- tasksController.autocomplete(): Found ${result.length} suggestions`);
+      return result;
+    } catch (error) {
+      this.logger.error(`Error - tasksController.autocomplete(): ${error.message}`, error.stack);
       throw error;
     }
   }

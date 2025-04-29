@@ -1,9 +1,11 @@
 // src/workflows/workflows.controller.ts
-import { Controller, Get, Post, Body, Patch, Param, Delete, Logger, HttpStatus } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Logger, HttpStatus } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { WorkflowsService } from './workflows.service';
 import { CreateWorkflowDto } from './dto/create-workflow.dto';
 import { UpdateWorkflowDto } from './dto/update-workflow.dto';
+import { SearchWorkflowsDto } from './dto/search-workflows.dto';
+import { AutocompleteWorkflowsDto } from './dto/autocomplete-workflows.dto';
 import { Workflow } from './entities/workflow.entity';
 
 @ApiTags('workflows')
@@ -24,6 +26,51 @@ export class WorkflowsController {
       return result;
     } catch (error) {
       this.logger.error(`Error - workflowsController.create(): ${error.message}`);
+      throw error;
+    }
+  }
+
+  @Get('search')
+  @ApiOperation({ summary: 'Search workflows with pagination and filters' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Return paginated list of workflows' })
+  async search(@Query() searchDto: SearchWorkflowsDto) {
+    this.logger.log(`IN -> workflowsController.search()`);
+    try {
+      const result = await this.workflowsService.search(searchDto);
+      this.logger.log(`OUT <- workflowsController.search(): Found ${result.items.length} workflows`);
+      return result;
+    } catch (error) {
+      this.logger.error(`Error - workflowsController.search(): ${error.message}`, error.stack);
+      throw error;
+    }
+  }
+
+  @Get('filters')
+  @ApiOperation({ summary: 'Get distinct values for filters' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Return distinct values for tags, workflow types, and creators' })
+  async getFilters() {
+    this.logger.log(`IN -> workflowsController.getFilters()`);
+    try {
+      const result = await this.workflowsService.getFilters();
+      this.logger.log(`OUT <- workflowsController.getFilters(): Retrieved filter values`);
+      return result;
+    } catch (error) {
+      this.logger.error(`Error - workflowsController.getFilters(): ${error.message}`, error.stack);
+      throw error;
+    }
+  }
+
+  @Get('autocomplete')
+  @ApiOperation({ summary: 'Get workflow suggestions for autocomplete' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Return list of workflow suggestions' })
+  async autocomplete(@Query() autocompleteDto: AutocompleteWorkflowsDto) {
+    this.logger.log(`IN -> workflowsController.autocomplete()`);
+    try {
+      const result = await this.workflowsService.autocomplete(autocompleteDto);
+      this.logger.log(`OUT <- workflowsController.autocomplete(): Found ${result.length} suggestions`);
+      return result;
+    } catch (error) {
+      this.logger.error(`Error - workflowsController.autocomplete(): ${error.message}`, error.stack);
       throw error;
     }
   }

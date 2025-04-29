@@ -12,6 +12,8 @@ import { OrganizationMembershipsModule } from './organization-memberships/organi
 import { LoginCredentialsModule } from './login-credentials/login-credentials.module';
 import { LoginPermissionsModule } from './login-permissions/login-permissions.module';
 import { ClerkModule } from './clerk/clerk.module';
+import { EdgesModule } from './edges/edges.module';
+import { NodesModule } from './nodes/nodes.module';
 
 @Module({
   imports: [
@@ -35,6 +37,8 @@ import { ClerkModule } from './clerk/clerk.module';
     LoginCredentialsModule,
     LoginPermissionsModule,
     ClerkModule,
+    NodesModule,
+    EdgesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

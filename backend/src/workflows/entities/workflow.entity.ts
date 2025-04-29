@@ -3,10 +3,13 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsEnum, IsArray, IsDate, IsOptional } from 'class-validator';
 import { Task } from '../../tasks/entities/task.entity';
+import { WorkflowNode } from '../../nodes/entities/workflow-node.entity';
+import { WorkflowEdge } from '../../edges/entities/workflow-edge.entity';
 
 export enum WorkflowType {
   DAG = 'dag',
-  ACYCLIC = 'acyclic'
+  ACYCLIC = 'acyclic',
+  CRON = 'cron'
 }
 
 @Entity('workflows')
@@ -16,14 +19,15 @@ export class Workflow {
   id: string;
 
   @Column()
-  @ApiProperty({ example: 'Cardiology Referral' })
+  @ApiProperty({ example: 'Patient Admission Process' })
   @IsString()
   @IsNotEmpty()
   name: string;
 
-  @Column()
-  @ApiProperty({ example: 'A standard cardiologist referral' })
+  @Column({ nullable: true })
+  @ApiProperty({ example: 'Workflow for handling patient admission' })
   @IsString()
+  @IsOptional()
   description: string;
 
   @Column()
@@ -69,6 +73,14 @@ export class Workflow {
   @OneToMany(() => Task, task => task.workflow)
   @ApiProperty({ type: () => [Task] })
   tasks: Task[];
+
+  @OneToMany(() => WorkflowNode, node => node.workflow)
+  @ApiProperty({ type: () => [WorkflowNode] })
+  nodes: WorkflowNode[];
+
+  @OneToMany(() => WorkflowEdge, edge => edge.workflow)
+  @ApiProperty({ type: () => [WorkflowEdge] })
+  edges: WorkflowEdge[];
 
   @CreateDateColumn()
   @ApiProperty()
