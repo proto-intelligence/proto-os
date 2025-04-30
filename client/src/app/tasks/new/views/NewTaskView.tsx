@@ -27,8 +27,7 @@ export function NewTaskView() {
         type,
         urgency,
         usually_takes: "1 hour",
-        steps: {},
-        workflow_id: "",
+        steps: {}
       },
       {
         onSuccess: () => {

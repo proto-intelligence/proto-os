@@ -22,6 +22,7 @@ import { NodeMetadataPanel } from './NodeMetadataPanel';
 import { TaskType, TaskUrgency } from '@/types/task';
 import { useWorkflowsControllerFindOne } from '@/hooks/backend/useWorkflowsControllerFindOne';
 import '@xyflow/react/dist/style.css';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface NodeData extends Record<string, unknown> {
   label: string;
@@ -45,6 +46,7 @@ interface WorkflowEditorProps {
 function WorkflowEditorContent({ workflowId }: WorkflowEditorProps) {
   const { nodes, edges, onNodesChange, onEdgesChange, onConnect, deleteSelectedNodes, updateNodes, updateEdges } = useWorkflowStore();
   const [selectedNode, setSelectedNode] = useState<Node<NodeData> | null>(null);
+  const queryClient = useQueryClient();
 
   // Fetch workflow data if workflowId is provided
   const { data: workflowData } = useWorkflowsControllerFindOne(workflowId || '');
@@ -52,47 +54,49 @@ function WorkflowEditorContent({ workflowId }: WorkflowEditorProps) {
   // Update nodes and edges when workflow data is loaded
   useEffect(() => {
     if (workflowData && workflowId) {
-      // Convert workflow nodes to ReactFlow nodes
-      const flowNodes = (workflowData.nodes || []).map(node => {
-        // Extract data from the node's data property
-        const nodeData = node.data || {};
-        
-        return {
-          id: node.id,
-          type: 'customNode',
-          position: { 
-            x: node.position_x || 0, 
-            y: node.position_y || 0 
-          },
-          data: {
-            label: node.label || 'Task',
-            name: nodeData.name || node.label || 'Task',
-            description: nodeData.description || '',
-            type: nodeData.type || TaskType.ADMINISTRATIVE,
-            urgency: nodeData.urgency || TaskUrgency.MEDIUM,
-            usually_takes: nodeData.usually_takes || '1 week',
-            steps: nodeData.steps || {}
-          },
-          sourcePosition: Position.Bottom,
-          targetPosition: Position.Top
-        };
-      });
+      try {
+        // Parse nodes from the workflow data
+        const parsedNodes = workflowData.nodes.map(node => {
+          const nodeData = typeof node === 'string' ? JSON.parse(node) : node;
+          return {
+            id: nodeData.id,
+            type: 'customNode',
+            position: nodeData.position,
+            data: {
+              label: nodeData.data?.label || 'Task',
+              name: nodeData.data?.name || 'Task',
+              description: nodeData.data?.description || '',
+              type: nodeData.data?.type || TaskType.ADMINISTRATIVE,
+              urgency: nodeData.data?.urgency || TaskUrgency.MEDIUM,
+              usually_takes: nodeData.data?.usually_takes || '1 week',
+              steps: nodeData.data?.steps || {}
+            },
+            sourcePosition: Position.Bottom,
+            targetPosition: Position.Top
+          };
+        });
 
-      // Convert workflow edges to ReactFlow edges
-      const flowEdges = (workflowData.edges || []).map(edge => ({
-        id: edge.id,
-        source: edge.source,
-        target: edge.target,
-        animated: true,
-        style: { stroke: '#b1b1b7' },
-        markerEnd: {
-          type: MarkerType.ArrowClosed,
-        }
-      }));
+        // Parse edges from the workflow data
+        const parsedEdges = workflowData.edges.map(edge => {
+          const edgeData = typeof edge === 'string' ? JSON.parse(edge) : edge;
+          return {
+            id: edgeData.id,
+            source: edgeData.source,
+            target: edgeData.target,
+            animated: true,
+            style: { stroke: '#b1b1b7' },
+            markerEnd: {
+              type: MarkerType.ArrowClosed,
+            }
+          };
+        });
 
-      // Update the store with the fetched data
-      updateNodes(flowNodes);
-      updateEdges(flowEdges);
+        // Update the store with the parsed data
+        updateNodes(parsedNodes);
+        updateEdges(parsedEdges);
+      } catch (error) {
+        console.error('Error parsing workflow data:', error);
+      }
     }
   }, [workflowData, workflowId, updateNodes, updateEdges]);
 

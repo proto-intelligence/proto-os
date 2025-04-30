@@ -89,22 +89,6 @@ export class TasksController {
     }
   }
 
-  @Get('workflow/:workflowId')
-  @ApiOperation({ summary: 'Get all tasks for a workflow' })
-  @ApiParam({ name: 'workflowId', type: 'string' })
-  @ApiResponse({ status: HttpStatus.OK, type: [Task] })
-  async findByWorkflowId(@Param('workflowId') workflowId: string): Promise<Task[]> {
-    this.logger.log(`IN -> tasksController.findByWorkflowId(${workflowId})`);
-    try {
-      const result = await this.tasksService.findByWorkflowId(workflowId);
-      this.logger.log(`OUT <- tasksController.findByWorkflowId()`);
-      return result;
-    } catch (error) {
-      this.logger.error(`Error - tasksController.findByWorkflowId(): ${error.message}`);
-      throw error;
-    }
-  }
-
   @Get(':id')
   @ApiOperation({ summary: 'Get a task by id' })
   @ApiParam({ name: 'id', type: 'string' })

@@ -112,23 +112,6 @@ export class TasksService {
         });
     }
     /**
-     * Get all tasks for a workflow
-     * @param workflowId
-     * @returns Task
-     * @throws ApiError
-     */
-    public static tasksControllerFindByWorkflowId(
-        workflowId: string,
-    ): CancelablePromise<Array<Task>> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/tasks/workflow/{workflowId}',
-            path: {
-                'workflowId': workflowId,
-            },
-        });
-    }
-    /**
      * Get a task by id
      * @param id
      * @returns Task

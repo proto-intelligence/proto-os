@@ -12,6 +12,14 @@ export type CreateWorkflowDto = {
     usually_takes: string;
     task_map: Array<string>;
     workflow_type: CreateWorkflowDto.workflow_type;
+    /**
+     * An array of arbitrary JSON node objects
+     */
+    nodes: Array<Record<string, any>>;
+    /**
+     * An array of arbitrary JSON edge objects
+     */
+    edges: Array<Record<string, any>>;
 };
 export namespace CreateWorkflowDto {
     export enum workflow_type {

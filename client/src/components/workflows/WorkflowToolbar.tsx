@@ -14,6 +14,8 @@ import { useState } from "react";
 import { useTasksControllerSearch } from "@/hooks/backend/useTasksControllerSearch";
 import { Task } from "@/lib/api/backend/models/Task";
 import { useWorkflowsControllerFindOne } from "@/hooks/backend/useWorkflowsControllerFindOne";
+import { useWorkflowsControllerUpdate } from "@/hooks/backend/useWorkflowsControllerUpdate";
+import { toast } from "sonner";
 
 interface WorkflowToolbarProps {
   onDeleteNodes: () => void;
@@ -45,6 +47,9 @@ export function WorkflowToolbar({
     sortOrder: 'ASC'
   });
 
+  // Get the update mutation hook
+  const { mutate: updateWorkflow, isPending: isSaving } = useWorkflowsControllerUpdate();
+
   // Transform tasks data into options for the dropdown
   const taskOptions = tasksData?.items?.map((task: Task) => ({
     id: task.id,
@@ -67,18 +72,33 @@ export function WorkflowToolbar({
   };
 
   const handleSave = async () => {
-    try {
-      const workflowData = {
-        nodes,
-        edges,
-        timestamp: new Date().toISOString(),
-      };
+    if (!workflowId) {
+      toast.error("No workflow ID provided");
+      return;
+    }
 
-      await navigator.clipboard.writeText(
-        JSON.stringify(workflowData, null, 2)
+    try {
+      updateWorkflow(
+        {
+          id: workflowId,
+          data: {
+            nodes: nodes,
+            edges: edges
+          }
+        },
+        {
+          onSuccess: () => {
+            toast.success("Workflow saved successfully");
+          },
+          onError: (error) => {
+            toast.error("Failed to save workflow");
+            console.error("Failed to save workflow:", error);
+          }
+        }
       );
     } catch (error) {
-      console.error("Failed to copy workflow data:", error);
+      toast.error("Failed to save workflow");
+      console.error("Failed to save workflow:", error);
     }
   };
 
@@ -133,8 +153,9 @@ export function WorkflowToolbar({
             size="small"
             icon={<FeatherSave />}
             onClick={handleSave}
+            disabled={isSaving || !workflowId}
           >
-            Save
+            {isSaving ? "Saving..." : "Save"}
           </Button>
         </>
       }

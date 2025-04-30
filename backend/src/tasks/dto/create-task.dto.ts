@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsEnum, IsObject, IsUUID, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, IsEnum, IsObject } from 'class-validator';
 import { TaskType, TaskUrgency } from '../entities/task.entity';
 
 export class CreateTaskDto {
@@ -35,9 +35,4 @@ export class CreateTaskDto {
   })
   @IsObject()
   steps: Record<string, string>;
-
-  @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000', required: false })
-  @IsUUID()
-  @IsOptional()
-  workflow_id?: string;
 } 

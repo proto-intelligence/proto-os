@@ -48,23 +48,6 @@ export class TasksService {
   }
 
   /**
-   * Find tasks by workflow ID
-   */
-  async findByWorkflowId(workflowId: string): Promise<Task[]> {
-    this.logger.log(`IN -> tasksService.findByWorkflowId(${workflowId})`);
-    try {
-      const tasks = await this.taskRepository.find({
-        where: { workflow_id: workflowId }
-      });
-      this.logger.log(`OUT <- tasksService.findByWorkflowId()`);
-      return tasks;
-    } catch (error) {
-      this.logger.error(`Error - tasksService.findByWorkflowId(): ${error.message}`);
-      throw error;
-    }
-  }
-
-  /**
    * Find one task by id
    */
   async findOne(id: string): Promise<Task> {
@@ -128,7 +111,6 @@ export class TasksService {
         search,
         type,
         urgency,
-        workflowId,
         createdFrom,
         createdTo,
         page = 1,
@@ -155,11 +137,6 @@ export class TasksService {
       // Apply urgency filter
       if (urgency) {
         query.andWhere('task.urgency = :urgency', { urgency });
-      }
-
-      // Apply workflow filter
-      if (workflowId) {
-        query.andWhere('task.workflow_id = :workflowId', { workflowId });
       }
 
       // Apply date range filter
@@ -196,12 +173,12 @@ export class TasksService {
 
   /**
    * Get distinct values for filters
-   * @returns Object containing distinct values for task types, urgencies, and workflows
+   * @returns Object containing distinct values for task types and urgencies
    */
   async getFilters() {
     this.logger.log(`IN -> tasksService.getFilters()`);
     try {
-      const [types, urgencies, workflows] = await Promise.all([
+      const [types, urgencies] = await Promise.all([
         this.taskRepository
           .createQueryBuilder('task')
           .select('DISTINCT task.type', 'type')
@@ -210,16 +187,11 @@ export class TasksService {
           .createQueryBuilder('task')
           .select('DISTINCT task.urgency', 'urgency')
           .getRawMany(),
-        this.taskRepository
-          .createQueryBuilder('task')
-          .select('DISTINCT task.workflow_id', 'workflowId')
-          .getRawMany(),
       ]);
 
       const result = {
         types: types.map(t => t.type),
         urgencies: urgencies.map(u => u.urgency),
-        workflowIds: workflows.map(w => w.workflowId),
       };
 
       this.logger.log(`OUT <- tasksService.getFilters(): Retrieved filter values`);

@@ -47,4 +47,30 @@ export class CreateWorkflowDto {
   @ApiProperty({ enum: WorkflowType, example: WorkflowType.DAG })
   @IsEnum(WorkflowType)
   workflow_type: WorkflowType;
+
+  @ApiProperty({
+    type: 'array',
+    items: {
+      type: 'object',
+      additionalProperties: true,
+    },
+    description: 'An array of arbitrary JSON node objects',
+    example: []
+  })
+  @IsArray()
+  @IsOptional()
+  nodes?: Record<string, any>[];
+
+  @ApiProperty({
+    type: 'array',
+    items: {
+      type: 'object',
+      additionalProperties: true,
+    },
+    description: 'An array of arbitrary JSON edge objects',
+    example: []
+  })
+  @IsArray()
+  @IsOptional()
+  edges?: Record<string, any>[];
 }

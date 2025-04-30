@@ -1,9 +1,7 @@
 // src/workflows/entities/workflow.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
-import { ApiProperty } from '@nestjs/swagger';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsEnum, IsArray, IsDate, IsOptional } from 'class-validator';
-import { WorkflowNode } from '../../nodes/entities/workflow-node.entity';
-import { WorkflowEdge } from '../../edges/entities/workflow-edge.entity';
 
 export enum WorkflowType {
   DAG = 'dag',
@@ -69,13 +67,29 @@ export class Workflow {
   @IsEnum(WorkflowType)
   workflow_type: WorkflowType;
 
-  @OneToMany(() => WorkflowNode, node => node.workflow, { cascade: true })
-  @ApiProperty({ type: () => [WorkflowNode] })
-  nodes: WorkflowNode[];
+  @Column('jsonb', { nullable: true })
+  @ApiProperty({
+    type: 'array',
+    items: {
+      type: 'object',
+      additionalProperties: true,
+    },
+    description: 'An array of arbitrary JSON node objects',
+  })
+  @IsArray()
+  nodes: Record<string, any>[];
 
-  @OneToMany(() => WorkflowEdge, edge => edge.workflow, { cascade: true })
-  @ApiProperty({ type: () => [WorkflowEdge] })
-  edges: WorkflowEdge[];
+  @Column('jsonb', { nullable: true })
+  @ApiProperty({
+    type: 'array',
+    items: {
+      type: 'object',
+      additionalProperties: true,
+    },
+    description: 'An array of arbitrary JSON node objects',
+  })
+  @IsArray()
+  edges: Record<string, any>[];
 
   @CreateDateColumn()
   @ApiProperty()

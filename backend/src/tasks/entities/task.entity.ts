@@ -66,11 +66,6 @@ export class Task {
   @IsObject()
   steps: Record<string, string>;
 
-  @Column({ nullable: true })
-  @ApiProperty({ required: false })
-  @IsOptional()
-  workflow_id: string;
-
   @CreateDateColumn()
   @ApiProperty()
   created_at: Date;

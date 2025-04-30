@@ -10,7 +10,6 @@ export type Task = {
     urgency: Task.urgency;
     usually_takes: string;
     steps: Record<string, any>;
-    workflow_id?: string;
     created_at: string;
     updated_at: string;
 };

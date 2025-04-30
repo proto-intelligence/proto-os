@@ -9,7 +9,6 @@ export type UpdateTaskDto = {
     urgency?: UpdateTaskDto.urgency;
     usually_takes?: string;
     steps?: Record<string, any>;
-    workflow_id?: string;
 };
 export namespace UpdateTaskDto {
     export enum type {

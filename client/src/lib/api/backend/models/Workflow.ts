@@ -2,8 +2,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { WorkflowEdge } from './WorkflowEdge';
-import type { WorkflowNode } from './WorkflowNode';
 export type Workflow = {
     id: string;
     name: string;
@@ -15,8 +13,14 @@ export type Workflow = {
     usually_takes: string;
     task_map: Array<string>;
     workflow_type: Workflow.workflow_type;
-    nodes: Array<WorkflowNode>;
-    edges: Array<WorkflowEdge>;
+    /**
+     * An array of arbitrary JSON node objects
+     */
+    nodes: Array<Record<string, any>>;
+    /**
+     * An array of arbitrary JSON node objects
+     */
+    edges: Array<Record<string, any>>;
     created_at: string;
     updated_at: string;
 };
