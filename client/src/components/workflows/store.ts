@@ -2,13 +2,14 @@ import { create } from 'zustand';
 import { Node, Edge, NodeChange, EdgeChange, applyNodeChanges, applyEdgeChanges, addEdge, Connection, Position, MarkerType } from '@xyflow/react';
 import { nanoid } from 'nanoid';
 import { getLayoutedElements } from './utils/layout';
-import { TaskType, TaskUrgency } from '@/types/task';
+import { Task } from '@/lib/api/backend/models/Task';
 
 interface WorkflowState {
   nodes: Node[];
   edges: Edge[];
   selectedNodes: string[];
-  addNode: (type: string, position: { x: number; y: number }) => void;
+  layoutDirection: 'TB' | 'LR';
+  addNode: (taskData: Task & { position: { x: number; y: number } }) => void;
   updateNodes: (nodes: Node[]) => void;
   updateEdges: (edges: Edge[]) => void;
   layoutNodes: (direction: 'TB' | 'LR') => void;
@@ -17,30 +18,21 @@ interface WorkflowState {
   onConnect: (connection: Connection) => void;
   setSelectedNodes: (nodeIds: string[]) => void;
   deleteSelectedNodes: () => void;
+  setLayoutDirection: (direction: 'TB' | 'LR') => void;
 }
 
 export const useWorkflowStore = create<WorkflowState>((set) => ({
   nodes: [],
   edges: [],
   selectedNodes: [],
-  addNode: (type: string, position: { x: number; y: number }) => {
+  layoutDirection: 'TB',
+  setLayoutDirection: (direction) => set({ layoutDirection: direction }),
+  addNode: (taskData) => {
     const newNode: Node = {
       id: nanoid(),
       type: 'customNode',
-      position,
-      data: {
-        label: type,
-        name: 'New Task',
-        description: 'This is a default task description',
-        type: TaskType.ADMINISTRATIVE,
-        urgency: TaskUrgency.MEDIUM,
-        usually_takes: '1 week',
-        steps: {
-          'Step 1': 'Change the task name',
-          'Step 2': 'Implementation',
-          'Step 3': 'Review'
-        }
-      },
+      position: taskData.position,
+      data: taskData,
       sourcePosition: Position.Bottom,
       targetPosition: Position.Top,
     };
@@ -51,7 +43,15 @@ export const useWorkflowStore = create<WorkflowState>((set) => ({
   layoutNodes: (direction) =>
     set((state) => {
       const { nodes, edges } = getLayoutedElements(state.nodes, state.edges, direction);
-      return { nodes, edges };
+      
+      // Update node positions based on layout direction
+      const updatedNodes = nodes.map(node => ({
+        ...node,
+        sourcePosition: direction === 'TB' ? Position.Bottom : Position.Right,
+        targetPosition: direction === 'TB' ? Position.Top : Position.Left
+      }));
+
+      return { nodes: updatedNodes, edges };
     }),
   onNodesChange: (changes) =>
     set((state) => {

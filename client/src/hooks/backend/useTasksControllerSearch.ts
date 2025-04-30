@@ -16,7 +16,7 @@ interface SearchParams {
 
 export function useTasksControllerSearch(params: SearchParams = {}) {
   return useQuery({
-    queryKey: ['tasksControllerSearch', params],
+    queryKey: ['tasks', 'list', params],
     queryFn: () => TasksService.tasksControllerSearch(
       params.search,
       params.type,
@@ -29,5 +29,8 @@ export function useTasksControllerSearch(params: SearchParams = {}) {
       params.sortBy,
       params.sortOrder
     ),
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    staleTime: 0,
   });
 } 

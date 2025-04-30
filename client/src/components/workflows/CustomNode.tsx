@@ -1,41 +1,27 @@
 import { Handle, Position, NodeProps } from "@xyflow/react";
 import { ProtoManualTask } from "@/ui/components/ProtoManualTask";
 import { Badge } from "@/ui";
-import { TaskType, TaskUrgency } from "@/types/task";
+import { Task } from "@/lib/api/backend/models/Task";
+import { useState } from "react";
 
-interface CustomNodeData {
-  label: string;
-  name: string;
-  description: string;
-  type: TaskType;
-  urgency: TaskUrgency;
-  usually_takes: string;
-  steps: Record<string, string>;
-}
-
-const defaultNodeData: CustomNodeData = {
-  label: "Task",
-  name: "New Task",
-  description: "This is a default task description",
-  type: TaskType.ADMINISTRATIVE,
-  urgency: TaskUrgency.MEDIUM,
-  usually_takes: "1 week",
-  steps: {
-    "Step 1": "Initial planning",
-    "Step 2": "Implementation",
-    "Step 3": "Review",
-  },
+type CustomNodeData = Task & {
+  position: { x: number; y: number };
 };
 
-export function CustomNode({ data }: NodeProps) {
-  const nodeData = { ...defaultNodeData, ...data } as CustomNodeData;
+interface CustomNodeProps extends NodeProps {
+  layoutDirection: 'TB' | 'LR';
+}
 
-  const getUrgencyBadgeVariant = (urgency: TaskUrgency) => {
+export function CustomNode({ data, layoutDirection }: CustomNodeProps) {
+  const nodeData = data as CustomNodeData;
+  const [isHovered, setIsHovered] = useState(false);
+
+  const getUrgencyBadgeVariant = (urgency: Task.urgency) => {
     switch (urgency) {
-      case TaskUrgency.HIGH:
-      case TaskUrgency.CRITICAL:
+      case Task.urgency.HIGH:
+      case Task.urgency.CRITICAL:
         return "error";
-      case TaskUrgency.MEDIUM:
+      case Task.urgency.MEDIUM:
         return "warning";
       default:
         return "neutral";
@@ -43,13 +29,26 @@ export function CustomNode({ data }: NodeProps) {
   };
 
   return (
-    <div>
-      <Handle type="target" position={Position.Top} isConnectable={true} />
+    <div
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {layoutDirection === 'TB' ? (
+        <>
+          <Handle type="target" position={Position.Top} isConnectable={true} />
+          <Handle type="source" position={Position.Bottom} isConnectable={true} />
+        </>
+      ) : (
+        <>
+          <Handle type="target" position={Position.Left} isConnectable={true} />
+          <Handle type="source" position={Position.Right} isConnectable={true} />
+        </>
+      )}
       <ProtoManualTask
         mainSlot={
           <div className="p-2">
             <div className="flex items-center justify-between mb-2">
-              <div className="font-bold">{nodeData.label}</div>
+              <div className="font-bold">{nodeData.name}</div>
               <Badge variant={getUrgencyBadgeVariant(nodeData.urgency)}>
                 {nodeData.urgency}
               </Badge>
@@ -65,9 +64,9 @@ export function CustomNode({ data }: NodeProps) {
           </div>
         }
         variant="default"
+        _default={isHovered ? "hover" : "default"}
         className="w-full"
       />
-      <Handle type="source" position={Position.Bottom} isConnectable={true} />
     </div>
   );
 }

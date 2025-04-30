@@ -3,16 +3,7 @@ import { TextField } from "@/ui/components/TextField";
 import { Table } from "@/ui/components/Table";
 import { TaskType, TaskUrgency } from "@/types/task";
 import { FeatherSearch } from "@subframe/core";
-
-interface Task {
-  id: string;
-  name: string;
-  description: string;
-  type: TaskType;
-  urgency: TaskUrgency;
-  status: string;
-  dueDate: string;
-}
+import { Task } from "@/lib/api/backend/models/Task";
 
 interface TaskListProps {
   tasks: Task[];
@@ -106,10 +97,10 @@ export function TaskList({
               <Table.HeaderCell>Description</Table.HeaderCell>
               <Table.HeaderCell>Type</Table.HeaderCell>
               <Table.HeaderCell>Urgency</Table.HeaderCell>
-              <Table.HeaderCell>Status</Table.HeaderCell>
-              <Table.HeaderCell>Due Date</Table.HeaderCell>
+              <Table.HeaderCell>Usually Takes</Table.HeaderCell>
+              <Table.HeaderCell>Created At</Table.HeaderCell>
             </Table.HeaderRow>
-            {tasks.map((task: Task) => (
+            {tasks.map((task) => (
               <Table.Row key={task.id}>
                 <Table.Cell>
                   <div className="font-medium">{task.name}</div>
@@ -119,8 +110,8 @@ export function TaskList({
                 </Table.Cell>
                 <Table.Cell>{task.type}</Table.Cell>
                 <Table.Cell>{task.urgency}</Table.Cell>
-                <Table.Cell>{task.status}</Table.Cell>
-                <Table.Cell>{new Date(task.dueDate).toLocaleDateString()}</Table.Cell>
+                <Table.Cell>{task.usually_takes}</Table.Cell>
+                <Table.Cell>{new Date(task.created_at).toLocaleDateString()}</Table.Cell>
               </Table.Row>
             ))}
           </Table>

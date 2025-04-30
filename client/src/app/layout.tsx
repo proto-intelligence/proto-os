@@ -6,6 +6,28 @@ import { Providers } from "@/components/Providers";
 export const metadata: Metadata = {
   title: "Proto",
   description: "Workflow Creator",
+  icons: {
+    // default “favicon.ico”:
+    icon: "/favicon_light.png",
+    // you can specify additional icons:
+    shortcut: "/favicon_light.png",
+    apple: "/favicon_light.png",
+  },
+  openGraph: {
+    title: "Proto",
+    description: "SOP Manager – build and share your SOPs in seconds",
+    url: process.env.NEXT_PUBLIC_SITE_URL,
+    siteName: "Proto",
+    type: "website",
+    images: [
+      {
+        url: "/og.png", // put this in `/public`
+        width: 1200,
+        height: 630,
+        alt: "Proto Workflow Creator",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({

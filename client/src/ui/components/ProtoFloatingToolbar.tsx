@@ -2,9 +2,9 @@
 /*
  * Documentation:
  * Proto Floating Toolbar — https://app.subframe.com/8616996521e5/library?component=Proto+Floating+Toolbar_98eb3d13-4d73-4472-9b7e-57e1e4c27d60
+ * Button — https://app.subframe.com/8616996521e5/library?component=Button_3b777358-b86b-40af-9327-891efc6826fe
  * Select — https://app.subframe.com/8616996521e5/library?component=Select_bb88f90b-8c43-4b73-9c2f-3558ce7838f3
  * Icon Button — https://app.subframe.com/8616996521e5/library?component=Icon+Button_af9405b1-8c54-4e01-9786-5aad308224f6
- * Button — https://app.subframe.com/8616996521e5/library?component=Button_3b777358-b86b-40af-9327-891efc6826fe
  */
 
 import React from "react";

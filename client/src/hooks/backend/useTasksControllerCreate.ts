@@ -8,7 +8,7 @@ export function useTasksControllerCreate() {
   return useMutation({
     mutationFn: (data: CreateTaskDto) => TasksService.tasksControllerCreate(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['tasks'], exact: false });
     },
   });
 } 

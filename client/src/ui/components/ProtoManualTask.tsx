@@ -16,6 +16,7 @@ interface ProtoManualTaskRootProps
   mainSlot?: React.ReactNode;
   headerSlot?: React.ReactNode;
   variant?: "default";
+  _default?: "default" | "hover";
   className?: string;
 }
 
@@ -28,6 +29,7 @@ const ProtoManualTaskRoot = React.forwardRef<
     mainSlot,
     headerSlot,
     variant = "default",
+    _default = "default",
     className,
     ...otherProps
   }: ProtoManualTaskRootProps,
@@ -36,7 +38,11 @@ const ProtoManualTaskRoot = React.forwardRef<
   return (
     <div
       className={SubframeUtils.twClassNames(
-        "flex w-full flex-col items-start rounded-md border border-solid border-neutral-border bg-default-background shadow-sm",
+        "group/20cb2dcb flex w-full flex-col items-start rounded-md border border-solid border-neutral-border bg-default-background shadow-sm",
+        {
+          "border-none shadow-lg outline-none transition-[outline-offset] duration-200 hover:outline hover:outline-2 hover:[outline-color:rgba(0,0,0,0.1)] hover:outline-offset-4":
+            _default === "hover",
+        },
         className
       )}
       ref={ref as any}

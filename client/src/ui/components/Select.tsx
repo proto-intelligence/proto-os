@@ -192,6 +192,7 @@ const SelectRoot = React.forwardRef<HTMLElement, SelectRootProps>(
       name,
       autoComplete,
       required,
+      form,
       ...otherProps
     }: SelectRootProps,
     ref
@@ -209,6 +210,7 @@ const SelectRoot = React.forwardRef<HTMLElement, SelectRootProps>(
         name={name}
         autoComplete={autoComplete}
         required={required}
+        form={form}
       >
         <div
           className={SubframeUtils.twClassNames(

@@ -25,7 +25,7 @@ function HomePage() {
           </p>
         </div>
         <div className="flex gap-4">
-          <Link href="/workflows">
+          <Link href="/sops">
             <Button variant="brand-primary" size="large">
               Create Workflow
             </Button>

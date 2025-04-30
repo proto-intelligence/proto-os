@@ -23,11 +23,6 @@ const routes: Route[] = [
     icon: <FeatherHome />,
   },
   {
-    path: "/workflows",
-    label: "Workflows",
-    icon: <FeatherWorkflow />,
-  },
-  {
     path: "/sops",
     label: "SOPs",
     icon: <FeatherBook />,
@@ -58,7 +53,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   };
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden">
+    <div className="flex h-screen w-screen overflow-y-auto">
       <ProtoSidebarCollapsible
         expanded={isSidebarExpanded}
         headerSlot={

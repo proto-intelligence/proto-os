@@ -6,9 +6,17 @@ dagreGraph.setDefaultEdgeLabel(() => ({}));
 
 const NODE_WIDTH = 172;
 const NODE_HEIGHT = 36;
+const NODE_SPACING = 200; // Increased from 100 to 200
+const RANK_SPACING = 200; // Increased from 100 to 200
 
 export function getLayoutedElements(nodes: Node[], edges: Edge[], direction: 'TB' | 'LR' = 'TB') {
-  dagreGraph.setGraph({ rankdir: direction });
+  dagreGraph.setGraph({ 
+    rankdir: direction,
+    nodesep: NODE_SPACING,
+    ranksep: RANK_SPACING,
+    marginx: 100, // Increased from 50 to 100
+    marginy: 100  // Increased from 50 to 100
+  });
 
   // Clear the graph
   dagreGraph.nodes().forEach((node) => {
