@@ -34,7 +34,7 @@ import { ClerkModule } from './clerk/clerk.module';
     OrganizationMembershipsModule,
     LoginCredentialsModule,
     LoginPermissionsModule,
-    ClerkModule
+    ClerkModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -5,5 +5,14 @@ export default {
     autoLoadEntities: true,
   },
   node_env: 'staging',
-  port: process.env.PORT || 3000
+  port: process.env.PORT || 3000,
+  cors: {
+    origin: [
+      'http://localhost:3000',
+      'https://workflow-creator-develop.up.railway.app',
+    ],
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+  },
 };
