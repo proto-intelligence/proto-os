@@ -1,19 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsEnum, IsObject, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, IsArray, IsOptional } from 'class-validator';
 
-export enum TaskType {
-  ADMINISTRATIVE = 'administrative',
-  CLINICAL = 'clinical',
-  TECHNICAL = 'technical'
-}
-
-export enum TaskUrgency {
-  LOW = 'low',
-  MEDIUM = 'medium',
-  HIGH = 'high',
-  CRITICAL = 'critical'
-}
+export type TaskType = string;
+export type TaskUrgency = string;
 
 @Entity('tasks')
 export class Task {
@@ -32,22 +22,16 @@ export class Task {
   @IsString()
   description: string;
 
-  @Column({
-    type: 'enum',
-    enum: TaskType,
-    default: TaskType.ADMINISTRATIVE
-  })
-  @ApiProperty({ enum: TaskType, example: TaskType.ADMINISTRATIVE })
-  @IsEnum(TaskType)
+  @Column()
+  @ApiProperty({ example: 'administrative' })
+  @IsString()
+  @IsNotEmpty()
   type: TaskType;
 
-  @Column({
-    type: 'enum',
-    enum: TaskUrgency,
-    default: TaskUrgency.MEDIUM
-  })
-  @ApiProperty({ enum: TaskUrgency, example: TaskUrgency.MEDIUM })
-  @IsEnum(TaskUrgency)
+  @Column()
+  @ApiProperty({ example: 'medium' })
+  @IsString()
+  @IsNotEmpty()
   urgency: TaskUrgency;
 
   @Column()
@@ -57,14 +41,31 @@ export class Task {
 
   @Column('jsonb')
   @ApiProperty({
-    example: {
-      'Step 1': 'Contact patient',
-      'Step 2': 'Check availability',
-      'Step 3': 'Confirm appointment'
-    }
+    type: 'array',
+    items: {
+      type: 'object',
+      additionalProperties: true,
+    },
+    example: [
+      { step: 'Contact patient', notes: 'Call during business hours' },
+      { step: 'Check availability', notes: 'Use scheduling system' },
+      { step: 'Confirm appointment', notes: 'Send confirmation email' }
+    ]
   })
-  @IsObject()
-  steps: Record<string, string>;
+  @IsArray()
+  steps: Record<string, any>[];
+
+  @Column()
+  @ApiProperty({ example: 'clerk_user_id' })
+  @IsString()
+  @IsNotEmpty()
+  created_by: string;
+
+  @Column({ nullable: true })
+  @ApiProperty({ example: 'clerk_org_id' })
+  @IsString()
+  @IsOptional()
+  organization_id?: string;
 
   @CreateDateColumn()
   @ApiProperty()

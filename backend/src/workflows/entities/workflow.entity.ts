@@ -33,9 +33,15 @@ export class Workflow {
   due_date: string;
 
   @Column()
-  @ApiProperty({ example: 'Dr. Smith' })
+  @ApiProperty({ example: 'clerk_user_id' })
   @IsString()
   created_by: string;
+
+  @Column({ nullable: true })
+  @ApiProperty({ example: 'clerk_org_id' })
+  @IsString()
+  @IsOptional()
+  organization_id: string;
 
   @Column({ nullable: true })
   @ApiProperty({ example: 'we usually use x person for this referral' })
@@ -52,11 +58,6 @@ export class Workflow {
   @ApiProperty({ example: '1 week' })
   @IsString()
   usually_takes: string;
-
-  @Column('simple-array')
-  @ApiProperty({ example: ['Task A', 'Task B', 'Task C'] })
-  @IsArray()
-  task_map: string[];
 
   @Column({
     type: 'enum',

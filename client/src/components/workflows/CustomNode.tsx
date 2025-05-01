@@ -16,12 +16,12 @@ export function CustomNode({ data, layoutDirection }: CustomNodeProps) {
   const nodeData = data as CustomNodeData;
   const [isHovered, setIsHovered] = useState(false);
 
-  const getUrgencyBadgeVariant = (urgency: Task.urgency) => {
-    switch (urgency) {
-      case Task.urgency.HIGH:
-      case Task.urgency.CRITICAL:
+  const getUrgencyBadgeVariant = (urgency: string) => {
+    switch (urgency.toLowerCase()) {
+      case 'high':
+      case 'critical':
         return "error";
-      case Task.urgency.MEDIUM:
+      case 'medium':
         return "warning";
       default:
         return "neutral";

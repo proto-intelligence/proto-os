@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { SignInButton, SignUpButton } from "@/components/auth";
+import { SignInButton, SignUpButton } from '@clerk/nextjs'
 import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import { Button } from "@/ui/components/Button";
 
 function MinimalSignInPage() {
   const { isSignedIn } = useAuth();
@@ -33,13 +34,26 @@ function MinimalSignInPage() {
               Welcome
             </span>
             <span className="text-body font-body text-subtext-color">
-              Login or sign up below
+              Choose an option to continue
             </span>
           </div>
         </div>
         <div className="flex w-full flex-col items-center justify-center gap-4 px-1 py-1">
-          <SignInButton className="w-full" />
-          <SignUpButton className="w-full" />
+          <SignInButton mode="modal">
+            <Button variant="brand-primary" size="medium" className="w-full">
+              Sign In
+            </Button>
+          </SignInButton>
+          <div className="flex w-full items-center justify-center gap-2">
+            <div className="h-px flex-1 bg-gray-200" />
+            <span className="text-body font-body text-subtext-color">or</span>
+            <div className="h-px flex-1 bg-gray-200" />
+          </div>
+          <SignUpButton mode="modal">
+            <Button variant="neutral-secondary" size="medium" className="w-full">
+              Create Account
+            </Button>
+          </SignUpButton>
         </div>
       </div>
     </div>

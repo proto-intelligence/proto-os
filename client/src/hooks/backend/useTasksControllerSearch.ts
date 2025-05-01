@@ -1,33 +1,31 @@
 import { useQuery } from '@tanstack/react-query';
 import { TasksService } from '@/lib/api/backend/services/TasksService';
+import { Task } from '@/lib/api/backend/models/Task';
 
 interface SearchParams {
   search?: string;
-  type?: 'administrative' | 'clinical' | 'technical';
-  urgency?: 'low' | 'medium' | 'high' | 'critical';
-  workflowId?: string;
-  createdFrom?: string;
-  createdTo?: string;
   page?: number;
   limit?: number;
-  sortBy?: string;
-  sortOrder?: 'ASC' | 'DESC';
+}
+
+interface SearchResponse {
+  data: Task[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
 export function useTasksControllerSearch(params: SearchParams = {}) {
-  return useQuery({
-    queryKey: ['tasks', 'list', params],
+  return useQuery<SearchResponse>({
+    queryKey: ['tasks', 'search', params],
     queryFn: () => TasksService.tasksControllerSearch(
       params.search,
-      params.type,
-      params.urgency,
-      params.workflowId,
-      params.createdFrom,
-      params.createdTo,
-      params.page,
-      params.limit,
-      params.sortBy,
-      params.sortOrder
+      undefined, // type
+      undefined, // urgency
+      undefined, // workflowId
+      params.page?.toString() ?? '1',
+      params.limit?.toString() ?? '10',
     ),
     refetchOnMount: true,
     refetchOnWindowFocus: true,

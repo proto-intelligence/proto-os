@@ -42,6 +42,8 @@ export class TasksService {
      * @param type Filter by task type
      * @param urgency Filter by task urgency
      * @param workflowId Filter by workflow ID
+     * @param createdBy Filter by creator
+     * @param organizationId Filter by organization
      * @param createdFrom Filter by creation date range start
      * @param createdTo Filter by creation date range end
      * @param page
@@ -53,16 +55,24 @@ export class TasksService {
      */
     public static tasksControllerSearch(
         search?: string,
-        type?: 'administrative' | 'clinical' | 'technical',
-        urgency?: 'low' | 'medium' | 'high' | 'critical',
+        type?: string,
+        urgency?: string,
         workflowId?: string,
+        createdBy?: string,
+        organizationId?: string,
         createdFrom?: string,
         createdTo?: string,
         page: number = 1,
         limit: number = 10,
         sortBy: string = 'created_at',
         sortOrder: 'ASC' | 'DESC' = 'DESC',
-    ): CancelablePromise<any> {
+    ): CancelablePromise<{
+        data: Task[];
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    }> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/tasks/search',
@@ -71,6 +81,8 @@ export class TasksService {
                 'type': type,
                 'urgency': urgency,
                 'workflowId': workflowId,
+                'createdBy': createdBy,
+                'organizationId': organizationId,
                 'createdFrom': createdFrom,
                 'createdTo': createdTo,
                 'page': page,

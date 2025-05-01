@@ -127,6 +127,8 @@ export function NodeMetadataPanel({
         urgency: editedTask.urgency || data.urgency,
         usually_takes: editedTask.usually_takes || data.usually_takes,
         steps: steps,
+        created_by: editedTask.created_by || data.created_by,
+        organization_id: editedTask.organization_id || data.organization_id,
       };
 
       await createTask.mutateAsync(taskData);
@@ -136,7 +138,7 @@ export function NodeMetadataPanel({
   };
 
   return (
-    <Panel position="top-right" className="w-150  h-[calc(100vh-6rem)] overflow-y-scroll">
+    <Panel position="top-right" className="w-150 h-[calc(100vh-6rem)] overflow-y-scroll">
       <CreateNewTaskComponent
         headerLabel="Edit Task"
         stepsLabel="Steps"
@@ -215,6 +217,28 @@ export function NodeMetadataPanel({
                 />
               </TextField>
             </div>
+            <TextField
+              className="h-auto w-full flex-none"
+              label="Created By"
+              helpText=""
+            >
+              <TextField.Input
+                placeholder="Enter creator ID"
+                value={editedTask.created_by || ""}
+                onChange={(event) => handleInputChange("created_by", event.target.value)}
+              />
+            </TextField>
+            <TextField
+              className="h-auto w-full flex-none"
+              label="Organization ID"
+              helpText=""
+            >
+              <TextField.Input
+                placeholder="Enter organization ID"
+                value={editedTask.organization_id || ""}
+                onChange={(event) => handleInputChange("organization_id", event.target.value)}
+              />
+            </TextField>
           </>
         }
         taskSteps={
@@ -344,4 +368,4 @@ export function NodeMetadataPanel({
       />
     </Panel>
   );
-}
+} 

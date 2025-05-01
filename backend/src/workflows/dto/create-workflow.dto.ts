@@ -24,6 +24,11 @@ export class CreateWorkflowDto {
   @IsNotEmpty()
   created_by: string;
 
+  @ApiProperty({ example: 'clerk_org_id' })
+  @IsString()
+  @IsOptional()
+  organization_id?: string;
+
   @ApiProperty({ example: 'we usually use x person for this referral' })
   @IsString()
   @IsOptional()
@@ -38,11 +43,6 @@ export class CreateWorkflowDto {
   @IsString()
   @IsNotEmpty()
   usually_takes: string;
-
-  @ApiProperty({ example: ['Task A', 'Task B', 'Task C'] })
-  @IsArray()
-  @IsString({ each: true })
-  task_map: string[];
 
   @ApiProperty({ enum: WorkflowType, example: WorkflowType.DAG })
   @IsEnum(WorkflowType)

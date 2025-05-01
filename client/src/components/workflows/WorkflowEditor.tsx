@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useCallback, useState, useEffect } from "react";
-import {
+import { 
   ReactFlow,
-  Background,
-  Controls,
+  Background, 
+  Controls, 
   MiniMap,
   Panel,
   ReactFlowProvider,
@@ -186,7 +186,7 @@ function WorkflowEditorContent({ workflowId }: WorkflowEditorProps) {
           <WorkflowPanel
             workflow={workflowData || null}
             onClose={() => setShowWorkflowPanel(false)}
-          />
+        />
         )}
       </ReactFlow>
       <div
@@ -210,4 +210,4 @@ export function WorkflowEditor({ workflowId }: WorkflowEditorProps) {
       <WorkflowEditorContent workflowId={workflowId} />
     </ReactFlowProvider>
   );
-}
+} 

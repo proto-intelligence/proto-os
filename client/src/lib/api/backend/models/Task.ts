@@ -6,24 +6,13 @@ export type Task = {
     id: string;
     name: string;
     description: string;
-    type: Task.type;
-    urgency: Task.urgency;
+    type: string;
+    urgency: string;
     usually_takes: string;
-    steps: Record<string, any>;
+    steps: Array<Record<string, any>>;
+    created_by: string;
+    organization_id: string;
     created_at: string;
     updated_at: string;
 };
-export namespace Task {
-    export enum type {
-        ADMINISTRATIVE = 'administrative',
-        CLINICAL = 'clinical',
-        TECHNICAL = 'technical',
-    }
-    export enum urgency {
-        LOW = 'low',
-        MEDIUM = 'medium',
-        HIGH = 'high',
-        CRITICAL = 'critical',
-    }
-}
 

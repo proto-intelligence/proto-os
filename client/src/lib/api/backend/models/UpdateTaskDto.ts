@@ -5,22 +5,11 @@
 export type UpdateTaskDto = {
     name?: string;
     description?: string;
-    type?: UpdateTaskDto.type;
-    urgency?: UpdateTaskDto.urgency;
+    type?: string;
+    urgency?: string;
     usually_takes?: string;
-    steps?: Record<string, any>;
+    steps?: Array<Record<string, any>>;
+    created_by?: string;
+    organization_id?: string;
 };
-export namespace UpdateTaskDto {
-    export enum type {
-        ADMINISTRATIVE = 'administrative',
-        CLINICAL = 'clinical',
-        TECHNICAL = 'technical',
-    }
-    export enum urgency {
-        LOW = 'low',
-        MEDIUM = 'medium',
-        HIGH = 'high',
-        CRITICAL = 'critical',
-    }
-}
 

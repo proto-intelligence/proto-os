@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PromptsModule } from './prompts/prompts.module';
 import * as config from 'config';
 import { WorkflowsModule } from './workflows/workflows.module';
 import { TasksModule } from './tasks/tasks.module';
@@ -19,14 +18,13 @@ import { ClerkModule } from './clerk/clerk.module';
       type: 'postgres',
       url: config.get<string>('typeorm.url'),
       autoLoadEntities: config.get<boolean>('typeorm.autoLoadEntities'),
-      synchronize: config.get<boolean>('typeorm.synchronize'),
+      synchronize: config.get<boolean>('typeorm.synchronize'),  
       ...(config.get('node_env') !== 'local' && {
         ssl: {
           rejectUnauthorized: false,
         },
       }),
     }),
-    PromptsModule,
     WorkflowsModule,
     TasksModule,
     OrganizationsModule,

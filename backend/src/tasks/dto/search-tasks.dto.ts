@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsOptional, IsEnum, IsDateString, IsInt, Min, Max, IsIn } from 'class-validator';
+import { IsString, IsOptional, IsDateString, IsInt, Min, Max, IsIn } from 'class-validator';
 import { Type } from 'class-transformer';
 import { TaskType, TaskUrgency } from '../entities/task.entity';
 
@@ -9,13 +9,13 @@ export class SearchTasksDto {
   @IsOptional()
   search?: string;
 
-  @ApiProperty({ required: false, enum: TaskType, description: 'Filter by task type' })
-  @IsEnum(TaskType)
+  @ApiProperty({ required: false, description: 'Filter by task type' })
+  @IsString()
   @IsOptional()
   type?: TaskType;
 
-  @ApiProperty({ required: false, enum: TaskUrgency, description: 'Filter by task urgency' })
-  @IsEnum(TaskUrgency)
+  @ApiProperty({ required: false, description: 'Filter by task urgency' })
+  @IsString()
   @IsOptional()
   urgency?: TaskUrgency;
 
@@ -23,6 +23,16 @@ export class SearchTasksDto {
   @IsString()
   @IsOptional()
   workflowId?: string;
+
+  @ApiProperty({ required: false, description: 'Filter by creator' })
+  @IsString()
+  @IsOptional()
+  createdBy?: string;
+
+  @ApiProperty({ required: false, description: 'Filter by organization' })
+  @IsString()
+  @IsOptional()
+  organizationId?: string;
 
   @ApiProperty({ required: false, description: 'Filter by creation date range start' })
   @IsDateString()

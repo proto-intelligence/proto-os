@@ -1,18 +1,13 @@
 import { Button } from "@/ui/components/Button";
 import { TextField } from "@/ui/components/TextField";
 import { Table } from "@/ui/components/Table";
-import { TaskType, TaskUrgency } from "@/types/task";
 import { FeatherSearch } from "@subframe/core";
 import { Task } from "@/lib/api/backend/models/Task";
 
 interface TaskListProps {
   tasks: Task[];
   searchQuery: string;
-  selectedType: TaskType | null;
-  selectedUrgency: TaskUrgency | null;
   onSearch: (query: string) => void;
-  onTypeSelect: (type: TaskType | null) => void;
-  onUrgencySelect: (urgency: TaskUrgency | null) => void;
   onCreateNew: () => void;
   isLoading?: boolean;
 }
@@ -20,11 +15,7 @@ interface TaskListProps {
 export function TaskList({
   tasks,
   searchQuery,
-  selectedType,
-  selectedUrgency,
   onSearch,
-  onTypeSelect,
-  onUrgencySelect,
   onCreateNew,
   isLoading = false
 }: TaskListProps) {
@@ -53,34 +44,6 @@ export function TaskList({
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => onSearch(event.target.value)}
           />
         </TextField>
-      </div>
-
-      <div className="flex gap-4">
-        <select
-          className="px-3 py-2 border rounded-md"
-          value={selectedType || ""}
-          onChange={(e) => onTypeSelect(e.target.value as TaskType || null)}
-        >
-          <option value="">All Types</option>
-          {Object.values(TaskType).map((type) => (
-            <option key={type} value={type}>
-              {type.charAt(0).toUpperCase() + type.slice(1)}
-            </option>
-          ))}
-        </select>
-
-        <select
-          className="px-3 py-2 border rounded-md"
-          value={selectedUrgency || ""}
-          onChange={(e) => onUrgencySelect(e.target.value as TaskUrgency || null)}
-        >
-          <option value="">All Urgencies</option>
-          {Object.values(TaskUrgency).map((urgency) => (
-            <option key={urgency} value={urgency}>
-              {urgency.charAt(0).toUpperCase() + urgency.slice(1)}
-            </option>
-          ))}
-        </select>
       </div>
 
       <div className="mt-6">

@@ -37,7 +37,7 @@ export class WorkflowsController {
     this.logger.log(`IN -> workflowsController.search()`);
     try {
       const result = await this.workflowsService.search(searchDto);
-      this.logger.log(`OUT <- workflowsController.search(): Found ${result.items.length} workflows`);
+      this.logger.log(`OUT <- workflowsController.search(): Found ${result.data.length} workflows`);
       return result;
     } catch (error) {
       this.logger.error(`Error - workflowsController.search(): ${error.message}`, error.stack);

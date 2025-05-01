@@ -1,69 +1,62 @@
 "use client";
 
-import React from "react";
-import { AppLayout } from "@/components/AppLayout";
+import React, { useEffect } from "react";
+import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import { SignInButton, SignUpButton } from '@clerk/nextjs';
 import { Button } from "@/ui/components/Button";
-import { IconWithBackground } from "@/ui/components/IconWithBackground";
-import { FeatherWorkflow } from "@subframe/core";
-import Link from "next/link";
 
 function HomePage() {
+  const { isSignedIn } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isSignedIn) {
+      router.push("/sops");
+    }
+  }, [isSignedIn, router]);
+
+  // If user is signed in, don't render the sign-in page
+  if (isSignedIn) {
+    return null;
+  }
+
   return (
-    <AppLayout>
-      <div className="flex flex-col items-center justify-center gap-8 p-8 w-full h-full">
-        <div className="flex flex-col items-center gap-4 text-center max-w-2xl">
-          <IconWithBackground
-            size="large"
-            variant="brand"
-            icon={<FeatherWorkflow className="h-8 w-8" />}
+    <div className="flex min-h-screen w-full flex-col items-center justify-center bg-default-background">
+      <div className="flex w-full max-w-[320px] flex-col items-center justify-center gap-8 px-12 py-12">
+        <div className="flex flex-col items-center justify-center gap-6">
+          <img
+            className="h-10 flex-none object-cover"
+            src="https://res.cloudinary.com/subframe/image/upload/v1744737307/uploads/7701/ypstm3hrrfkqnijjgmld.png"
           />
-          <h1 className="text-4xl font-bold text-default-font">
-            Welcome to Workflow Creator
-          </h1>
-          <p className="text-lg text-subtext-color">
-            Create, manage, and automate your workflows with ease. Get started by creating your first workflow or explore our templates.
-          </p>
+          <div className="flex flex-col items-center justify-center gap-1">
+            <span className="text-heading-2 font-heading-2 text-default-font">
+              Welcome
+            </span>
+            <span className="text-body font-body text-subtext-color">
+              Choose an option to continue
+            </span>
+          </div>
         </div>
-        <div className="flex gap-4">
-          <Link href="/sops">
-            <Button variant="brand-primary" size="large">
-              Create Workflow
+        <div className="flex w-full flex-col items-center justify-center gap-4 px-1 py-1">
+          <SignInButton mode="modal">
+            <Button variant="brand-primary" size="medium" className="w-full">
+              Sign In
             </Button>
-          </Link>
-          <Button variant="neutral-secondary" size="large">
-            View Templates
-          </Button>
-        </div>
-        <div className="grid grid-cols-3 gap-6 w-full max-w-4xl mt-8">
-          {[
-            {
-              title: "Automate Tasks",
-              description: "Streamline your processes with automated workflows",
-            },
-            {
-              title: "Collaborate",
-              description: "Work together with your team in real-time",
-            },
-            {
-              title: "Track Progress",
-              description: "Monitor and analyze your workflow performance",
-            },
-          ].map((feature, index) => (
-            <div
-              key={index}
-              className="flex flex-col gap-2 p-6 bg-neutral-50 rounded-lg"
-            >
-              <h3 className="text-lg font-semibold text-default-font">
-                {feature.title}
-              </h3>
-              <p className="text-sm text-subtext-color">
-                {feature.description}
-              </p>
-            </div>
-          ))}
+          </SignInButton>
+          <div className="flex w-full items-center justify-center gap-2">
+            <div className="h-px flex-1 bg-gray-200" />
+            <span className="text-body font-body text-subtext-color">or</span>
+            <div className="h-px flex-1 bg-gray-200" />
+          </div>
+          <SignUpButton mode="modal">
+            <Button variant="neutral-secondary" size="medium" className="w-full">
+              Create Account
+            </Button>
+          </SignUpButton>
         </div>
       </div>
-    </AppLayout>
+    </div>
   );
 }
 

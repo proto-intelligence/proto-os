@@ -111,6 +111,9 @@ export class TasksService {
         search,
         type,
         urgency,
+        workflowId,
+        createdBy,
+        organizationId,
         createdFrom,
         createdTo,
         page = 1,
@@ -119,54 +122,68 @@ export class TasksService {
         sortOrder = 'DESC',
       } = searchDto;
 
-      const query = this.taskRepository.createQueryBuilder('task');
+      const queryBuilder = this.taskRepository.createQueryBuilder('task');
 
       // Apply search filter
       if (search) {
-        query.andWhere(
-          '(task.name ILIKE :search OR task.description ILIKE :search)',
-          { search: `%${search}%` }
+        queryBuilder.andWhere(
+          '(task.name LIKE :search OR task.description LIKE :search)',
+          { search: `%${search}%` },
         );
       }
 
       // Apply type filter
       if (type) {
-        query.andWhere('task.type = :type', { type });
+        queryBuilder.andWhere('task.type = :type', { type });
       }
 
       // Apply urgency filter
       if (urgency) {
-        query.andWhere('task.urgency = :urgency', { urgency });
+        queryBuilder.andWhere('task.urgency = :urgency', { urgency });
+      }
+
+      // Apply workflow filter
+      if (workflowId) {
+        queryBuilder.andWhere('task.workflow_id = :workflowId', { workflowId });
+      }
+
+      // Apply created by filter
+      if (createdBy) {
+        queryBuilder.andWhere('task.created_by = :createdBy', { createdBy });
+      }
+
+      // Apply organization filter
+      if (organizationId) {
+        queryBuilder.andWhere('task.organization_id = :organizationId', { organizationId });
       }
 
       // Apply date range filter
-      if (createdFrom || createdTo) {
-        query.andWhere('task.created_at BETWEEN :createdFrom AND :createdTo', {
-          createdFrom: createdFrom || new Date(0),
-          createdTo: createdTo || new Date(),
+      if (createdFrom && createdTo) {
+        queryBuilder.andWhere('task.created_at BETWEEN :createdFrom AND :createdTo', {
+          createdFrom,
+          createdTo,
         });
       }
 
       // Apply sorting
-      query.orderBy(`task.${sortBy}`, sortOrder);
+      queryBuilder.orderBy(`task.${sortBy}`, sortOrder);
 
       // Apply pagination
       const skip = (page - 1) * limit;
-      query.skip(skip).take(limit);
+      queryBuilder.skip(skip).take(limit);
 
-      // Execute query
-      const [items, total] = await query.getManyAndCount();
+      const [tasks, total] = await queryBuilder.getManyAndCount();
 
-      this.logger.log(`OUT <- tasksService.search(): Found ${items.length} tasks`);
+      this.logger.log(`OUT <- tasksService.search()`);
       return {
-        items,
+        data: tasks,
         total,
         page,
         limit,
         totalPages: Math.ceil(total / limit),
       };
     } catch (error) {
-      this.logger.error(`Error - tasksService.search(): ${error.message}`, error.stack);
+      this.logger.error(`Error - tasksService.search(): ${error.message}`);
       throw error;
     }
   }

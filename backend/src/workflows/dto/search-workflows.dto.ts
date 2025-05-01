@@ -25,6 +25,11 @@ export class SearchWorkflowsDto {
   @IsOptional()
   createdBy?: string;
 
+  @ApiProperty({ required: false, description: 'Filter by organization' })
+  @IsString()
+  @IsOptional()
+  organizationId?: string;
+
   @ApiProperty({ required: false, description: 'Filter by creation date range start' })
   @IsDateString()
   @IsOptional()

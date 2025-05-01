@@ -113,6 +113,7 @@ export class WorkflowsService {
         tags,
         workflowType,
         createdBy,
+        organizationId,
         createdFrom,
         createdTo,
         page = 1,
@@ -121,59 +122,63 @@ export class WorkflowsService {
         sortOrder = 'DESC',
       } = searchDto;
 
-      const query = this.workflowRepository.createQueryBuilder('workflow');
+      const queryBuilder = this.workflowRepository.createQueryBuilder('workflow');
 
       // Apply search filter
       if (search) {
-        query.andWhere(
-          '(workflow.name ILIKE :search OR workflow.description ILIKE :search)',
-          { search: `%${search}%` }
+        queryBuilder.andWhere(
+          '(workflow.name LIKE :search OR workflow.description LIKE :search)',
+          { search: `%${search}%` },
         );
       }
 
       // Apply tags filter
-      if (tags?.length) {
-        query.andWhere('workflow.tags && :tags', { tags });
+      if (tags && tags.length > 0) {
+        queryBuilder.andWhere('workflow.tags && :tags', { tags });
       }
 
       // Apply workflow type filter
       if (workflowType) {
-        query.andWhere('workflow.workflow_type = :workflowType', { workflowType });
+        queryBuilder.andWhere('workflow.workflow_type = :workflowType', { workflowType });
       }
 
-      // Apply creator filter
+      // Apply created by filter
       if (createdBy) {
-        query.andWhere('workflow.created_by = :createdBy', { createdBy });
+        queryBuilder.andWhere('workflow.created_by = :createdBy', { createdBy });
+      }
+
+      // Apply organization filter
+      if (organizationId) {
+        queryBuilder.andWhere('workflow.organization_id = :organizationId', { organizationId });
       }
 
       // Apply date range filter
-      if (createdFrom || createdTo) {
-        query.andWhere('workflow.created_at BETWEEN :createdFrom AND :createdTo', {
-          createdFrom: createdFrom || new Date(0),
-          createdTo: createdTo || new Date(),
+      if (createdFrom && createdTo) {
+        queryBuilder.andWhere('workflow.created_at BETWEEN :createdFrom AND :createdTo', {
+          createdFrom,
+          createdTo,
         });
       }
 
       // Apply sorting
-      query.orderBy(`workflow.${sortBy}`, sortOrder);
+      queryBuilder.orderBy(`workflow.${sortBy}`, sortOrder);
 
       // Apply pagination
       const skip = (page - 1) * limit;
-      query.skip(skip).take(limit);
+      queryBuilder.skip(skip).take(limit);
 
-      // Execute query
-      const [items, total] = await query.getManyAndCount();
+      const [workflows, total] = await queryBuilder.getManyAndCount();
 
-      this.logger.log(`OUT <- workflowsService.search(): Found ${items.length} workflows`);
+      this.logger.log(`OUT <- workflowsService.search()`);
       return {
-        items,
+        data: workflows,
         total,
         page,
         limit,
         totalPages: Math.ceil(total / limit),
       };
     } catch (error) {
-      this.logger.error(`Error - workflowsService.search(): ${error.message}`, error.stack);
+      this.logger.error(`Error - workflowsService.search(): ${error.message}`);
       throw error;
     }
   }

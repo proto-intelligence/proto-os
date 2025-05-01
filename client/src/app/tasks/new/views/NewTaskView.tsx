@@ -24,10 +24,12 @@ export function NewTaskView() {
   const [formData, setFormData] = useState<CreateTaskDto>({
     name: "",
     description: "",
-    type: CreateTaskDto.type.ADMINISTRATIVE,
-    urgency: CreateTaskDto.urgency.MEDIUM,
+    type: "administrative",
+    urgency: "medium",
     usually_takes: "1 hour",
-    steps: {},
+    steps: [],
+    created_by: "",
+    organization_id: "",
   });
 
   const [currentStep, setCurrentStep] = useState("");
@@ -62,10 +64,7 @@ export function NewTaskView() {
 
       setFormData((prev) => ({
         ...prev,
-        steps: {
-          ...prev.steps,
-          [currentStep]: stepData,
-        },
+        steps: [...prev.steps, { [currentStep]: stepData }],
       }));
 
       setCurrentStep("");
@@ -75,12 +74,10 @@ export function NewTaskView() {
     }
   };
 
-  const handleRemoveStep = (stepKey: string) => {
-    const newSteps = { ...formData.steps };
-    delete newSteps[stepKey];
+  const handleRemoveStep = (stepIndex: number) => {
     setFormData((prev) => ({
       ...prev,
-      steps: newSteps,
+      steps: prev.steps.filter((_, index) => index !== stepIndex),
     }));
   };
 
@@ -93,30 +90,30 @@ export function NewTaskView() {
               p-8 bg-white rounded-lg shadow
               overflow-auto"
           >
-            <h1 className="text-2xl font-bold mb-6">Create New Task</h1>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
+        <h1 className="text-2xl font-bold mb-6">Create New Task</h1>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
                 <TextField
                   label="Task Name"
                   helpText="Enter a descriptive name for the task"
                 >
-                  <TextField.Input
+              <TextField.Input
                     value={formData.name}
                     onChange={(e) =>
                       setFormData((prev) => ({ ...prev, name: e.target.value }))
                     }
                     placeholder="e.g., Schedule Initial Consultation"
-                    required
-                  />
-                </TextField>
-              </div>
+                required
+              />
+            </TextField>
+          </div>
 
-              <div className="space-y-2">
+          <div className="space-y-2">
                 <TextArea
                   label="Description"
                   helpText="Provide a detailed description of the task"
                 >
-                  <TextArea.Input
+              <TextArea.Input
                     value={formData.description}
                     onChange={(e) =>
                       setFormData((prev) => ({
@@ -125,64 +122,64 @@ export function NewTaskView() {
                       }))
                     }
                     placeholder="e.g., Schedule the first consultation with the cardiologist"
-                    required
-                  />
-                </TextArea>
-              </div>
+                required
+              />
+            </TextArea>
+          </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Select
+          <div className="space-y-2">
+            <Select
                     label="Task Type"
                     helpText="Select the type of task"
                     value={formData.type}
                     onValueChange={(value: string) =>
                       setFormData((prev) => ({
                         ...prev,
-                        type: value as CreateTaskDto.type,
+                        type: value,
                       }))
                     }
-                    placeholder="Select task type"
-                  >
-                    <Select.Item value={CreateTaskDto.type.ADMINISTRATIVE}>
+              placeholder="Select task type"
+            >
+                    <Select.Item value="administrative">
                       Administrative
                     </Select.Item>
-                    <Select.Item value={CreateTaskDto.type.CLINICAL}>
+                    <Select.Item value="clinical">
                       Clinical
                     </Select.Item>
-                    <Select.Item value={CreateTaskDto.type.TECHNICAL}>
+                    <Select.Item value="technical">
                       Technical
                     </Select.Item>
-                  </Select>
-                </div>
+            </Select>
+          </div>
 
-                <div className="space-y-2">
-                  <Select
+          <div className="space-y-2">
+            <Select
                     label="Urgency Level"
                     helpText="Select how urgent this task is"
                     value={formData.urgency}
                     onValueChange={(value: string) =>
                       setFormData((prev) => ({
                         ...prev,
-                        urgency: value as CreateTaskDto.urgency,
+                        urgency: value,
                       }))
                     }
-                    placeholder="Select urgency level"
-                  >
-                    <Select.Item value={CreateTaskDto.urgency.LOW}>
+              placeholder="Select urgency level"
+            >
+                    <Select.Item value="low">
                       Low
                     </Select.Item>
-                    <Select.Item value={CreateTaskDto.urgency.MEDIUM}>
+                    <Select.Item value="medium">
                       Medium
                     </Select.Item>
-                    <Select.Item value={CreateTaskDto.urgency.HIGH}>
+                    <Select.Item value="high">
                       High
                     </Select.Item>
-                    <Select.Item value={CreateTaskDto.urgency.CRITICAL}>
+                    <Select.Item value="critical">
                       Critical
                     </Select.Item>
-                  </Select>
-                </div>
+            </Select>
+          </div>
               </div>
 
               <div className="space-y-2">
@@ -275,23 +272,24 @@ export function NewTaskView() {
                   </div>
                 </div>
 
-                {Object.entries(formData.steps).length > 0 && (
+                {formData.steps.length > 0 && (
                   <div className="space-y-2">
                     <h4 className="text-sm font-medium">Added Steps</h4>
                     <div className="space-y-2 max-h-60 overflow-y-auto">
-                      {Object.entries(formData.steps).map(
-                        ([step, stepData]) => (
+                      {formData.steps.map((step, index) => {
+                        const [stepName, stepData] = Object.entries(step)[0];
+                        return (
                           <div
-                            key={step}
+                            key={index}
                             className="flex flex-col gap-2 p-4 bg-gray-50 rounded"
                           >
                             <div className="flex items-center justify-between">
-                              <div className="font-medium">{step}</div>
+                              <div className="font-medium">{stepName}</div>
                               <Button
                                 type="button"
                                 variant="neutral-secondary"
                                 size="small"
-                                onClick={() => handleRemoveStep(step)}
+                                onClick={() => handleRemoveStep(index)}
                               >
                                 Remove
                               </Button>
@@ -323,29 +321,29 @@ export function NewTaskView() {
                               </div>
                             )}
                           </div>
-                        )
-                      )}
+                        );
+                      })}
                     </div>
                   </div>
                 )}
               </div>
 
               <div className="flex justify-end space-x-4 pt-4 border-t">
-                <Button
-                  type="button"
-                  variant="neutral-secondary"
-                  onClick={() => router.push("/tasks")}
-                >
-                  Cancel
-                </Button>
-                <Button type="submit" disabled={isPending}>
-                  {isPending ? "Creating..." : "Create Task"}
-                </Button>
-              </div>
-            </form>
+            <Button
+              type="button"
+              variant="neutral-secondary"
+              onClick={() => router.push("/tasks")}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Creating..." : "Create Task"}
+            </Button>
+          </div>
+        </form>
           </div>
         </div>
       </div>
     </div>
   );
-}
+} 

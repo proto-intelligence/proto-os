@@ -42,6 +42,7 @@ export class WorkflowsService {
      * @param tags Filter by tags
      * @param workflowType Filter by workflow type
      * @param createdBy Filter by creator
+     * @param organizationId Filter by organization
      * @param createdFrom Filter by creation date range start
      * @param createdTo Filter by creation date range end
      * @param page
@@ -56,6 +57,7 @@ export class WorkflowsService {
         tags?: Array<string>,
         workflowType?: 'dag' | 'acyclic' | 'cron',
         createdBy?: string,
+        organizationId?: string,
         createdFrom?: string,
         createdTo?: string,
         page: number = 1,
@@ -71,6 +73,7 @@ export class WorkflowsService {
                 'tags': tags,
                 'workflowType': workflowType,
                 'createdBy': createdBy,
+                'organizationId': organizationId,
                 'createdFrom': createdFrom,
                 'createdTo': createdTo,
                 'page': page,

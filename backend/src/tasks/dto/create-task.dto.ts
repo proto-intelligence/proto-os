@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsEnum, IsObject } from 'class-validator';
+import { IsString, IsNotEmpty, IsArray, IsOptional } from 'class-validator';
 import { TaskType, TaskUrgency } from '../entities/task.entity';
 
 export class CreateTaskDto {
@@ -13,12 +13,14 @@ export class CreateTaskDto {
   @IsNotEmpty()
   description: string;
 
-  @ApiProperty({ enum: TaskType, example: TaskType.ADMINISTRATIVE })
-  @IsEnum(TaskType)
+  @ApiProperty({ example: 'administrative' })
+  @IsString()
+  @IsNotEmpty()
   type: TaskType;
 
-  @ApiProperty({ enum: TaskUrgency, example: TaskUrgency.MEDIUM })
-  @IsEnum(TaskUrgency)
+  @ApiProperty({ example: 'medium' })
+  @IsString()
+  @IsNotEmpty()
   urgency: TaskUrgency;
 
   @ApiProperty({ example: '1 week' })
@@ -27,12 +29,27 @@ export class CreateTaskDto {
   usually_takes: string;
 
   @ApiProperty({
-    example: {
-      'Step 1': 'Contact patient',
-      'Step 2': 'Check availability',
-      'Step 3': 'Confirm appointment'
-    }
+    type: 'array',
+    items: {
+      type: 'object',
+      additionalProperties: true,
+    },
+    example: [
+      { step: 'Contact patient', notes: 'Call during business hours' },
+      { step: 'Check availability', notes: 'Use scheduling system' },
+      { step: 'Confirm appointment', notes: 'Send confirmation email' }
+    ]
   })
-  @IsObject()
-  steps: Record<string, string>;
+  @IsArray()
+  steps: Record<string, any>[];
+
+  @ApiProperty({ example: 'clerk_user_id' })
+  @IsString()
+  @IsNotEmpty()
+  created_by: string;
+
+  @ApiProperty({ example: 'clerk_org_id' })
+  @IsString()
+  @IsOptional()
+  organization_id?: string;
 } 

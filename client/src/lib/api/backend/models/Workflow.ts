@@ -8,10 +8,10 @@ export type Workflow = {
     description: string;
     due_date: string;
     created_by: string;
+    organization_id: string;
     nuance_notes: string;
     tags: Array<string>;
     usually_takes: string;
-    task_map: Array<string>;
     workflow_type: Workflow.workflow_type;
     /**
      * An array of arbitrary JSON node objects

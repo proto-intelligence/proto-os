@@ -51,7 +51,7 @@ export class TasksController {
     this.logger.log(`IN -> tasksController.search()`);
     try {
       const result = await this.tasksService.search(searchDto);
-      this.logger.log(`OUT <- tasksController.search(): Found ${result.items.length} tasks`);
+      this.logger.log(`OUT <- tasksController.search(): Found ${result.data.length} tasks`);
       return result;
     } catch (error) {
       this.logger.error(`Error - tasksController.search(): ${error.message}`, error.stack);

@@ -2,12 +2,12 @@
 
 import React, { useState } from "react";
 import { ProtoIconNavButton } from "@/ui/components/ProtoIconNavButton";
-import { FeatherMenu, FeatherX, FeatherWorkflow, FeatherHome, FeatherBook, FeatherSettings, FeatherType } from "@subframe/core";
+import { FeatherMenu, FeatherX, FeatherHome, FeatherBook, FeatherSettings, FeatherType } from "@subframe/core";
 import { ProtoSidebarCollapsible } from "@/ui/components/ProtoSidebarCollapsible";
 import { ProtoTopbar } from "@/ui/components/ProtoTopbar";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useAuth } from "@clerk/nextjs";
+import { useAuth, OrganizationSwitcher } from "@clerk/nextjs";
 import { SignInButton, SignUpButton, UserButton } from "@/components/auth";
 
 interface Route {
@@ -18,11 +18,6 @@ interface Route {
 
 const routes: Route[] = [
   {
-    path: "/",
-    label: "Home",
-    icon: <FeatherHome />,
-  },
-  {
     path: "/sops",
     label: "SOPs",
     icon: <FeatherBook />,
@@ -31,12 +26,7 @@ const routes: Route[] = [
     path: "/tasks",
     label: "Tasks",
     icon: <FeatherType />,
-  },
-  {
-    path: "/settings",
-    label: "Settings",
-    icon: <FeatherSettings />,
-  },
+  }
 ];
 
 interface AppLayoutProps {
@@ -95,6 +85,23 @@ export function AppLayout({ children }: AppLayoutProps) {
       />
       <div className="flex flex-col flex-1 min-h-0">
         <ProtoTopbar
+          left={
+            isSignedIn ? (
+              <div className="flex items-center gap-2">
+                <OrganizationSwitcher
+                  appearance={{
+                    elements: {
+                      rootBox: "flex items-center",
+                      organizationSwitcherTrigger: "flex items-center gap-2",
+                      organizationPreviewAvatarContainer: "bg-white",
+                      organizationPreviewAvatar: "bg-white",
+                      avatarBox: "bg-white",
+                    }
+                  }}
+                />
+              </div>
+            ) : null
+          }
           right={
             <div className="flex items-center gap-2 ml-auto">
               {isSignedIn ? (
