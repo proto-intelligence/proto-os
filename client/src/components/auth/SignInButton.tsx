@@ -10,7 +10,7 @@ interface SignInButtonProps {
 
 export function SignInButton({ children, className }: SignInButtonProps) {
   return (
-    <ClerkSignInButton mode="modal" signUpForceRedirectUrl="/workflows">
+    <ClerkSignInButton mode="modal">
       <Button
         className={className}
         variant="neutral-secondary"
