@@ -33,8 +33,29 @@ export class WorkflowsController {
   @Get('search')
   @ApiOperation({ summary: 'Search workflows with pagination and filters' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Return paginated list of workflows' })
-  async search(@Query() searchDto: SearchWorkflowsDto) {
+  async search(@Query() rawQuery: any) {
     this.logger.log(`IN -> workflowsController.search()`);
+    this.logger.log('Raw query parameters:', {
+      page: rawQuery.page,
+      limit: rawQuery.limit,
+      pageType: typeof rawQuery.page,
+      limitType: typeof rawQuery.limit
+    });
+
+    // Create DTO with explicit type conversion
+    const searchDto: SearchWorkflowsDto = {
+      ...rawQuery,
+      page: rawQuery.page ? Number(rawQuery.page) : 1,
+      limit: rawQuery.limit ? Number(rawQuery.limit) : 10
+    };
+
+    this.logger.log('Processed search DTO:', {
+      page: searchDto.page,
+      limit: searchDto.limit,
+      pageType: typeof searchDto.page,
+      limitType: typeof searchDto.limit
+    });
+
     try {
       const result = await this.workflowsService.search(searchDto);
       this.logger.log(`OUT <- workflowsController.search(): Found ${result.data.length} workflows`);

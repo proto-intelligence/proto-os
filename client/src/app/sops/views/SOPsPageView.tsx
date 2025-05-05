@@ -21,10 +21,10 @@ export function SOPsPageView() {
       nuance_notes: "",
       tags: [],
       usually_takes: "1 week",
-      task_map: [],
       workflow_type: CreateWorkflowDto.workflow_type.DAG,
       nodes: [],
-      edges: []
+      edges: [],
+      organization_id: "1"
     };
 
     createWorkflow(

@@ -29,7 +29,7 @@ interface WorkflowToolbarProps {
 interface TaskOption {
   id: string;
   name: string;
-  type: Task.type;
+  type: string;
 }
 
 export function WorkflowToolbar({
@@ -49,6 +49,7 @@ export function WorkflowToolbar({
 
   // Fetch tasks from the backend
   const { data: tasksData, isLoading } = useTasksControllerSearch({
+    page: 1,
     limit: 100,
     sortBy: 'name',
     sortOrder: 'ASC'
@@ -58,7 +59,7 @@ export function WorkflowToolbar({
   const { mutate: updateWorkflow, isPending: isSaving } = useWorkflowsControllerUpdate();
 
   // Transform tasks data into options for the dropdown
-  const taskOptions = tasksData?.items?.map((task: Task) => ({
+  const taskOptions = tasksData?.data?.map((task: Task) => ({
     id: task.id,
     name: task.name,
     type: task.type

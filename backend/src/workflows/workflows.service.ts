@@ -122,6 +122,14 @@ export class WorkflowsService {
         sortOrder = 'DESC',
       } = searchDto;
 
+      // Add detailed logging for pagination
+      this.logger.log(`Search parameters received:`, {
+        page,
+        limit,
+        pageType: typeof page,
+        limitType: typeof limit
+      });
+
       const queryBuilder = this.workflowRepository.createQueryBuilder('workflow');
 
       // Apply search filter
@@ -165,11 +173,18 @@ export class WorkflowsService {
 
       // Apply pagination
       const skip = (page - 1) * limit;
+      this.logger.log(`Calculated pagination:`, {
+        page,
+        limit,
+        skip,
+        calculatedSkip: (page - 1) * limit
+      });
+      
       queryBuilder.skip(skip).take(limit);
 
       const [workflows, total] = await queryBuilder.getManyAndCount();
 
-      this.logger.log(`OUT <- workflowsService.search()`);
+      this.logger.log(`OUT <- workflowsService.search(): Found ${workflows.length} workflows`);
       return {
         data: workflows,
         total,

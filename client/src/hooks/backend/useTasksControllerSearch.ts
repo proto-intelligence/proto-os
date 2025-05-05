@@ -4,8 +4,17 @@ import { Task } from '@/lib/api/backend/models/Task';
 
 interface SearchParams {
   search?: string;
+  type?: string;
+  urgency?: string;
+  workflowId?: string;
+  createdBy?: string;
+  organizationId?: string;
+  createdFrom?: string;
+  createdTo?: string;
   page?: number;
   limit?: number;
+  sortBy?: string;
+  sortOrder?: 'ASC' | 'DESC';
 }
 
 interface SearchResponse {
@@ -17,16 +26,40 @@ interface SearchResponse {
 }
 
 export function useTasksControllerSearch(params: SearchParams = {}) {
+  // Ensure defaults are set
+  const processedParams = {
+    ...params,
+    page: params.page || 1,
+    limit: params.limit || 10,
+    sortBy: params.sortBy || 'created_at',
+    sortOrder: params.sortOrder || 'DESC'
+  };
+  
+  console.log('useTasksControllerSearch - Search params:', processedParams);
+  
   return useQuery<SearchResponse>({
-    queryKey: ['tasks', 'search', params],
-    queryFn: () => TasksService.tasksControllerSearch(
-      params.search,
-      undefined, // type
-      undefined, // urgency
-      undefined, // workflowId
-      params.page?.toString() ?? '1',
-      params.limit?.toString() ?? '10',
-    ),
+    queryKey: ['tasks', 'search', processedParams],
+    queryFn: async () => {
+      console.log('useTasksControllerSearch - Making API call with params:', processedParams);
+      
+      const response = await TasksService.tasksControllerSearch(
+        processedParams.search,
+        processedParams.type,
+        processedParams.urgency,
+        processedParams.workflowId,
+        processedParams.createdBy,
+        processedParams.organizationId,
+        processedParams.createdFrom,
+        processedParams.createdTo,
+        processedParams.page,
+        processedParams.limit,
+        processedParams.sortBy,
+        processedParams.sortOrder
+      );
+      
+      console.log('useTasksControllerSearch - API response:', response);
+      return response;
+    },
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     staleTime: 0,
