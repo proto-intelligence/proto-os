@@ -12,6 +12,8 @@ import { Select } from "@/ui/components/Select";
 import { useWorkflowsControllerUpdate } from "@/hooks/backend/useWorkflowsControllerUpdate";
 import { EditWorkflowPanel } from "@/ui/components/EditWorkflowPanel";
 import { IconButton } from "@/ui/components/IconButton";
+import { useClerkData } from "@/hooks/useClerkData";
+import { Avatar } from "@/ui/components/Avatar";
 
 interface WorkflowPanelProps {
   workflow: Workflow | null;
@@ -22,6 +24,7 @@ export function WorkflowPanel({ workflow, onClose }: WorkflowPanelProps) {
   const [editedWorkflow, setEditedWorkflow] = useState<Partial<Workflow>>(workflow || {});
   const [newTag, setNewTag] = useState("");
   const updateWorkflow = useWorkflowsControllerUpdate();
+  const { user, organization } = useClerkData();
 
   if (!workflow) return null;
 
@@ -99,9 +102,10 @@ export function WorkflowPanel({ workflow, onClose }: WorkflowPanelProps) {
         }
         main={
           <>
+
             <TextField
               className="h-auto w-full flex-none"
-              label="Workflow Name"
+              label="Name"
               helpText=""
             >
               <TextField.Input
@@ -110,6 +114,21 @@ export function WorkflowPanel({ workflow, onClose }: WorkflowPanelProps) {
                 onChange={(event) => handleInputChange("name", event.target.value)}
               />
             </TextField>
+                          <TextField
+                className="h-auto w-full flex-none"
+                label="Created By"
+                helpText="The user who created this workflow"
+              >
+                <div className="flex items-center h-full gap-2">
+                  <Avatar
+                    image={user?.imageUrl}
+                    size="small"
+                  />
+                  <div className="text-sm text-gray-600">
+                    {user?.fullName || "User"}
+                  </div>
+                </div>
+              </TextField>
             <TextArea
               className="h-auto w-full flex-none"
               label="Description"
@@ -131,28 +150,6 @@ export function WorkflowPanel({ workflow, onClose }: WorkflowPanelProps) {
                 placeholder="Select due date"
                 value={editedWorkflow.due_date || ""}
                 onChange={(event) => handleInputChange("due_date", event.target.value)}
-              />
-            </TextField>
-            <TextField
-              className="h-auto w-full flex-none"
-              label="Created By"
-              helpText=""
-            >
-              <TextField.Input
-                placeholder="Enter creator name"
-                value={editedWorkflow.created_by || ""}
-                onChange={(event) => handleInputChange("created_by", event.target.value)}
-              />
-            </TextField>
-            <TextField
-              className="h-auto w-full flex-none"
-              label="Organization ID"
-              helpText=""
-            >
-              <TextField.Input
-                placeholder="Enter organization ID"
-                value={editedWorkflow.organization_id || ""}
-                onChange={(event) => handleInputChange("organization_id", event.target.value)}
               />
             </TextField>
             <TextArea

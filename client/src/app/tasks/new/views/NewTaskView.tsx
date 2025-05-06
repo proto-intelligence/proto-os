@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTasksControllerCreate } from "@/hooks/backend/useTasksControllerCreate";
 import { Button } from "@/ui/components/Button";
 import { TextField } from "@/ui/components/TextField";
 import { TextArea } from "@/ui/components/TextArea";
 import { Select } from "@/ui/components/Select";
+import { Avatar } from "@/ui/components/Avatar";
 import { CreateTaskDto } from "@/lib/api/backend/models/CreateTaskDto";
 import { useQueryClient } from "@tanstack/react-query";
+import { useClerkData } from "@/hooks/useClerkData";
 
 interface StepData {
   description: string;
@@ -20,6 +22,7 @@ export function NewTaskView() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { mutate: createTask, isPending } = useTasksControllerCreate();
+  const { userId, organizationId, isLoaded: isClerkLoaded, user, organization } = useClerkData();
   
   const [formData, setFormData] = useState<CreateTaskDto>({
     name: "",
@@ -28,14 +31,28 @@ export function NewTaskView() {
     urgency: "medium",
     usually_takes: "1 hour",
     steps: [],
-    created_by: "",
-    organization_id: "",
+    created_by: userId || "",
+    organization_id: organizationId || "",
   });
 
   const [currentStep, setCurrentStep] = useState("");
   const [currentStepDescription, setCurrentStepDescription] = useState("");
   const [currentStepDuration, setCurrentStepDuration] = useState("");
   const [currentStepVideo, setCurrentStepVideo] = useState("");
+
+  useEffect(() => {
+    if (isClerkLoaded && userId && organizationId) {
+      setFormData(prev => ({
+        ...prev,
+        created_by: userId,
+        organization_id: organizationId
+      }));
+    }
+  }, [isClerkLoaded, userId, organizationId]);
+
+  if (!isClerkLoaded) {
+    return <div>Loading user data...</div>;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,35 +102,65 @@ export function NewTaskView() {
     <div className="h-screen flex flex-col">
       <div className="flex-1 bg-gray-50">
         <div className="flex w-full h-full py-8 px-4">
-          <div
-            className="flex flex-col flex-1 w-full h-full
-              p-8 bg-white rounded-lg shadow
-              overflow-auto"
-          >
-        <h1 className="text-2xl font-bold mb-6">Create New Task</h1>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
+          <div className="flex flex-col flex-1 w-full h-full p-8 bg-white rounded-lg shadow overflow-auto">
+            <h1 className="text-2xl font-bold mb-6">Create New Task</h1>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <TextField
+                  label="Created By"
+                  helpText="The user creating this task"
+                >
+                  <div className="flex items-center h-full gap-2">
+                    <Avatar
+                      image={user?.imageUrl}
+                      size="small"
+                    />
+                    <div className="text-sm text-gray-600">
+                      {user?.fullName || "User"}
+                    </div>
+                  </div>
+                </TextField>
+
+                {organization && (
+                  <TextField
+                    label="Organization"
+                    helpText="The organization this task belongs to"
+                  >
+                    <div className="flex items-center h-full gap-2">
+                      <Avatar
+                        image={organization?.imageUrl}
+                        size="small"
+                      />
+                      <div className="text-sm text-gray-600">
+                        {organization?.name || "Organization"}
+                      </div>
+                    </div>
+                  </TextField>
+                )}
+              </div>
+
+              <div className="space-y-2">
                 <TextField
                   label="Task Name"
                   helpText="Enter a descriptive name for the task"
                 >
-              <TextField.Input
+                  <TextField.Input
                     value={formData.name}
                     onChange={(e) =>
                       setFormData((prev) => ({ ...prev, name: e.target.value }))
                     }
                     placeholder="e.g., Schedule Initial Consultation"
-                required
-              />
-            </TextField>
-          </div>
+                    required
+                  />
+                </TextField>
+              </div>
 
-          <div className="space-y-2">
+              <div className="space-y-2">
                 <TextArea
                   label="Description"
                   helpText="Provide a detailed description of the task"
                 >
-              <TextArea.Input
+                  <TextArea.Input
                     value={formData.description}
                     onChange={(e) =>
                       setFormData((prev) => ({
@@ -122,14 +169,14 @@ export function NewTaskView() {
                       }))
                     }
                     placeholder="e.g., Schedule the first consultation with the cardiologist"
-                required
-              />
-            </TextArea>
-          </div>
+                    required
+                  />
+                </TextArea>
+              </div>
 
               <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Select
+                <div className="space-y-2">
+                  <Select
                     label="Task Type"
                     helpText="Select the type of task"
                     value={formData.type}
@@ -139,8 +186,8 @@ export function NewTaskView() {
                         type: value,
                       }))
                     }
-              placeholder="Select task type"
-            >
+                    placeholder="Select task type"
+                  >
                     <Select.Item value="administrative">
                       Administrative
                     </Select.Item>
@@ -150,11 +197,11 @@ export function NewTaskView() {
                     <Select.Item value="technical">
                       Technical
                     </Select.Item>
-            </Select>
-          </div>
+                  </Select>
+                </div>
 
-          <div className="space-y-2">
-            <Select
+                <div className="space-y-2">
+                  <Select
                     label="Urgency Level"
                     helpText="Select how urgent this task is"
                     value={formData.urgency}
@@ -164,8 +211,8 @@ export function NewTaskView() {
                         urgency: value,
                       }))
                     }
-              placeholder="Select urgency level"
-            >
+                    placeholder="Select urgency level"
+                  >
                     <Select.Item value="low">
                       Low
                     </Select.Item>
@@ -178,8 +225,8 @@ export function NewTaskView() {
                     <Select.Item value="critical">
                       Critical
                     </Select.Item>
-            </Select>
-          </div>
+                  </Select>
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -329,18 +376,18 @@ export function NewTaskView() {
               </div>
 
               <div className="flex justify-end space-x-4 pt-4 border-t">
-            <Button
-              type="button"
-              variant="neutral-secondary"
-              onClick={() => router.push("/tasks")}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? "Creating..." : "Create Task"}
-            </Button>
-          </div>
-        </form>
+                <Button
+                  type="button"
+                  variant="neutral-secondary"
+                  onClick={() => router.push("/tasks")}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={isPending}>
+                  {isPending ? "Creating..." : "Create Task"}
+                </Button>
+              </div>
+            </form>
           </div>
         </div>
       </div>

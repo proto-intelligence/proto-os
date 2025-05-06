@@ -3,6 +3,9 @@ import { TextField } from "@/ui/components/TextField";
 import { Table } from "@/ui/components/Table";
 import { FeatherSearch } from "@subframe/core";
 import { Task } from "@/lib/api/backend/models/Task";
+import { useRouter } from "next/navigation";
+import { Avatar } from "@/ui/components/Avatar";
+import { useClerkData } from "@/hooks/useClerkData";
 
 interface TaskListProps {
   tasks: Task[];
@@ -19,6 +22,13 @@ export function TaskList({
   onCreateNew,
   isLoading = false
 }: TaskListProps) {
+  const router = useRouter();
+  const { user, organization } = useClerkData();
+
+  const handleRowClick = (taskId: string) => {
+    router.push(`/tasks/edit/${taskId}`);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -61,10 +71,16 @@ export function TaskList({
               <Table.HeaderCell>Type</Table.HeaderCell>
               <Table.HeaderCell>Urgency</Table.HeaderCell>
               <Table.HeaderCell>Usually Takes</Table.HeaderCell>
+              <Table.HeaderCell>Created By</Table.HeaderCell>
+              <Table.HeaderCell>Organization</Table.HeaderCell>
               <Table.HeaderCell>Created At</Table.HeaderCell>
             </Table.HeaderRow>
             {tasks.map((task) => (
-              <Table.Row key={task.id}>
+              <Table.Row 
+                key={task.id}
+                onClick={() => handleRowClick(task.id)}
+                className="cursor-pointer hover:bg-neutral-50"
+              >
                 <Table.Cell>
                   <div className="font-medium">{task.name}</div>
                 </Table.Cell>
@@ -74,6 +90,30 @@ export function TaskList({
                 <Table.Cell>{task.type}</Table.Cell>
                 <Table.Cell>{task.urgency}</Table.Cell>
                 <Table.Cell>{task.usually_takes}</Table.Cell>
+                <Table.Cell>
+                  <div className="flex items-center gap-2">
+                    <Avatar
+                      image={user?.imageUrl}
+                      size="small"
+                    />
+                    <span className="text-sm text-gray-600">
+                      {user?.fullName || "User"}
+                    </span>
+                  </div>
+                </Table.Cell>
+                <Table.Cell>
+                  {organization && (
+                    <div className="flex items-center gap-2">
+                      <Avatar
+                        image={organization?.imageUrl}
+                        size="small"
+                      />
+                      <span className="text-sm text-gray-600">
+                        {organization?.name || "Organization"}
+                      </span>
+                    </div>
+                  )}
+                </Table.Cell>
                 <Table.Cell>{new Date(task.created_at).toLocaleDateString()}</Table.Cell>
               </Table.Row>
             ))}

@@ -6,25 +6,33 @@ import { useWorkflowsControllerCreate } from "@/hooks/backend/useWorkflowsContro
 import { ProtoToast } from "@/ui/components/ProtoToast";
 import { useState } from "react";
 import { CreateWorkflowDto } from "@/lib/api/backend/models/CreateWorkflowDto";
+import { useClerkData } from "@/hooks/useClerkData";
 
 export function SOPsPageView() {
   const router = useRouter();
   const { mutate: createWorkflow } = useWorkflowsControllerCreate();
   const [showToast, setShowToast] = useState(false);
+  const { userId, organizationId, isLoaded: isClerkLoaded } = useClerkData();
 
   const handleCreateNew = () => {
+    if (!isClerkLoaded || !userId || !organizationId) {
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 2000);
+      return;
+    }
+
     const newWorkflow: CreateWorkflowDto = {
       name: "New Workflow",
       description: "A new workflow",
       due_date: "1 week",
-      created_by: "System",
+      created_by: userId,
       nuance_notes: "",
       tags: [],
       usually_takes: "1 week",
       workflow_type: CreateWorkflowDto.workflow_type.DAG,
       nodes: [],
       edges: [],
-      organization_id: "1"
+      organization_id: organizationId
     };
 
     createWorkflow(

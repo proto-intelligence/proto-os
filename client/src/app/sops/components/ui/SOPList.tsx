@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/ui/components/Button";
 import { TextField } from "@/ui/components/TextField";
 import { Table } from "@/ui/components/Table";
@@ -6,6 +8,8 @@ import { useState } from "react";
 import { Workflow } from "@/lib/api/backend/models/Workflow";
 import { FeatherSearch } from "@subframe/core";
 import { useRouter } from "next/navigation";
+import { Avatar } from "@/ui/components/Avatar";
+import { useClerkData } from "@/hooks/useClerkData";
 
 interface WorkflowListProps {
   onCreateNew: () => void;
@@ -15,10 +19,13 @@ export function SOPList({ onCreateNew }: WorkflowListProps) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   
+  const { user, organization, isLoaded: isClerkLoaded } = useClerkData();
+
   const { data, isLoading } = useWorkflowsControllerSearch({
     search: searchQuery,
     page: 1,
     limit: 10,
+    organizationId: organization?.id
   });
 
   const workflows = data?.items || [];
@@ -26,6 +33,10 @@ export function SOPList({ onCreateNew }: WorkflowListProps) {
   const handleRowClick = (workflowId: string) => {
     router.push(`/workflows/${workflowId}`);
   };
+
+  if (isLoading || !isClerkLoaded) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -55,9 +66,7 @@ export function SOPList({ onCreateNew }: WorkflowListProps) {
       </div>
 
       <div className="mt-6">
-        {isLoading ? (
-          <div className="text-center py-8">Loading...</div>
-        ) : workflows.length === 0 ? (
+        {workflows.length === 0 ? (
           <div className="text-center py-8 text-neutral-600">
             No workflows found matching your criteria.
           </div>
@@ -68,6 +77,7 @@ export function SOPList({ onCreateNew }: WorkflowListProps) {
               <Table.HeaderCell>Description</Table.HeaderCell>
               <Table.HeaderCell>Type</Table.HeaderCell>
               <Table.HeaderCell>Created By</Table.HeaderCell>
+              <Table.HeaderCell>Organization</Table.HeaderCell>
               <Table.HeaderCell>Updated At</Table.HeaderCell>
             </Table.HeaderRow>
             {workflows.map((workflow: Workflow) => (
@@ -83,7 +93,30 @@ export function SOPList({ onCreateNew }: WorkflowListProps) {
                   <div className="text-sm text-neutral-600">{workflow.description}</div>
                 </Table.Cell>
                 <Table.Cell>{workflow.workflow_type}</Table.Cell>
-                <Table.Cell>{workflow.created_by}</Table.Cell>
+                <Table.Cell>
+                  <div className="flex items-center gap-2">
+                    <Avatar
+                      image={user?.imageUrl}
+                      size="small"
+                    />
+                    <span className="text-sm text-gray-600">
+                      {user?.fullName || "User"}
+                    </span>
+                  </div>
+                </Table.Cell>
+                <Table.Cell>
+                  {organization && (
+                    <div className="flex items-center gap-2">
+                      <Avatar
+                        image={organization?.imageUrl}
+                        size="small"
+                      />
+                      <span className="text-sm text-gray-600">
+                        {organization?.name || "Organization"}
+                      </span>
+                    </div>
+                  )}
+                </Table.Cell>
                 <Table.Cell>{workflow.updated_at}</Table.Cell>
               </Table.Row>
             ))}

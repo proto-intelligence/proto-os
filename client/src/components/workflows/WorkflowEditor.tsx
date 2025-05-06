@@ -21,11 +21,13 @@ import { CustomNode } from "./CustomNode";
 import { WorkflowToolbar } from "./WorkflowToolbar";
 import { NodeMetadataPanel } from "./NodeMetadataPanel";
 import { useWorkflowsControllerFindOne } from "@/hooks/backend/useWorkflowsControllerFindOne";
+import { useWorkflowsControllerUpdate } from "@/hooks/backend/useWorkflowsControllerUpdate";
 import "@xyflow/react/dist/style.css";
 import { Task } from "@/lib/api/backend/models/Task";
 import { ProtoToast } from "@/ui/components/ProtoToast";
 import { useStateRef } from "@/hooks/useStateRef";
 import { WorkflowPanel } from "./WorkflowPanel";
+import { WorkflowHotKeyPanel } from "./HotKeyPanel";
 
 interface NodeData extends Task, Record<string, unknown> {
   position: { x: number; y: number };
@@ -33,7 +35,9 @@ interface NodeData extends Task, Record<string, unknown> {
 
 const CustomNodeWrapper = (props: NodeProps) => {
   const layoutDirection = useWorkflowStore((state) => state.layoutDirection);
-  return <CustomNode {...props} layoutDirection={layoutDirection} />;
+  const selectedNode = useWorkflowStore((state) => state.selectedNode);
+  const isSelected = selectedNode?.id === props.id;
+  return <CustomNode {...props} layoutDirection={layoutDirection} isSelected={isSelected} />;
 };
 
 // Define node types with a more specific type
@@ -55,11 +59,15 @@ function WorkflowEditorContent({ workflowId }: WorkflowEditorProps) {
     deleteSelectedNodes,
     updateNodes,
     updateEdges,
+    selectedNode,
+    setSelectedNode,
   } = useWorkflowStore();
-  const [selectedNode, setSelectedNode] = useState<Node<NodeData> | null>(null);
   const [showToast, setShowToast] = useState(false);
   const [showWorkflowPanel, setShowWorkflowPanel] = useState(false);
   const [_, __, toastTimeoutRef] = useStateRef<NodeJS.Timeout | undefined>(undefined);
+
+  // Get the update mutation hook
+  const { mutate: updateWorkflow } = useWorkflowsControllerUpdate();
 
   // Fetch workflow data if workflowId is provided
   const { data: workflowData } = useWorkflowsControllerFindOne(
@@ -113,21 +121,68 @@ function WorkflowEditorContent({ workflowId }: WorkflowEditorProps) {
 
   const handleNodeClick: NodeMouseHandler = useCallback((event, node) => {
     setSelectedNode(node as Node<NodeData>);
-  }, []);
+  }, [setSelectedNode]);
 
   const handleSaveSuccess = useCallback(() => {
-    setShowToast(true);
-
-    // Clear previous timeout if it exists
-    if (toastTimeoutRef.current) {
-      clearTimeout(toastTimeoutRef.current);
+    if (!workflowId) {
+      console.error("No workflow ID provided");
+      return;
     }
 
-    // Set new timeout
-    toastTimeoutRef.current = setTimeout(() => {
-      setShowToast(false);
-    }, 2000);
-  }, [toastTimeoutRef]);
+    try {
+      // Get the current state from the workflow store
+      const { nodes, edges } = useWorkflowStore.getState();
+
+      // Format nodes data properly
+      const formattedNodes = nodes.map(node => ({
+        id: node.id,
+        type: node.type,
+        position: node.position,
+        data: node.data,
+        sourcePosition: node.sourcePosition,
+        targetPosition: node.targetPosition,
+      }));
+
+      // Format edges data properly
+      const formattedEdges = edges.map(edge => ({
+        id: edge.id,
+        source: edge.source,
+        target: edge.target,
+        animated: edge.animated,
+        style: edge.style,
+        markerEnd: edge.markerEnd,
+      }));
+
+      // Update the workflow in the backend
+      updateWorkflow(
+        {
+          id: workflowId,
+          data: {
+            nodes: formattedNodes,
+            edges: formattedEdges
+          }
+        },
+        {
+          onSuccess: () => {
+            setShowToast(true);
+            // Clear previous timeout if it exists
+            if (toastTimeoutRef.current) {
+              clearTimeout(toastTimeoutRef.current);
+            }
+            // Set new timeout
+            toastTimeoutRef.current = setTimeout(() => {
+              setShowToast(false);
+            }, 2000);
+          },
+          onError: (error) => {
+            console.error("Failed to save workflow:", error);
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Error saving workflow:", error);
+    }
+  }, [workflowId, updateWorkflow, toastTimeoutRef]);
 
   // Handle keyboard shortcuts
   useEffect(() => {
@@ -137,11 +192,16 @@ function WorkflowEditorContent({ workflowId }: WorkflowEditorProps) {
         event.preventDefault(); // Prevent the default save dialog
         handleSaveSuccess();
       }
+      // Check for Command + D (Mac) or Ctrl + D (Windows)
+      if ((event.metaKey || event.ctrlKey) && event.key === "r") {
+        event.preventDefault();
+        handleDeleteNodes();
+      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleSaveSuccess]);
+  }, [handleSaveSuccess, handleDeleteNodes]);
 
   return (
     <div className="w-full h-full">
@@ -175,10 +235,13 @@ function WorkflowEditorContent({ workflowId }: WorkflowEditorProps) {
             onWorkflowClick={() => setShowWorkflowPanel(true)}
           />
         </Panel>
+   
+        <WorkflowHotKeyPanel />
+     
         <NodeMetadataPanel
           isVisible={!!selectedNode}
           onClose={() => setSelectedNode(null)}
-          data={selectedNode?.data || null}
+          data={selectedNode?.data as unknown as Task | null}
           nodeId={selectedNode?.id}
           workflowId={workflowId}
         />
@@ -195,7 +258,7 @@ function WorkflowEditorContent({ workflowId }: WorkflowEditorProps) {
         }`}
       >
         <ProtoToast
-          title="Success"
+          title="Successfully Saved Your Workflow"
           description="Workflow saved successfully"
           variant="neutral"
         />

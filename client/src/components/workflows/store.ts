@@ -8,6 +8,7 @@ interface WorkflowState {
   nodes: Node[];
   edges: Edge[];
   selectedNodes: string[];
+  selectedNode: Node | null;
   layoutDirection: 'TB' | 'LR';
   addNode: (taskData: Task & { position: { x: number; y: number } }) => void;
   updateNodes: (nodes: Node[]) => void;
@@ -19,12 +20,14 @@ interface WorkflowState {
   setSelectedNodes: (nodeIds: string[]) => void;
   deleteSelectedNodes: () => void;
   setLayoutDirection: (direction: 'TB' | 'LR') => void;
+  setSelectedNode: (node: Node | null) => void;
 }
 
 export const useWorkflowStore = create<WorkflowState>((set) => ({
   nodes: [],
   edges: [],
   selectedNodes: [],
+  selectedNode: null,
   layoutDirection: 'TB',
   setLayoutDirection: (direction) => set({ layoutDirection: direction }),
   addNode: (taskData) => {
@@ -102,4 +105,5 @@ export const useWorkflowStore = create<WorkflowState>((set) => ({
         selectedNodes: [],
       };
     }),
+  setSelectedNode: (node) => set({ selectedNode: node }),
 })); 

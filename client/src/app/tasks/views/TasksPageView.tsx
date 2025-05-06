@@ -4,15 +4,18 @@ import { useState } from "react";
 import { TaskList } from "../components/ui/TaskList";
 import { useRouter } from "next/navigation";
 import { useTasksControllerSearch } from "@/hooks/backend/useTasksControllerSearch";
+import { useClerkData } from "@/hooks/useClerkData";
 
 export function TasksPageView() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const { organization, isLoaded: isClerkLoaded } = useClerkData();
 
   const { data, isLoading, error } = useTasksControllerSearch({
     search: searchQuery,
     page: 1,
     limit: 10,
+    organizationId: organization?.id
   });
 
   const tasks = data?.data || [];
@@ -31,6 +34,10 @@ export function TasksPageView() {
         <div className="text-red-500">Error loading tasks: {error.message}</div>
       </div>
     );
+  }
+
+  if (isLoading || !isClerkLoaded) {
+    return <div>Loading...</div>;
   }
 
   return (

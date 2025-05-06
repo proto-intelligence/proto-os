@@ -16,6 +16,8 @@ import { useTasksControllerCreate } from "@/hooks/backend/useTasksControllerCrea
 import { CreateTaskDto } from "@/lib/api/backend/models/CreateTaskDto";
 import { useWorkflowStore } from "./store";
 import { Node } from "@xyflow/react";
+import { useClerkData } from "@/hooks/useClerkData";
+import { Avatar } from "@/ui/components/Avatar";
 
 interface Step {
   name?: string;
@@ -43,6 +45,7 @@ export function NodeMetadataPanel({
   const [steps, setSteps] = useState<Step[]>(Array.isArray(data?.steps) ? data.steps : []);
   const updateWorkflow = useWorkflowsControllerUpdate();
   const createTask = useTasksControllerCreate();
+  const { user, organization } = useClerkData();
 
   useEffect(() => {
     setEditedTask(data || {});
@@ -217,28 +220,41 @@ export function NodeMetadataPanel({
                 />
               </TextField>
             </div>
-            <TextField
-              className="h-auto w-full flex-none"
-              label="Created By"
-              helpText=""
-            >
-              <TextField.Input
-                placeholder="Enter creator ID"
-                value={editedTask.created_by || ""}
-                onChange={(event) => handleInputChange("created_by", event.target.value)}
-              />
-            </TextField>
-            <TextField
-              className="h-auto w-full flex-none"
-              label="Organization ID"
-              helpText=""
-            >
-              <TextField.Input
-                placeholder="Enter organization ID"
-                value={editedTask.organization_id || ""}
-                onChange={(event) => handleInputChange("organization_id", event.target.value)}
-              />
-            </TextField>
+            <div className="grid grid-cols-2 gap-4">
+              <TextField
+                className="h-auto w-full flex-none"
+                label="Created By"
+                helpText="The user who created this task"
+              >
+                <div className="flex items-center h-full gap-2">
+                  <Avatar
+                    image={user?.imageUrl}
+                    size="small"
+                  />
+                  <div className="text-sm text-gray-600">
+                    {user?.fullName || "User"}
+                  </div>
+                </div>
+              </TextField>
+
+              {organization && (
+                <TextField
+                  className="h-auto w-full flex-none"
+                  label="Organization"
+                  helpText="The organization this task belongs to"
+                >
+                  <div className="flex items-center h-full gap-2">
+                    <Avatar
+                      image={organization?.imageUrl}
+                      size="small"
+                    />
+                    <div className="text-sm text-gray-600">
+                      {organization?.name || "Organization"}
+                    </div>
+                  </div>
+                </TextField>
+              )}
+            </div>
           </>
         }
         taskSteps={

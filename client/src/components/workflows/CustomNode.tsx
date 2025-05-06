@@ -10,11 +10,13 @@ type CustomNodeData = Task & {
 
 interface CustomNodeProps extends NodeProps {
   layoutDirection: 'TB' | 'LR';
+  isSelected?: boolean;
 }
 
-export function CustomNode({ data, layoutDirection }: CustomNodeProps) {
+export function CustomNode({ data, layoutDirection, isSelected = false }: CustomNodeProps) {
   const nodeData = data as CustomNodeData;
   const [isHovered, setIsHovered] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
 
   const getUrgencyBadgeVariant = (urgency: string) => {
     switch (urgency.toLowerCase()) {
@@ -31,7 +33,12 @@ export function CustomNode({ data, layoutDirection }: CustomNodeProps) {
   return (
     <div
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setIsPressed(false);
+      }}
+      onMouseDown={() => setIsPressed(true)}
+      onMouseUp={() => setIsPressed(false)}
     >
       {layoutDirection === 'TB' ? (
         <>
@@ -63,8 +70,7 @@ export function CustomNode({ data, layoutDirection }: CustomNodeProps) {
             </div>
           </div>
         }
-        variant="default"
-        _default={isHovered ? "hover" : "default"}
+        _default={isSelected ? "pressed" : isPressed ? "pressed" : isHovered ? "hover" : "default"}
         className="w-full"
       />
     </div>

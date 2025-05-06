@@ -11,7 +11,7 @@ import { ProtoFloatingToolbar } from "@/ui/components/ProtoFloatingToolbar";
 import { useWorkflowStore } from "./store";
 import { useReactFlow } from "@xyflow/react";
 import { Select } from "@/ui/components/Select";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTasksControllerSearch } from "@/hooks/backend/useTasksControllerSearch";
 import { Task } from "@/lib/api/backend/models/Task";
 import { useWorkflowsControllerFindOne } from "@/hooks/backend/useWorkflowsControllerFindOne";
@@ -64,6 +64,37 @@ export function WorkflowToolbar({
     name: task.name,
     type: task.type
   })) || [];
+
+  // Set the first task as selected if none is selected and tasks are available
+  useEffect(() => {
+    if (!selectedTaskId && taskOptions.length > 0) {
+      setSelectedTaskId(taskOptions[0].id);
+    }
+  }, [taskOptions, selectedTaskId]);
+
+  // Handle keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Command + A to add node
+      if ((event.metaKey || event.ctrlKey) && event.key === 'a') {
+        event.preventDefault();
+        handleAddNode();
+      }
+      // Command + H for horizontal layout
+      if ((event.metaKey || event.ctrlKey) && event.key === 'h') {
+        event.preventDefault();
+        handleHorizontalLayout();
+      }
+      // Command + V for vertical layout
+      if ((event.metaKey || event.ctrlKey) && event.key === 'v') {
+        event.preventDefault();
+        handleVerticalLayout();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedTaskId, taskOptions]);
 
   const handleVerticalLayout = () => {
     setLayoutDirection("TB");

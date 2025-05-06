@@ -15,8 +15,7 @@ interface ProtoManualTaskRootProps
   footerSlot?: React.ReactNode;
   mainSlot?: React.ReactNode;
   headerSlot?: React.ReactNode;
-  variant?: "default";
-  _default?: "default" | "hover";
+  _default?: "default" | "hover" | "pressed";
   className?: string;
 }
 
@@ -28,7 +27,6 @@ const ProtoManualTaskRoot = React.forwardRef<
     footerSlot,
     mainSlot,
     headerSlot,
-    variant = "default",
     _default = "default",
     className,
     ...otherProps
@@ -40,7 +38,8 @@ const ProtoManualTaskRoot = React.forwardRef<
       className={SubframeUtils.twClassNames(
         "group/20cb2dcb flex w-full flex-col items-start rounded-md border border-solid border-neutral-border bg-default-background shadow-sm",
         {
-          "border-none shadow-lg outline-none transition-[outline-offset] duration-200 hover:outline hover:outline-2 hover:[outline-color:rgba(0,0,0,0.1)] hover:outline-offset-4":
+          "border border-solid border-secondary-2": _default === "pressed",
+          "border border-solid border-brand-200 shadow-lg":
             _default === "hover",
         },
         className
