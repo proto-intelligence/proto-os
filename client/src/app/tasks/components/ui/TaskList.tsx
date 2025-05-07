@@ -1,11 +1,12 @@
+"use client";
+
 import { Button } from "@/ui/components/Button";
 import { TextField } from "@/ui/components/TextField";
 import { Table } from "@/ui/components/Table";
-import { FeatherSearch } from "@subframe/core";
+import { FeatherSearch, FeatherTrash2 } from "@subframe/core";
 import { Task } from "@/lib/api/backend/models/Task";
 import { useRouter } from "next/navigation";
-import { Avatar } from "@/ui/components/Avatar";
-import { useClerkData } from "@/hooks/useClerkData";
+import { useTasksControllerRemove } from "@/hooks/backend/useTasksControllerRemove";
 
 interface TaskListProps {
   tasks: Task[];
@@ -13,6 +14,7 @@ interface TaskListProps {
   onSearch: (query: string) => void;
   onCreateNew: () => void;
   isLoading?: boolean;
+  onTaskDeleted?: () => void;
 }
 
 export function TaskList({
@@ -20,13 +22,25 @@ export function TaskList({
   searchQuery,
   onSearch,
   onCreateNew,
-  isLoading = false
+  isLoading = false,
+  onTaskDeleted
 }: TaskListProps) {
   const router = useRouter();
-  const { user, organization } = useClerkData();
+  const { mutate: deleteTask } = useTasksControllerRemove();
 
   const handleRowClick = (taskId: string) => {
     router.push(`/tasks/edit/${taskId}`);
+  };
+
+  const handleDelete = (e: React.MouseEvent, taskId: string) => {
+    e.stopPropagation(); // Prevent row click when clicking delete
+    if (window.confirm('Are you sure you want to delete this task?')) {
+      deleteTask(taskId, {
+        onSuccess: () => {
+          onTaskDeleted?.();
+        }
+      });
+    }
   };
 
   return (
@@ -71,9 +85,8 @@ export function TaskList({
               <Table.HeaderCell>Type</Table.HeaderCell>
               <Table.HeaderCell>Urgency</Table.HeaderCell>
               <Table.HeaderCell>Usually Takes</Table.HeaderCell>
-              <Table.HeaderCell>Created By</Table.HeaderCell>
-              <Table.HeaderCell>Organization</Table.HeaderCell>
               <Table.HeaderCell>Created At</Table.HeaderCell>
+              <Table.HeaderCell>Actions</Table.HeaderCell>
             </Table.HeaderRow>
             {tasks.map((task) => (
               <Table.Row 
@@ -90,31 +103,17 @@ export function TaskList({
                 <Table.Cell>{task.type}</Table.Cell>
                 <Table.Cell>{task.urgency}</Table.Cell>
                 <Table.Cell>{task.usually_takes}</Table.Cell>
-                <Table.Cell>
-                  <div className="flex items-center gap-2">
-                    <Avatar
-                      image={user?.imageUrl}
-                      size="small"
-                    />
-                    <span className="text-sm text-gray-600">
-                      {user?.fullName || "User"}
-                    </span>
-                  </div>
-                </Table.Cell>
-                <Table.Cell>
-                  {organization && (
-                    <div className="flex items-center gap-2">
-                      <Avatar
-                        image={organization?.imageUrl}
-                        size="small"
-                      />
-                      <span className="text-sm text-gray-600">
-                        {organization?.name || "Organization"}
-                      </span>
-                    </div>
-                  )}
-                </Table.Cell>
                 <Table.Cell>{new Date(task.created_at).toLocaleDateString()}</Table.Cell>
+                <Table.Cell>
+                  <Button
+                    variant="neutral-tertiary"
+                    size="small"
+                    onClick={(e) => handleDelete(e, task.id)}
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    <FeatherTrash2 className="w-4 h-4" />
+                  </Button>
+                </Table.Cell>
               </Table.Row>
             ))}
           </Table>

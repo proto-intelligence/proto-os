@@ -114,21 +114,6 @@ export function WorkflowPanel({ workflow, onClose }: WorkflowPanelProps) {
                 onChange={(event) => handleInputChange("name", event.target.value)}
               />
             </TextField>
-                          <TextField
-                className="h-auto w-full flex-none"
-                label="Created By"
-                helpText="The user who created this workflow"
-              >
-                <div className="flex items-center h-full gap-2">
-                  <Avatar
-                    image={user?.imageUrl}
-                    size="small"
-                  />
-                  <div className="text-sm text-gray-600">
-                    {user?.fullName || "User"}
-                  </div>
-                </div>
-              </TextField>
             <TextArea
               className="h-auto w-full flex-none"
               label="Description"

@@ -17,7 +17,6 @@ import { CreateTaskDto } from "@/lib/api/backend/models/CreateTaskDto";
 import { useWorkflowStore } from "./store";
 import { Node } from "@xyflow/react";
 import { useClerkData } from "@/hooks/useClerkData";
-import { Avatar } from "@/ui/components/Avatar";
 
 interface Step {
   name?: string;
@@ -219,41 +218,6 @@ export function NodeMetadataPanel({
                   onChange={(event) => handleInputChange("usually_takes", event.target.value)}
                 />
               </TextField>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <TextField
-                className="h-auto w-full flex-none"
-                label="Created By"
-                helpText="The user who created this task"
-              >
-                <div className="flex items-center h-full gap-2">
-                  <Avatar
-                    image={user?.imageUrl}
-                    size="small"
-                  />
-                  <div className="text-sm text-gray-600">
-                    {user?.fullName || "User"}
-                  </div>
-                </div>
-              </TextField>
-
-              {organization && (
-                <TextField
-                  className="h-auto w-full flex-none"
-                  label="Organization"
-                  helpText="The organization this task belongs to"
-                >
-                  <div className="flex items-center h-full gap-2">
-                    <Avatar
-                      image={organization?.imageUrl}
-                      size="small"
-                    />
-                    <div className="text-sm text-gray-600">
-                      {organization?.name || "Organization"}
-                    </div>
-                  </div>
-                </TextField>
-              )}
             </div>
           </>
         }

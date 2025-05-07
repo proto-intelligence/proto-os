@@ -4,11 +4,11 @@ import { Button } from "@/ui/components/Button";
 import { TextField } from "@/ui/components/TextField";
 import { Table } from "@/ui/components/Table";
 import { useWorkflowsControllerSearch } from "@/hooks/backend/useWorkflowsControllerSearch";
+import { useWorkflowsControllerRemove } from "@/hooks/backend/useWorkflowsControllerRemove";
 import { useState } from "react";
 import { Workflow } from "@/lib/api/backend/models/Workflow";
-import { FeatherSearch } from "@subframe/core";
+import { FeatherSearch, FeatherTrash2 } from "@subframe/core";
 import { useRouter } from "next/navigation";
-import { Avatar } from "@/ui/components/Avatar";
 import { useClerkData } from "@/hooks/useClerkData";
 
 interface WorkflowListProps {
@@ -19,9 +19,10 @@ export function SOPList({ onCreateNew }: WorkflowListProps) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   
-  const { user, organization, isLoaded: isClerkLoaded } = useClerkData();
+  const { organization, isLoaded: isClerkLoaded } = useClerkData();
+  const { mutate: deleteWorkflow } = useWorkflowsControllerRemove();
 
-  const { data, isLoading } = useWorkflowsControllerSearch({
+  const { data, isLoading, refetch } = useWorkflowsControllerSearch({
     search: searchQuery,
     page: 1,
     limit: 10,
@@ -32,6 +33,17 @@ export function SOPList({ onCreateNew }: WorkflowListProps) {
 
   const handleRowClick = (workflowId: string) => {
     router.push(`/workflows/${workflowId}`);
+  };
+
+  const handleDelete = (e: React.MouseEvent, workflowId: string) => {
+    e.stopPropagation(); // Prevent row click when clicking delete
+    if (window.confirm('Are you sure you want to delete this workflow?')) {
+      deleteWorkflow(workflowId, {
+        onSuccess: () => {
+          refetch();
+        }
+      });
+    }
   };
 
   if (isLoading || !isClerkLoaded) {
@@ -76,9 +88,8 @@ export function SOPList({ onCreateNew }: WorkflowListProps) {
               <Table.HeaderCell>Name</Table.HeaderCell>
               <Table.HeaderCell>Description</Table.HeaderCell>
               <Table.HeaderCell>Type</Table.HeaderCell>
-              <Table.HeaderCell>Created By</Table.HeaderCell>
-              <Table.HeaderCell>Organization</Table.HeaderCell>
               <Table.HeaderCell>Updated At</Table.HeaderCell>
+              <Table.HeaderCell>Actions</Table.HeaderCell>
             </Table.HeaderRow>
             {workflows.map((workflow: Workflow) => (
               <Table.Row 
@@ -93,31 +104,17 @@ export function SOPList({ onCreateNew }: WorkflowListProps) {
                   <div className="text-sm text-neutral-600">{workflow.description}</div>
                 </Table.Cell>
                 <Table.Cell>{workflow.workflow_type}</Table.Cell>
-                <Table.Cell>
-                  <div className="flex items-center gap-2">
-                    <Avatar
-                      image={user?.imageUrl}
-                      size="small"
-                    />
-                    <span className="text-sm text-gray-600">
-                      {user?.fullName || "User"}
-                    </span>
-                  </div>
-                </Table.Cell>
-                <Table.Cell>
-                  {organization && (
-                    <div className="flex items-center gap-2">
-                      <Avatar
-                        image={organization?.imageUrl}
-                        size="small"
-                      />
-                      <span className="text-sm text-gray-600">
-                        {organization?.name || "Organization"}
-                      </span>
-                    </div>
-                  )}
-                </Table.Cell>
                 <Table.Cell>{workflow.updated_at}</Table.Cell>
+                <Table.Cell>
+                  <Button
+                    variant="neutral-tertiary"
+                    size="small"
+                    onClick={(e) => handleDelete(e, workflow.id)}
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    <FeatherTrash2 className="w-4 h-4" />
+                  </Button>
+                </Table.Cell>
               </Table.Row>
             ))}
           </Table>

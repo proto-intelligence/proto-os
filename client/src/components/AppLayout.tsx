@@ -89,6 +89,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             isSignedIn ? (
               <div className="flex items-center gap-2">
                 <OrganizationSwitcher
+                  hidePersonal={true}
                   appearance={{
                     elements: {
                       rootBox: "flex items-center",
