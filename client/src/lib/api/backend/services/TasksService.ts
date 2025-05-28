@@ -66,13 +66,7 @@ export class TasksService {
         limit: number = 10,
         sortBy: string = 'created_at',
         sortOrder: 'ASC' | 'DESC' = 'DESC',
-    ): CancelablePromise<{
-        data: Task[];
-        total: number;
-        page: number;
-        limit: number;
-        totalPages: number;
-    }> {
+    ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/tasks/search',

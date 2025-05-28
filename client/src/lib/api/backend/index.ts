@@ -32,6 +32,7 @@ export { UpdateWorkflowDto } from './models/UpdateWorkflowDto';
 export type { User } from './models/User';
 export { Workflow } from './models/Workflow';
 
+export { AgentService } from './services/AgentService';
 export { AppService } from './services/AppService';
 export { ClerkService } from './services/ClerkService';
 export { LoginCredentialsService } from './services/LoginCredentialsService';

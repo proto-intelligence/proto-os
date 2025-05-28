@@ -38,49 +38,13 @@ export class WorkflowsService {
     }
     /**
      * Search workflows with pagination and filters
-     * @param search Search term for name and description
-     * @param tags Filter by tags
-     * @param workflowType Filter by workflow type
-     * @param createdBy Filter by creator
-     * @param organizationId Filter by organization
-     * @param createdFrom Filter by creation date range start
-     * @param createdTo Filter by creation date range end
-     * @param page
-     * @param limit
-     * @param sortBy Field to sort by
-     * @param sortOrder
      * @returns any Return paginated list of workflows
      * @throws ApiError
      */
-    public static workflowsControllerSearch(
-        search?: string,
-        tags?: Array<string>,
-        workflowType?: 'dag' | 'acyclic' | 'cron',
-        createdBy?: string,
-        organizationId?: string,
-        createdFrom?: string,
-        createdTo?: string,
-        page?: string | number,
-        limit?: string | number,
-        sortBy: string = 'created_at',
-        sortOrder: 'ASC' | 'DESC' = 'DESC',
-    ): CancelablePromise<any> {
+    public static workflowsControllerSearch(): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/workflows/search',
-            query: {
-                'search': search,
-                'tags': tags,
-                'workflowType': workflowType,
-                'createdBy': createdBy,
-                'organizationId': organizationId,
-                'createdFrom': createdFrom,
-                'createdTo': createdTo,
-                'page': page?.toString(),
-                'limit': limit?.toString(),
-                'sortBy': sortBy,
-                'sortOrder': sortOrder,
-            },
         });
     }
     /**
