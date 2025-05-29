@@ -15,4 +15,10 @@ export default {
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   },
+  openai: {
+    apiKey: process.env.OPENAI_API_KEY,
+    model: 'gpt-4o-mini',
+    temperature: 0.7,
+    maxTokens: 1000,
+  },
 };
