@@ -1,7 +1,7 @@
 "use client";
 /*
  * Documentation:
- * Bar Chart — https://app.subframe.com/8616996521e5/library?component=Bar+Chart_4d4f30e7-1869-4980-8b96-617df3b37912
+ * Bar Chart — https://app.subframe.com/61fe868f53c4/library?component=Bar+Chart_4d4f30e7-1869-4980-8b96-617df3b37912
  */
 
 import React from "react";

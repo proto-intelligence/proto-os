@@ -41,10 +41,35 @@ export class WorkflowsService {
      * @returns any Return paginated list of workflows
      * @throws ApiError
      */
-    public static workflowsControllerSearch(): CancelablePromise<any> {
+    public static workflowsControllerSearch(
+        search?: string,
+        tags?: string[],
+        workflowType?: string,
+        createdBy?: string,
+        organizationId?: string,
+        createdFrom?: string,
+        createdTo?: string,
+        page?: number,
+        limit?: number,
+        sortBy?: string,
+        sortOrder?: 'ASC' | 'DESC'
+    ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/workflows/search',
+            query: {
+                'search': search,
+                'tags': tags,
+                'workflowType': workflowType,
+                'createdBy': createdBy,
+                'organizationId': organizationId,
+                'createdFrom': createdFrom,
+                'createdTo': createdTo,
+                'page': page,
+                'limit': limit,
+                'sortBy': sortBy,
+                'sortOrder': sortOrder,
+            },
         });
     }
     /**

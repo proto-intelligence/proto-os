@@ -1,7 +1,7 @@
 "use client";
 /*
  * Documentation:
- * Proto Avatar — https://app.subframe.com/8616996521e5/library?component=Proto+Avatar_9774174f-f47f-48fe-9c03-bf67a4069b62
+ * Proto Avatar — https://app.subframe.com/61fe868f53c4/library?component=Proto+Avatar_9774174f-f47f-48fe-9c03-bf67a4069b62
  */
 
 import React from "react";

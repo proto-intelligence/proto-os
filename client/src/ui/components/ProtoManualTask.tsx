@@ -1,9 +1,9 @@
 "use client";
 /*
  * Documentation:
- * Proto Manual Task — https://app.subframe.com/8616996521e5/library?component=Proto+Manual+Task_20cb2dcb-f68d-4e6c-98b6-564c326a9579
- * Proto Avatar — https://app.subframe.com/8616996521e5/library?component=Proto+Avatar_9774174f-f47f-48fe-9c03-bf67a4069b62
- * Badge — https://app.subframe.com/8616996521e5/library?component=Badge_97bdb082-1124-4dd7-a335-b14b822d0157
+ * Proto Manual Task — https://app.subframe.com/61fe868f53c4/library?component=Proto+Manual+Task_20cb2dcb-f68d-4e6c-98b6-564c326a9579
+ * Proto Avatar — https://app.subframe.com/61fe868f53c4/library?component=Proto+Avatar_9774174f-f47f-48fe-9c03-bf67a4069b62
+ * Badge — https://app.subframe.com/61fe868f53c4/library?component=Badge_97bdb082-1124-4dd7-a335-b14b822d0157
  */
 
 import React from "react";

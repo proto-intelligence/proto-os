@@ -1,8 +1,8 @@
 "use client";
 /*
  * Documentation:
- * Proto Legend — https://app.subframe.com/8616996521e5/library?component=Proto+Legend_305dbfbc-c664-4de4-86f3-5d403c50acf3
- * Proto Legend Row — https://app.subframe.com/8616996521e5/library?component=Proto+Legend+Row_2c16e5c6-d5c5-4c91-a6f0-b4993663ed06
+ * Proto Legend — https://app.subframe.com/61fe868f53c4/library?component=Proto+Legend_305dbfbc-c664-4de4-86f3-5d403c50acf3
+ * Proto Legend Row — https://app.subframe.com/61fe868f53c4/library?component=Proto+Legend+Row_2c16e5c6-d5c5-4c91-a6f0-b4993663ed06
  */
 
 import React from "react";

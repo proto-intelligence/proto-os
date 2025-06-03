@@ -1,7 +1,7 @@
 "use client";
 /*
  * Documentation:
- * Checkbox Card — https://app.subframe.com/8616996521e5/library?component=Checkbox+Card_de0b4dfb-3946-4702-be52-5678dd71925a
+ * Checkbox Card — https://app.subframe.com/61fe868f53c4/library?component=Checkbox+Card_de0b4dfb-3946-4702-be52-5678dd71925a
  */
 
 import React from "react";

@@ -25,19 +25,7 @@ export function useWorkflowsControllerSearch(params: SearchParams = {}) {
   return useQuery({
     queryKey: ['workflowsControllerSearch', processedParams],
     queryFn: async () => {
-        const result = await WorkflowsService.workflowsControllerSearch(
-          processedParams.search,
-          processedParams.tags,
-          processedParams.workflowType,
-          processedParams.createdBy,
-          processedParams.organizationId,
-          processedParams.createdFrom,
-          processedParams.createdTo,
-          processedParams.page,
-          processedParams.limit,
-          processedParams.sortBy,
-          processedParams.sortOrder
-        );
+        const result = await WorkflowsService.workflowsControllerSearch();
         return result;
     },
     select: (data) => {

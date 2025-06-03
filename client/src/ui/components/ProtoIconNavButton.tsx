@@ -1,7 +1,7 @@
 "use client";
 /*
  * Documentation:
- * Proto Icon Nav Button — https://app.subframe.com/8616996521e5/library?component=Proto+Icon+Nav+Button_032ae765-3abf-471e-bc95-9cf4a6f16883
+ * Proto Icon Nav Button — https://app.subframe.com/61fe868f53c4/library?component=Proto+Icon+Nav+Button_032ae765-3abf-471e-bc95-9cf4a6f16883
  */
 
 import React from "react";

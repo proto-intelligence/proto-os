@@ -1,8 +1,8 @@
 "use client";
 /*
  * Documentation:
- * Hot Key Panel — https://app.subframe.com/8616996521e5/library?component=Hot+Key+Panel_3b748151-b9a9-4b3e-8656-5e643a4480d4
- * Badge — https://app.subframe.com/8616996521e5/library?component=Badge_97bdb082-1124-4dd7-a335-b14b822d0157
+ * Hot Key Panel — https://app.subframe.com/61fe868f53c4/library?component=Hot+Key+Panel_3b748151-b9a9-4b3e-8656-5e643a4480d4
+ * Badge — https://app.subframe.com/61fe868f53c4/library?component=Badge_97bdb082-1124-4dd7-a335-b14b822d0157
  */
 
 import React from "react";

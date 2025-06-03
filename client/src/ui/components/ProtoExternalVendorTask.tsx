@@ -1,7 +1,7 @@
 "use client";
 /*
  * Documentation:
- * Proto External Vendor Task — https://app.subframe.com/8616996521e5/library?component=Proto+External+Vendor+Task_beeede27-86da-40e0-9e50-5497576018c3
+ * Proto External Vendor Task — https://app.subframe.com/61fe868f53c4/library?component=Proto+External+Vendor+Task_beeede27-86da-40e0-9e50-5497576018c3
  */
 
 import React from "react";

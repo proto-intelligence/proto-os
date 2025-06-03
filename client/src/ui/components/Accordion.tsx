@@ -1,7 +1,7 @@
 "use client";
 /*
  * Documentation:
- * Accordion — https://app.subframe.com/8616996521e5/library?component=Accordion_d2e81e20-863a-4027-826a-991d8910efd9
+ * Accordion — https://app.subframe.com/61fe868f53c4/library?component=Accordion_d2e81e20-863a-4027-826a-991d8910efd9
  */
 
 import React from "react";

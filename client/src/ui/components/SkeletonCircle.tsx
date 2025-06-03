@@ -1,7 +1,7 @@
 "use client";
 /*
  * Documentation:
- * Skeleton Circle — https://app.subframe.com/8616996521e5/library?component=Skeleton+Circle_8b6e7a84-358f-4dc5-9de8-792a18fa9955
+ * Skeleton Circle — https://app.subframe.com/61fe868f53c4/library?component=Skeleton+Circle_8b6e7a84-358f-4dc5-9de8-792a18fa9955
  */
 
 import React from "react";

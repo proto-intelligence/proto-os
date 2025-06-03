@@ -1,8 +1,8 @@
 "use client";
 /*
  * Documentation:
- * Copy to clipboard field — https://app.subframe.com/8616996521e5/library?component=Copy+to+clipboard+field_1e2e1a38-8b4a-41bd-b224-b893c92a0495
- * Copy to clipboard button — https://app.subframe.com/8616996521e5/library?component=Copy+to+clipboard+button_e8c76626-6462-4f2f-b595-38d530d427e8
+ * Copy to clipboard field — https://app.subframe.com/61fe868f53c4/library?component=Copy+to+clipboard+field_1e2e1a38-8b4a-41bd-b224-b893c92a0495
+ * Copy to clipboard button — https://app.subframe.com/61fe868f53c4/library?component=Copy+to+clipboard+button_e8c76626-6462-4f2f-b595-38d530d427e8
  */
 
 import React from "react";
