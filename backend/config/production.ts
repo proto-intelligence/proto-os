@@ -8,7 +8,7 @@ export default {
   port: process.env.PORT || 3000,
   cors: {
     origin: [
-      'https://workflow-creator-main.up.railway.app',
+      'https://proto-os-frontend-main.up.railway.app',
       'https://dashboard.theproto.ai',
     ],
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],

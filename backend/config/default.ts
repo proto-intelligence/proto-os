@@ -9,8 +9,7 @@ export default {
   cors: {
     origin: [
       'http://localhost:3000',
-      'https://workflow-creator-develop.up.railway.app',
-      'https://workflow-creator-main.up.railway.app',
+      'https://proto-os-frontend-develop.up.railway.app',
       'https://dashboard.theproto.ai',
     ],
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
