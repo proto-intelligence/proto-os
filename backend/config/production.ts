@@ -1,7 +1,7 @@
 export default {
   typeorm: {
     url: process.env.DATABASE_URL,
-    synchronize: false,
+    synchronize: true,
     autoLoadEntities: true,
   },
   node_env: 'production',
